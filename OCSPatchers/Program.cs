@@ -32,15 +32,10 @@ Console.WriteLine();
 Console.Write("Reading load order... ");
 var baseMods = await ModsToPatch();
 
-Console.WriteLine("done");
-
 Console.Write("Loading data... ");
-
 var (waterAvoidance, pathfindAcceleration, version) = await ReadScarsMod();
 
 var context = await BuildModContext();
-
-Console.WriteLine("done");
 
 // Get all races where editor limits are set i.e. it is not an animal race
 var AnimStrIDs = new List<string>()
@@ -55,6 +50,8 @@ var AnimStrIDs = new List<string>()
     //Military craft
     "1535133-Military craft.mod",
 };
+
+Console.Write("Apply patchers... ");
 /// <summary>
 /// sound id => List(ReferenceCategory name => List(references))
 /// </summary>
@@ -599,7 +596,7 @@ async Task<(float waterAvoidance, float pathFindAcceleration, int version)> Read
     return ((float)waterAvoidance, (float)pathfindAcceleration, referenceData.Header.Version);
 }
 
-async Task<IModContext> BuildModContext()
+async Task<IModContext> BuildModContext(int version = 16)
 {
     // Build mod
     var header = new Header(version,
