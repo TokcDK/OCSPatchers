@@ -208,6 +208,8 @@ namespace OCSPatchers.Patchers
             ////        categoryReferences.Add(limb.TargetId, limbQuality, limbRelativeChance);
             ////    }
             ////}
+            ///
+            return Task.CompletedTask;
         }
     }
 }
