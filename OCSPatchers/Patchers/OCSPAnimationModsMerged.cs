@@ -85,6 +85,58 @@ namespace OCSPatchers.Patchers
                     }
                 }
             }
+
+            // hairs beards heads animations ADD by sounds value
+            foreach (var race in races)
+            {
+                if (!race.Values.ContainsKey("sounds")) continue;
+                if (race.Values["sounds"] is not int soundsID) continue;
+                soundsID = getRaceSoundsID(race, soundsID);
+                if (!referenceCategoriesRefs.ContainsKey(soundsID)) continue;
+
+                var itemsBySoundsID = referenceCategoriesRefs[soundsID];
+                foreach (var CategoryReferences in itemsBySoundsID)
+                {
+                    if (!race.ReferenceCategories.ContainsKey(CategoryReferences.Key)) race.ReferenceCategories.Add(CategoryReferences.Key);
+
+                    var refList = race.ReferenceCategories[CategoryReferences.Key].References;
+                    foreach (var reference in CategoryReferences.Value)
+                    {
+                        if (!IsValidToAdd(race, reference, CategoryReferences.Key) || refList.ContainsKey(reference.TargetId)) continue;
+
+                        refList.Add(reference.TargetId, GetVal0(race, CategoryReferences.Key), GetVal1(race, CategoryReferences.Key), GetVal2(race, CategoryReferences.Key));
+                    }
+                }
+            }
+        }
+
+        int GetVal2(ModItem race, string categoryName)
+        {
+            if (categoryName == "robot limbs")
+            {
+            }
+
+            return 0;
+        }
+
+        int GetVal1(ModItem race, string categoryName)
+        {
+            return 0;
+        }
+
+        int GetVal0(ModItem race, string categoryName)
+        {
+            return 0;
+        }
+
+        bool IsValidToAdd(ModItem race, ModReference reference, string categoryName)
+        {
+            //if (categoryName == "robot limbs" && race.Values.ContainsKey("unique") && race.Values["unique"] is bool b && b)
+            //{
+            //    return false;
+            //}
+
+            return true;
         }
 
         /// <summary>
