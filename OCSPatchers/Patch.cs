@@ -13,7 +13,7 @@ namespace OCSPatchers
         const string ModName = "OCSPatch";
         const string ModFileName = ModName + ".mod";
 
-        internal async void Apply()
+        internal static async void Apply()
         {
             IInstallation? installation = await SelectInstallation();
 
@@ -63,7 +63,7 @@ namespace OCSPatchers
             ).ToArray();
         }
 
-        async Task<IModContext> BuildModContext(IInstallation? installation, List<string> baseMods, IOCSPatcher[] patchers, int version = 16)
+        static async Task<IModContext> BuildModContext(IInstallation? installation, List<string> baseMods, IOCSPatcher[] patchers, int version = 16)
         {
             // Build mod
             var header = new Header(version, "author", "merged patchers");
@@ -85,7 +85,7 @@ namespace OCSPatchers
             return await new ContextBuilder().BuildAsync(options);
         }
 
-        private HashSet<string> GetExcludedModNames(IOCSPatcher[] patchers)
+        static private HashSet<string> GetExcludedModNames(IOCSPatcher[] patchers)
         {
             var excluded = new HashSet<string>
             {
@@ -110,7 +110,7 @@ namespace OCSPatchers
             return excluded;
         }
 
-        async Task<List<string>> ModsToPatch(IInstallation? installation, HashSet<string> excluded)
+        static async Task<List<string>> ModsToPatch(IInstallation? installation, HashSet<string> excluded)
         {
             var mods = new List<string>(await installation!.ReadEnabledModsAsync());
 
@@ -127,7 +127,7 @@ namespace OCSPatchers
             return mods;
         }
 
-        async Task<IInstallation?> SelectInstallation()
+        static async Task<IInstallation?> SelectInstallation()
         {
             var installations = await new InstallationService().DiscoverAllInstallationsAsync().ToDictionaryAsync(i => i.Identifier);
 
@@ -163,7 +163,7 @@ namespace OCSPatchers
                 return installations[selection];
             }
         }
-        void Error(string message)
+        static void Error(string message)
         {
             Console.WriteLine(message);
             Console.ReadKey();
