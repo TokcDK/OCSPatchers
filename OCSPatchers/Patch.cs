@@ -19,6 +19,8 @@ namespace OCSPatchers
 
             IOCSPatcher[] patchers = new IOCSPatcher[5]
             {
+                //new OCSPHolyNationRacismFix(),
+
                 new OCSPatcherGeneral(),
                 new OSCPScarsPathfindingFix(),
                 new OCSPAnimationModsMerged(),
