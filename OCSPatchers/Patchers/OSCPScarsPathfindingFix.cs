@@ -30,7 +30,7 @@ namespace OCSPatchers.Patchers
                     && !string.IsNullOrEmpty(file.Path))
                 {
 
-                    Console.WriteLine("Updating " + race.Name);
+                    //Console.WriteLine("Updating " + race.Name);
                     race.Values["pathfind acceleration"] = pathfindAcceleration;
 
                     // avoid changing for races that like water

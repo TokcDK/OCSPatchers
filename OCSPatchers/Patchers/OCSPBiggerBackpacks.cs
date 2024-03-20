@@ -26,7 +26,7 @@ namespace OCSPatchers.Patchers
                 if (value is not int v || v != 12) continue; // backpack
                 if (changed.Contains(item.StringId)) continue; // backpack
 
-                Console.WriteLine("Updating " + item.Name);
+                //Console.WriteLine("Updating " + item.Name);
 
                 //var cskill = (int)item.Values["combat skill bonus"];
                 //item.Values["combat skill bonus"] = (cskill += 10);

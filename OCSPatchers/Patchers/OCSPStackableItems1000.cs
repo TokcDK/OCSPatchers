@@ -24,7 +24,7 @@ namespace OCSPatchers.Patchers
                 if (slotValue is not int i || i != 7) continue; // attach slot none
                 if (value is not int v || v >= 1000) continue; // already max
 
-                Console.WriteLine("Updating " + item.Name);
+                //Console.WriteLine("Updating " + item.Name);
                 item.Values["stackable"] = 1000;
             }
             return Task.CompletedTask;

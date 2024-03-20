@@ -89,7 +89,6 @@ namespace OCSPatchers
                 //loadEnabledMods: ModLoadType.Active,
                 throwIfMissing: false);
 
-            Console.WriteLine("4");
             return await new ContextBuilder().BuildAsync(options);
         }
 

@@ -53,7 +53,7 @@ namespace OCSPatchers.Patchers
                     && !meshFile.Path.Contains(@"\animal\")
                     )
                 {
-                    Console.WriteLine("Updating " + race.Name);
+                    //Console.WriteLine("Updating " + race.Name);
                     if (!race.ReferenceCategories.ContainsKey("animation files")) race.ReferenceCategories.Add("animation files");
 
                     var animFiles = race.ReferenceCategories["animation files"];
@@ -113,10 +113,6 @@ namespace OCSPatchers.Patchers
 
         int GetVal2(ModItem race, string categoryName)
         {
-            if (categoryName == "robot limbs")
-            {
-            }
-
             return 0;
         }
 
