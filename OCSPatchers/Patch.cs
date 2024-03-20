@@ -38,7 +38,7 @@ namespace OCSPatchers
 
             foreach (var patcher in patchers)
             {
-                patcher.ApplyPatch(context);
+                patcher.ApplyPatch(context, installation!);
             }
 
             Console.Write("Saving... ");

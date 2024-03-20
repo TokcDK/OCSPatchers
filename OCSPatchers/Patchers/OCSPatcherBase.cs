@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods.Context;
 
 namespace OCSPatchers.Patchers
@@ -13,6 +14,6 @@ namespace OCSPatchers.Patchers
         public virtual string[] ReferenceModNames { get; } = Array.Empty<string>();
         public virtual string[] ExcludedModNames { get; } = Array.Empty<string>();
 
-        public abstract void ApplyPatch(IModContext context);
+        public abstract void ApplyPatch(IModContext context, IInstallation installation);
     }
 }

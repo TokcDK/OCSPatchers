@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenConstructionSet;
+using OpenConstructionSet.Data;
+using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 
@@ -14,17 +17,38 @@ namespace OCSPatchers.Patchers
 
         public override string[] ReferenceModNames => new[] { "SCAR's pathfinding fix.mod" };
 
-        public override async void ApplyPatch(IModContext context)
+        public override async void ApplyPatch(IModContext context, IInstallation installation)
         {
-            var (waterAvoidance, pathfindAcceleration, version) = await ReadScarsMod();
+            var (waterAvoidance, pathfindAcceleration, version) = await ReadScarsMod(installation);
+
+            var races = context.Items.OfType(ItemType.Race);
+            foreach (var race in races)
+            {
+                // Scar pathfinding fix
+                if (race.Values.TryGetValue("editor limits", out var value)
+                    && value is FileValue file
+                    && !string.IsNullOrEmpty(file.Path))
+                {
+
+                    Console.WriteLine("Updating " + race.Name);
+                    race.Values["pathfind acceleration"] = pathfindAcceleration;
+
+                    // avoid changing for races that like water
+                    if (race.Values.ContainsKey("water avoidance") && (float)race.Values["water avoidance"] > 0)
+                    {
+                        race.Values["water avoidance"] = waterAvoidance;
+                    }
+                }
+            }
         }
 
-        async Task<(float waterAvoidance, float pathFindAcceleration, int version)> ReadScarsMod()
+        async Task<(float waterAvoidance, float pathFindAcceleration, int version)> ReadScarsMod(IInstallation installation)
         {
-            if (!installation!.Mods.TryFind(ReferenceModName, out var referenceMod))
+            string refModName = ReferenceModNames[0];
+            if (!installation!.Mods.TryFind(refModName, out var referenceMod))
             {
                 // Not found
-                Error($"Unable to find {ReferenceModName}");
+                Error($"Unable to find {refModName}");
                 return (0, 0, 0);
             }
 
@@ -36,7 +60,7 @@ namespace OCSPatchers.Patchers
             }
             catch (Exception ex)
             {
-                Error($"Unable to load {ReferenceModName}{Environment.NewLine}Error: {ex}");
+                Error($"Unable to load {refModName}{Environment.NewLine}Error: {ex}");
                 return (0, 0, 0);
             }
 
@@ -53,6 +77,13 @@ namespace OCSPatchers.Patchers
             var waterAvoidance = greenlander.Values["water avoidance"];
 
             return ((float)waterAvoidance, (float)pathfindAcceleration, referenceData.Header.Version);
+        }
+
+        void Error(string message)
+        {
+            Console.WriteLine(message);
+            Console.ReadKey();
+            Environment.Exit(1);
         }
     }
 }
