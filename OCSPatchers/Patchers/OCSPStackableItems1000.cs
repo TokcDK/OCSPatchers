@@ -12,7 +12,7 @@ namespace OCSPatchers.Patchers
 {
     internal class OCSPStackableItems1000 : OCSPatcherBase
     {
-        public override string PatcherName => throw new NotImplementedException();
+        public override string PatcherName => "Stacked items 1000";
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {

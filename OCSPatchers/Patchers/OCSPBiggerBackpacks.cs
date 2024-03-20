@@ -12,7 +12,7 @@ namespace OCSPatchers.Patchers
 {
     internal class OCSPBiggerBackpacks : OCSPatcherBase
     {
-        public override string PatcherName => throw new NotImplementedException();
+        public override string PatcherName => "Bigger backpacks";
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {

@@ -10,7 +10,7 @@ namespace OCSPatchers.Patchers
 {
     internal class OCSPatcherGeneral : OCSPatcherBase
     {
-        public override string PatcherName => "Generalpatcher";
+        public override string PatcherName => "General patcher";
 
         public override string[] ExcludedModNames => new string[]
         {

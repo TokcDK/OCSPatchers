@@ -1,4 +1,4 @@
-﻿OCSPatchers.Patch.Apply();
+﻿await OCSPatchers.Patch.Apply();
 
 //using OpenConstructionSet;
 //using OpenConstructionSet.Data;

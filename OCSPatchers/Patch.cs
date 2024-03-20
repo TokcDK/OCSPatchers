@@ -13,7 +13,7 @@ namespace OCSPatchers
         const string ModName = "OCSPatch";
         const string ModFileName = ModName + ".mod";
 
-        internal static async void Apply()
+        internal static async Task Apply()
         {
             IInstallation? installation = await SelectInstallation();
 
