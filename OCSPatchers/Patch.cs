@@ -72,16 +72,13 @@ namespace OCSPatchers
 
         static async Task<IModContext> BuildModContext(IInstallation? installation, List<string> baseMods, IOCSPatcher[] patchers, int version = 16)
         {
-            Console.WriteLine("1");
             // Build mod
             var header = new Header(version, "author", "merged patchers");
 
-            Console.WriteLine("2");
             foreach (var patcher in patchers) 
                 foreach (var referenceModName in patcher.ReferenceModNames) 
                     header.References.Add(referenceModName);
 
-            Console.WriteLine("3");
             header.Dependencies.AddRange(baseMods);
 
             var options = new ModContextOptions(ModFileName,
@@ -103,6 +100,7 @@ namespace OCSPatchers
                 ModName
             };
 
+            // fill excluded from patchers
             foreach (var patcher in patchers)
             {
                 foreach (var list in new[] { patcher.ReferenceModNames, patcher.ExcludedModNames })
@@ -123,15 +121,12 @@ namespace OCSPatchers
 
         static async Task<List<string>> ModsToPatch(IInstallation? installation, HashSet<string> excluded)
         {
-            Console.WriteLine("--");
             var list = await installation!.ReadEnabledModsAsync();
             var mods = new List<string>(list);
 
-            Console.WriteLine("--");
             // Don't patch ourselves or SCAR's mod
             foreach (var name in excluded) if(mods.Contains(name + ".mod")) mods.Remove(name + ".mod");
 
-            Console.WriteLine("--");
             if (mods.Count == 0)
             {
                 // No mods found to patch
@@ -139,7 +134,6 @@ namespace OCSPatchers
                 return new();
             }
 
-            Console.WriteLine("--");
             return mods;
         }
 
