@@ -38,7 +38,7 @@ namespace OCSPatchers.Patchers
             "1535133-Military craft.mod",
         };
 
-        public override void ApplyPatch(IModContext context, IInstallation installation)
+        public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
 
             var referenceCategoriesRefs = new Dictionary<int, Dictionary<string, HashSet<ModReference>>>();
@@ -108,6 +108,7 @@ namespace OCSPatchers.Patchers
                     }
                 }
             }
+            return Task.CompletedTask;
         }
 
         int GetVal2(ModItem race, string categoryName)

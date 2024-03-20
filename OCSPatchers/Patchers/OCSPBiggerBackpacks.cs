@@ -14,7 +14,7 @@ namespace OCSPatchers.Patchers
     {
         public override string PatcherName => throw new NotImplementedException();
 
-        public override void ApplyPatch(IModContext context, IInstallation installation)
+        public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
             // Bigger backpacks
             var backpacks = context.Items.OfType(ItemType.Container);
@@ -123,6 +123,7 @@ namespace OCSPatchers.Patchers
                 }
 
             }
+            return Task.CompletedTask;
         }
     }
 }

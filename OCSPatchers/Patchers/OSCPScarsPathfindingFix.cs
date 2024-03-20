@@ -17,7 +17,7 @@ namespace OCSPatchers.Patchers
 
         public override string[] ReferenceModNames => new[] { "SCAR's pathfinding fix.mod" };
 
-        public override async void ApplyPatch(IModContext context, IInstallation installation)
+        public override async Task ApplyPatch(IModContext context, IInstallation installation)
         {
             var (waterAvoidance, pathfindAcceleration, version) = await ReadScarsMod(installation);
 

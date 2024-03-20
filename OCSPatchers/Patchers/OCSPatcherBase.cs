@@ -14,6 +14,6 @@ namespace OCSPatchers.Patchers
         public virtual string[] ReferenceModNames { get; } = Array.Empty<string>();
         public virtual string[] ExcludedModNames { get; } = Array.Empty<string>();
 
-        public abstract void ApplyPatch(IModContext context, IInstallation installation);
+        public abstract Task ApplyPatch(IModContext context, IInstallation installation);
     }
 }

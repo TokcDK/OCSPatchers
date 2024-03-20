@@ -14,7 +14,7 @@ namespace OCSPatchers.Patchers
     {
         public override string PatcherName => throw new NotImplementedException();
 
-        public override void ApplyPatch(IModContext context, IInstallation installation)
+        public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
             var items = context.Items.OfType(ItemType.Item);
             foreach (var item in items)
@@ -27,6 +27,7 @@ namespace OCSPatchers.Patchers
                 Console.WriteLine("Updating " + item.Name);
                 item.Values["stackable"] = 1000;
             }
+            return Task.CompletedTask;
         }
     }
 }

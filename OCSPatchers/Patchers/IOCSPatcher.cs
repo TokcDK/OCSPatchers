@@ -14,6 +14,6 @@ namespace OCSPatchers.Patchers
         string[] ReferenceModNames { get; }
         string[] ExcludedModNames { get; }
 
-        void ApplyPatch(IModContext context, IInstallation installation);
+        Task ApplyPatch(IModContext context, IInstallation installation);
     }
 }

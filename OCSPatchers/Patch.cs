@@ -17,10 +17,13 @@ namespace OCSPatchers
         {
             IInstallation? installation = await SelectInstallation();
 
-            IOCSPatcher[] patchers = new IOCSPatcher[2]
+            IOCSPatcher[] patchers = new IOCSPatcher[5]
             {
                 new OCSPatcherGeneral(),
                 new OSCPScarsPathfindingFix(),
+                new OCSPAnimationModsMerged(),
+                new OCSPStackableItems1000(),
+                new OCSPBiggerBackpacks(),
             };
 
             patchers = FilterPatchersByReferencedMods(patchers, installation);
@@ -30,22 +33,24 @@ namespace OCSPatchers
             // getlist of excluded mod names where must be merged patch name, referenced and excluded names
             var excludedModNames = GetExcludedModNames(patchers);
 
-            Console.Write("Reading load order... ");
+            Console.WriteLine("Reading load order... ");
             var baseMods = await ModsToPatch(installation, excludedModNames);
 
-
+            Console.WriteLine("Build context... ");
             var context = await BuildModContext(installation, baseMods, patchers);
 
+            Console.WriteLine("Apply patchers... ");
             foreach (var patcher in patchers)
             {
-                patcher.ApplyPatch(context, installation!);
+                Console.WriteLine($"Apply {patcher.PatcherName}");
+                await patcher.ApplyPatch(context, installation!);
             }
 
-            Console.Write("Saving... ");
+            Console.WriteLine("Saving... ");
 
             await context.SaveAsync();
 
-            Console.Write("Adding patch to end of load order... ");
+            Console.WriteLine("Adding patch to end of load order... ");
 
             var enabledMods = (await installation!.ReadEnabledModsAsync()).ToList();
 
@@ -65,13 +70,16 @@ namespace OCSPatchers
 
         static async Task<IModContext> BuildModContext(IInstallation? installation, List<string> baseMods, IOCSPatcher[] patchers, int version = 16)
         {
+            Console.WriteLine("1");
             // Build mod
             var header = new Header(version, "author", "merged patchers");
-            
-            foreach(var patcher in patchers) 
+
+            Console.WriteLine("2");
+            foreach (var patcher in patchers) 
                 foreach (var referenceModName in patcher.ReferenceModNames) 
                     header.References.Add(referenceModName);
 
+            Console.WriteLine("3");
             header.Dependencies.AddRange(baseMods);
 
             var options = new ModContextOptions(ModFileName,
@@ -82,6 +90,7 @@ namespace OCSPatchers
                 //loadEnabledMods: ModLoadType.Active,
                 throwIfMissing: false);
 
+            Console.WriteLine("4");
             return await new ContextBuilder().BuildAsync(options);
         }
 
@@ -112,11 +121,15 @@ namespace OCSPatchers
 
         static async Task<List<string>> ModsToPatch(IInstallation? installation, HashSet<string> excluded)
         {
-            var mods = new List<string>(await installation!.ReadEnabledModsAsync());
+            Console.WriteLine("--");
+            var list = await installation!.ReadEnabledModsAsync();
+            var mods = new List<string>(list);
 
+            Console.WriteLine("--");
             // Don't patch ourselves or SCAR's mod
-            foreach (var name in excluded) mods.Remove(name + ".mod");
+            foreach (var name in excluded) if(mods.Contains(name + ".mod")) mods.Remove(name + ".mod");
 
+            Console.WriteLine("--");
             if (mods.Count == 0)
             {
                 // No mods found to patch
@@ -124,6 +137,7 @@ namespace OCSPatchers
                 return new();
             }
 
+            Console.WriteLine("--");
             return mods;
         }
 
