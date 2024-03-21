@@ -112,7 +112,7 @@ namespace OCSPatchers.Patchers
             int resultSize = size + extraSize;
             if (resultSize <= MAX_SIZE) return resultSize;
 
-            return MAX_SIZE;
+            return size;
         }
 
         //private void SetBackpackSquareSizeTo(int size, ModItem item)
