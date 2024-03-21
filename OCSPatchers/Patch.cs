@@ -17,14 +17,14 @@ namespace OCSPatchers
         {
             IInstallation? installation = await SelectInstallation();
 
-            IOCSPatcher[] patchers = new IOCSPatcher[1]
+            IOCSPatcher[] patchers = new IOCSPatcher[5]
             {
                 //new OCSPHolyNationRacismFix(),
 
-                //new OCSPatcherGeneral(),
-                //new OSCPScarsPathfindingFix(),
-                //new OCSPAnimationModsMerged(),
-                //new OCSPStackableItems1000(),
+                new OCSPatcherGeneral(),
+                new OSCPScarsPathfindingFix(),
+                new OCSPAnimationModsMerged(),
+                new OCSPStackableItems1000(),
                 new OCSPBiggerBackpacks(),
             };
 
