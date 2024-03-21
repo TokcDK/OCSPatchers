@@ -15,6 +15,9 @@ namespace OCSPatchers.Patchers
     {
         public override string PatcherName => "Bigger backpacks";
 
+        const string STORAGE_SIZE_HEIGHT_KEY = "storage size height";
+        const string STORAGE_SIZE_WIDTH_KEY = "storage size width";
+        const int MAX_SIZE = 30;
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
             // Bigger backpacks
@@ -23,9 +26,11 @@ namespace OCSPatchers.Patchers
             foreach (var item in backpacks)
             {
                 if (item.Name.StartsWith("@") || item.Name.StartsWith("_")) continue;
-                if (!item.Values.TryGetValue("slot", out var value)) continue;
-                if (value is not int v || v != 12) continue; // backpack
-                if (changed.Contains(item.StringId)) continue; // backpack
+                if (!item.Values.TryGetValue("slot", out var value)) continue; // have no slot
+                if (value is not int v || v != 12) continue; // is not backpack?
+                if (!item.Values.ContainsKey(STORAGE_SIZE_HEIGHT_KEY)) continue; // missing height
+                if (!item.Values.ContainsKey(STORAGE_SIZE_WIDTH_KEY)) continue; // missing width
+                if (changed.Contains(item.StringId)) continue; // already added
 
                 //Console.WriteLine("Updating " + item.Name);
 
@@ -42,78 +47,90 @@ namespace OCSPatchers.Patchers
                 //item.Values["combat speed mult"] = (float)1.0;
                 //item.Values["stealth mult"] = (float)1.0;
 
-                var height = (int)item.Values["storage size height"];
-                var width = (int)item.Values["storage size width"];
+                var height = (int)item.Values[STORAGE_SIZE_HEIGHT_KEY];
+                var width = (int)item.Values[STORAGE_SIZE_WIDTH_KEY];
 
                 changed.Add(item.StringId);
 
-                if (width < 8)
-                {
-                    if (width == height)
-                    {
-                        if (width == 3)
-                        {
-                            SetBackpackSquareSizeTo(5,item);
-                        }
-                        else if (width == 4)
-                        {
-                            SetBackpackSquareSizeTo(6, item);
-                        }
-                        else if (width == 5)
-                        {
-                            SetBackpackSquareSizeTo(7, item);
-                        }
-                        else if (width == 6)
-                        {
-                            SetBackpackSquareSizeTo(8, item);
-                        }
-                    }
-                }
-                else if (width == 8)
-                {
-                    SetBackpackSquareSizeTo(12, item);
-                }
-                else if (width == 10)
-                {
-                    SetBackpackSquareSizeTo(16, item);
-                }
-                else if (width == 12)
-                {
-                    ResizeWidthToHeightOr(item, width, height, 20);
-                }
-                else if (width > 30)
-                {
-                    // do nothing
-                }
-                else if (width > 20)
-                {
-                    ResizeWidthToHeightOr(item, width, height, 30);
-                }
-                else if (width > 12)
-                {
-                    ResizeWidthToHeightOr(item, width, height, 24);
-                }
+                item.Values[STORAGE_SIZE_HEIGHT_KEY] = GetRoundSize(height);
+                item.Values[STORAGE_SIZE_WIDTH_KEY] = GetRoundSize(width);
+
+                //if (width < 8)
+                //{
+                //    if (width == height)
+                //    {
+                //        if (width == 3)
+                //        {
+                //            SetBackpackSquareSizeTo(5,item);
+                //        }
+                //        else if (width == 4)
+                //        {
+                //            SetBackpackSquareSizeTo(6, item);
+                //        }
+                //        else if (width == 5)
+                //        {
+                //            SetBackpackSquareSizeTo(7, item);
+                //        }
+                //        else if (width == 6)
+                //        {
+                //            SetBackpackSquareSizeTo(8, item);
+                //        }
+                //    }
+                //}
+                //else if (width == 8)
+                //{
+                //    SetBackpackSquareSizeTo(12, item);
+                //}
+                //else if (width == 10)
+                //{
+                //    SetBackpackSquareSizeTo(16, item);
+                //}
+                //else if (width == 12)
+                //{
+                //    ResizeWidthToHeightOr(item, width, height, 20);
+                //}
+                //else if (width > 30)
+                //{
+                //    // do nothing
+                //}
+                //else if (width > 20)
+                //{
+                //    ResizeWidthToHeightOr(item, width, height, 30);
+                //}
+                //else if (width > 12)
+                //{
+                //    ResizeWidthToHeightOr(item, width, height, 24);
+                //}
 
             }
             return Task.CompletedTask;
         }
 
-        private void SetBackpackSquareSizeTo(int size, ModItem item)
+        private int GetRoundSize(int size)
         {
-            item.Values["storage size height"] = size;
-            item.Values["storage size width"] = size;
+            int extraSize = (int)Math.Round(size * 0.5);
+            int resultSize = size + extraSize;
+            if (resultSize <= MAX_SIZE) return resultSize;
+
+            return MAX_SIZE;
         }
 
-        void ResizeWidthToHeightOr(ModItem item, int width, int height, int size)
-        {
-            if (width < height)
-            {
-                item.Values["storage size width"] = height;
-            }
-            else
-            {
-                SetBackpackSquareSizeTo(size, item);
-            }
-        }
+        //private void SetBackpackSquareSizeTo(int size, ModItem item)
+        //{
+        //    item.Values[STORAGE_SIZE_HEIGHT_KEY] = size;
+        //    item.Values[STORAGE_SIZE_WIDTH_KEY] = size;
+        //}
+
+        //void ResizeWidthToHeightOr(ModItem item, int width, int height, int size)
+        //{
+        //    if (width < height)
+        //    {
+        //        item.Values[STORAGE_SIZE_WIDTH_KEY] = height;
+        //    }
+        //    else
+        //    {
+        //        SetBackpackSquareSizeTo(size, item);
+        //    }
+        //}
     }
 }
