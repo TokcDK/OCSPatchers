@@ -1,10 +1,9 @@
-﻿using OpenConstructionSet;
+﻿using OCSPatchers.Patchers;
+using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
-using OpenConstructionSet.Installations;
-using OCSPatchers.Patchers;
 
 namespace OCSPatchers
 {
@@ -37,7 +36,7 @@ namespace OCSPatchers
 
             //remove patch file, ocs reading it and i get already modified recodrs instead of mods
             string patchModFileName = Path.Combine(installation!.Mods.Path, ModName, ModFileName);
-            if(File.Exists(patchModFileName)) File.Delete(patchModFileName);
+            if (File.Exists(patchModFileName)) File.Delete(patchModFileName);
 
             Console.WriteLine("Reading load order... ");
             var baseMods = await ModsToPatch(installation, excludedModNames);
@@ -69,7 +68,7 @@ namespace OCSPatchers
 
         private static IOCSPatcher[] FilterPatchersByReferencedMods(IOCSPatcher[] patchers, IInstallation? installation)
         {
-            return patchers.Where(patcher => 
+            return patchers.Where(patcher =>
             !(patcher.ReferenceModNames.Any(referenceModName => !installation!.Mods.TryFind(referenceModName, out var _))) // exclure patchers where any referenced mod name is missing in load order
             ).ToArray();
         }
@@ -79,8 +78,8 @@ namespace OCSPatchers
             // Build mod
             var header = new Header(version, "author", "merged patchers");
 
-            foreach (var patcher in patchers) 
-                foreach (var referenceModName in patcher.ReferenceModNames) 
+            foreach (var patcher in patchers)
+                foreach (var referenceModName in patcher.ReferenceModNames)
                     header.References.Add(referenceModName);
 
             header.Dependencies.AddRange(baseMods);
@@ -128,7 +127,7 @@ namespace OCSPatchers
             var mods = new List<string>(list);
 
             // Don't patch ourselves or SCAR's mod
-            foreach (var name in excluded) if(mods.Contains(name + ".mod")) mods.Remove(name + ".mod");
+            foreach (var name in excluded) if (mods.Contains(name + ".mod")) mods.Remove(name + ".mod");
 
             if (mods.Count == 0)
             {
