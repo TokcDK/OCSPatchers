@@ -16,7 +16,7 @@ namespace OCSPatchers
         {
             IInstallation? installation = await SelectInstallation();
 
-            IOCSPatcher[] patchers = new IOCSPatcher[5]
+            IOCSPatcher[] patchers = new IOCSPatcher[6]
             {
                 //new OCSPHolyNationRacismFix(),
 
@@ -25,6 +25,7 @@ namespace OCSPatchers
                 new OCSPAnimationModsMerged(),
                 new OCSPStackableItems1000(),
                 new OCSPBiggerBackpacks(),
+                new OCSPHubGenesisOwnTheHubCopySquads(),
             };
 
             patchers = FilterPatchersByReferencedMods(patchers, installation);
