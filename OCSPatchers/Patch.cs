@@ -16,16 +16,15 @@ namespace OCSPatchers
         {
             IInstallation? installation = await SelectInstallation();
 
-            IOCSPatcher[] patchers = new IOCSPatcher[6]
+            IOCSPatcher[] patchers = new IOCSPatcher[]
             {
-                //new OCSPHolyNationRacismFix(),
-
                 new OCSPatcherGeneral(),
                 new OSCPScarsPathfindingFix(),
                 new OCSPAnimationModsMerged(),
                 new OCSPStackableItems1000(),
                 new OCSPBiggerBackpacks(),
                 new OCSPHubGenesisOwnTheHubCopySquads(),
+                new OCSPFoodStoragesAddMoreFoods(),
             };
 
             patchers = FilterPatchersByReferencedMods(patchers, installation);
