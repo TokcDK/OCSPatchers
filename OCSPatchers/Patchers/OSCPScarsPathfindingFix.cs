@@ -21,7 +21,7 @@ namespace OCSPatchers.Patchers
         {
             var (waterAvoidance, pathfindAcceleration, version) = await ReadScarsMod(installation);
 
-            var races = context.Items.OfType(ItemType.Race);
+            var races = context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted());
             foreach (var race in races)
             {
                 // Scar pathfinding fix

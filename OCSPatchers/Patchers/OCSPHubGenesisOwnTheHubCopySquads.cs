@@ -35,7 +35,11 @@ namespace OCSPatchers.Patchers
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
             // get all the Hub instances
-            var hubWorldStateInstances = context.Items.OfType(ItemType.Town).Where(i => _hubIds.Contains(i.StringId)).ToArray();
+            var hubWorldStateInstances = context.Items
+                .OfType(ItemType.Town)
+                .Where(i => !i.IsDeleted())
+                .Where(i => _hubIds.Contains(i.StringId))
+                .ToArray();
 
             // set lists to fill
             var theHubSquads = new Dictionary<string, OpenConstructionSet.Mods.ModReference>();

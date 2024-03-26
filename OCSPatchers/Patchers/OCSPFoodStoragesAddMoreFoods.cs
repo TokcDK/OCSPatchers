@@ -13,7 +13,7 @@ namespace OCSPatchers.Patchers
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
             // Bigger backpacks
-            var storages = context.Items.OfType(ItemType.Building);
+            var storages = context.Items.OfType(ItemType.Building).Where(i => !i.IsDeleted());
             HashSet<ModItem> foodStorages = new();
             foreach (var item in storages)
             {
@@ -33,7 +33,7 @@ namespace OCSPatchers.Patchers
 
             // get ass food items
             HashSet<string> foodItems = new();
-            foreach (var item in context.Items)
+            foreach (var item in context.Items.Where(i => !i.IsDeleted()))
             {
                 if (item.Name.StartsWith('_')) continue;
                 if (item.Name.StartsWith('@')) continue;

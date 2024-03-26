@@ -43,7 +43,7 @@ namespace OCSPatchers.Patchers
 
             var referenceCategoriesRefs = new Dictionary<int, Dictionary<string, HashSet<ModReference>>>();
 
-            var races = context.Items.OfType(ItemType.Race);
+            var races = context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted());
             foreach (var race in races)
             {
                 // Animation mods merge

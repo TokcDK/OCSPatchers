@@ -15,7 +15,7 @@ namespace OCSPatchers.Patchers
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
             // Bigger backpacks
-            var backpacks = context.Items.OfType(ItemType.Container);
+            var backpacks = context.Items.OfType(ItemType.Container).Where(i => !i.IsDeleted());
             HashSet<string> changed = new();
             foreach (var item in backpacks)
             {

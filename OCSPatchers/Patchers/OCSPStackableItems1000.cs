@@ -17,12 +17,12 @@ namespace OCSPatchers.Patchers
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
-            var items = context.Items.OfType(ItemType.Item);
+            var items = context.Items.OfType(ItemType.Item).Where(i => !i.IsDeleted());
             foreach (var item in items)
             {
                 TryParseAsStackableItem(item);
             }
-            foreach (var item in context.Items.OfType(ItemType.Building))
+            foreach (var item in context.Items.OfType(ItemType.Building).Where(i => !i.IsDeleted()))
             {
                 TryParseAsStackingStorage(item);
             }
