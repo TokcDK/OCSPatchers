@@ -20,20 +20,23 @@ namespace OCSPatchers.Patchers
             var items = context.Items.OfType(ItemType.Item);
             foreach (var item in items)
             {
-                if (!CheckAsItem(item)) 
-                    CheckAsStorage(item);
+                TryParseAsStackableItem(item);
+            }
+            foreach (var item in context.Items.OfType(ItemType.Building))
+            {
+                TryParseAsStackingStorage(item);
             }
             return Task.CompletedTask;
         }
 
-        private void CheckAsStorage(ModItem item)
+        private void TryParseAsStackingStorage(ModItem item)
         {
             if (!item.Values.ContainsKey("stackable bonus mult")) return;
 
             item.Values["stackable bonus mult"] = 1000;
         }
 
-        private bool CheckAsItem(ModItem item)
+        private bool TryParseAsStackableItem(ModItem item)
         {
             if (!item.Values.TryGetValue("stackable", out var value)) return false;
             if (!item.Values.TryGetValue("slot", out var slotValue)) return false;
