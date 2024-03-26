@@ -47,7 +47,9 @@ namespace OCSPatchers.Patchers
 
         private int GetRoundSize(int size)
         {
-            return 30;
+            return size < 30 ? 30 : size;
+
+            if (size >= MAX_SIZE) return size;
 
             int extraSize = (int)Math.Round(size * 0.5);
             int resultSize = size + extraSize;
