@@ -20,6 +20,7 @@ namespace OCSPatchers
             {
                 new OCSPatcherGeneral(),
                 new OSCPScarsPathfindingFix(),
+                new OSCPNPCEnjoysMoreShopping(),
                 new OCSPAnimationModsMerged(),
                 new OCSPStackableItems1000(),
                 new OCSPBiggerBackpacks(),
