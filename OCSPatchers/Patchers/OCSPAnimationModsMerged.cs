@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,10 +15,9 @@ namespace OCSPatchers.Patchers
 {
     internal class OCSPAnimationModsMerged : OCSPatcherBase
     {
-        public override string PatcherName => "Animations mods merge";
+        public override string PatcherName => "Animations hairs merge";
 
-
-        readonly Dictionary<string, int> _raceIDMod = new Dictionary<string, int>()
+        readonly Dictionary<string, int> _raceIDOverrides = new Dictionary<string, int>()
         {
             // 2b has human appearance
             {"10-2B.mod",0 },
@@ -38,77 +38,103 @@ namespace OCSPatchers.Patchers
             "1535133-Military craft.mod",
         };
 
+        const string SOUNDS_VALUE_NAME = "sounds";
+        const string HAIRS_REFERENCE_CATEGORY_NAME = "hairs";
+        const string HAIR_COLORS_REFERENCE_CATEGORY_NAME = "hair colors";
+        const string ANIMATIONS_REFERENCE_CATEGORY_NAME = "animation files";
+        readonly List<string> partKinds = new() { HAIRS_REFERENCE_CATEGORY_NAME, HAIR_COLORS_REFERENCE_CATEGORY_NAME, ANIMATIONS_REFERENCE_CATEGORY_NAME };
+
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
+            var referenceCategoriesSharingRecordsBySondID = new Dictionary<int, Dictionary<string, HashSet<ModReference>>>();
 
-            var referenceCategoriesRefs = new Dictionary<int, Dictionary<string, HashSet<ModReference>>>();
-
-            var races = context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted());
-            foreach (var race in races)
+            foreach (var race in context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted()))
             {
                 // Animation mods merge
-                if (race.Values.TryGetValue("male mesh", out var meshValue)
-                    && meshValue is FileValue meshFile
-                    && !string.IsNullOrEmpty(meshFile.Path)
-                    && !meshFile.Path.Contains(@"\animal\")
-                    )
+                if (IsAnimal(race)) continue;
+
+                // add some base animatio ids?
+                if (race.ReferenceCategories.ContainsKey(ANIMATIONS_REFERENCE_CATEGORY_NAME)) 
+                    race.ReferenceCategories.Add(ANIMATIONS_REFERENCE_CATEGORY_NAME);
+                var animFiles = race.ReferenceCategories[ANIMATIONS_REFERENCE_CATEGORY_NAME];
+                foreach (var animRef in _animStrIDs)
                 {
-                    //Console.WriteLine("Updating " + race.Name);
-                    if (!race.ReferenceCategories.ContainsKey("animation files")) race.ReferenceCategories.Add("animation files");
+                    if (!animFiles.References.ContainsKey(animRef)) animFiles.References.Add(animRef);
+                }
 
-                    var animFiles = race.ReferenceCategories["animation files"];
-                    foreach (var animRef in _animStrIDs)
+                // hairs beards heads animations GET by sounds value
+                if (!TryGetSoundsID(race, out int soundsID)) continue;
+
+                referenceCategoriesSharingRecordsBySondID.TryAdd(soundsID, new());
+                var parent = referenceCategoriesSharingRecordsBySondID[soundsID];
+
+                foreach (var propertyName in partKinds)
+                {
+                    if (!race.ReferenceCategories.ContainsKey(propertyName)) continue;
+
+                    parent.TryAdd(propertyName, new());
+
+                    var propCat = parent[propertyName];
+                    var propRefs = race.ReferenceCategories[propertyName].References;
+                    foreach (var propref in propRefs)
                     {
-                        if (!animFiles.References.ContainsKey(animRef)) animFiles.References.Add(animRef);
-                    }
-
-                    // hairs beards heads animations GET by sounds value
-
-                    if (!race.Values.ContainsKey("sounds")) continue;
-                    if (race.Values["sounds"] is not int soundsID) continue;
-                    soundsID = getRaceSoundsID(race, soundsID);
-                    referenceCategoriesRefs.TryAdd(soundsID, new());
-                    var parent = referenceCategoriesRefs[soundsID];
-
-                    foreach (var propertyName in new[] { "hair colors", "hairs"/*, "heads female", "heads male"*/, "animation files" })
-                    {
-                        if (!race.ReferenceCategories.ContainsKey(propertyName)) continue;
-
-                        parent.TryAdd(propertyName, new());
-
-                        var propCat = parent[propertyName];
-                        var propRefs = race.ReferenceCategories[propertyName].References;
-                        foreach (var propref in propRefs)
-                        {
-                            if (!propCat.Contains(propref)) propCat.Add(propref);
-                        }
+                        if (!propCat.Contains(propref)) propCat.Add(propref);
                     }
                 }
             }
 
             // hairs beards heads animations ADD by sounds value
-            foreach (var race in races)
+            foreach (var race in context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted()))
             {
-                if (!race.Values.ContainsKey("sounds")) continue;
-                if (race.Values["sounds"] is not int soundsID) continue;
-                soundsID = getRaceSoundsID(race, soundsID);
-                if (!referenceCategoriesRefs.ContainsKey(soundsID)) continue;
+                if (!TryGetSoundsID(race, out int soundsID)) continue;
 
-                var itemsBySoundsID = referenceCategoriesRefs[soundsID];
-                foreach (var CategoryReferences in itemsBySoundsID)
+                if (!referenceCategoriesSharingRecordsBySondID.ContainsKey(soundsID)) continue;
+
+                if (IsAnimal(race)) continue;
+
+                var itemsBySoundsID = referenceCategoriesSharingRecordsBySondID[soundsID];
+                foreach (var categoryReferences in itemsBySoundsID)
                 {
-                    if (!race.ReferenceCategories.ContainsKey(CategoryReferences.Key)) race.ReferenceCategories.Add(CategoryReferences.Key);
+                    if (!race.ReferenceCategories.ContainsKey(categoryReferences.Key)) race.ReferenceCategories.Add(categoryReferences.Key);
 
-                    var refList = race.ReferenceCategories[CategoryReferences.Key].References;
-                    foreach (var reference in CategoryReferences.Value)
+                    var refList = race.ReferenceCategories[categoryReferences.Key].References;
+                    //if (refList.Count < 2) continue; // breaking patch file!! ???
+
+                    foreach (var reference in categoryReferences.Value)
                     {
-                        if (!IsValidToAdd(race, reference, CategoryReferences.Key) || refList.ContainsKey(reference.TargetId)) continue;
+                        if (!IsValidToAdd(race, reference, categoryReferences.Key) 
+                            || refList.ContainsKey(reference.TargetId)) continue;
 
-                        refList.Add(reference.TargetId, GetVal0(race, CategoryReferences.Key), GetVal1(race, CategoryReferences.Key), GetVal2(race, CategoryReferences.Key));
+                        refList.Add(reference.TargetId, GetVal0(race, categoryReferences.Key), GetVal1(race, categoryReferences.Key), GetVal2(race, categoryReferences.Key));
                     }
                 }
             }
             return Task.CompletedTask;
+        }
+
+        private bool TryGetSoundsID(ModItem race, out int soundsID)
+        {
+            soundsID = -1;
+
+            if (!race.Values.ContainsKey(SOUNDS_VALUE_NAME)) return false;
+            if (race.Values[SOUNDS_VALUE_NAME] is not int sID) return false;
+            soundsID = getRaceSoundsID(race, sID);
+
+            return true;
+        }
+
+        private bool IsAnimal(ModItem race)
+        {
+            if (!race.Values.TryGetValue("male mesh", out var meshValue)
+                    || meshValue is not FileValue meshFile
+                    || string.IsNullOrEmpty(meshFile.Path)
+                    || meshFile.Path.Contains(@"\animal\") // exclude animal
+                    )
+            {
+                return true;
+            }
+
+            return false;
         }
 
         int GetVal2(ModItem race, string categoryName)
@@ -141,7 +167,7 @@ namespace OCSPatchers.Patchers
         /// </summary>
         int getRaceSoundsID(ModItem race, int inputSoundsID)
         {
-            if (_raceIDMod!.ContainsKey(race.StringId)) return _raceIDMod[race.StringId];
+            if (_raceIDOverrides!.ContainsKey(race.StringId)) return _raceIDOverrides[race.StringId];
 
             return inputSoundsID;
         }
