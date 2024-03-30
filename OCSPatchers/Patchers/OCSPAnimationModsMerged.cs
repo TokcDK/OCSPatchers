@@ -98,7 +98,7 @@ namespace OCSPatchers.Patchers
                     if (!race.ReferenceCategories.ContainsKey(categoryReferences.Key)) race.ReferenceCategories.Add(categoryReferences.Key);
 
                     var refList = race.ReferenceCategories[categoryReferences.Key].References;
-                    //if (refList.Count < 2) continue; // breaking patch file!! ???
+                    //if (refList.Count < 2) continue; // breaking patch file!! ??? //the check must exclude races where only one unique hair
 
                     foreach (var reference in categoryReferences.Value)
                     {
