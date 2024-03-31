@@ -3,7 +3,7 @@ using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods.Context;
 
-namespace OCSPatchers.Patchers
+namespace OCSPatchers.Patchers.Tweaks
 {
     internal class OCSPBiggerBackpacks : OCSPatcherBase
     {

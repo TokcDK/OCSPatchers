@@ -4,7 +4,7 @@ using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 
-namespace OCSPatchers.Patchers
+namespace OCSPatchers.Patchers.ReferencesShare
 {
     internal abstract class OCSPReferencesShareBase : OCSPatcherBase
     {

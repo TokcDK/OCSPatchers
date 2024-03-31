@@ -10,7 +10,7 @@ using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 
-namespace OCSPatchers.Patchers
+namespace OCSPatchers.Patchers.WIP
 {
     internal class OCSPHolyNationRacismFix : OCSPatcherBase
     {
@@ -20,7 +20,7 @@ namespace OCSPatchers.Patchers
         {
             // get required dialog lines
 
-            var dialogues = context.Items.OfType(ItemType.DialogueLine).Where(d=>d.Key.EndsWith( "Dialogue.mod")).ToArray();
+            var dialogues = context.Items.OfType(ItemType.DialogueLine).Where(d => d.Key.EndsWith("Dialogue.mod")).ToArray();
             //var priestSeesRobotBeastDialogueLine = dialogues["Priest sees robot/ beast"];
             //var youStopDialogueLine = dialogues["You Stop!"];
 

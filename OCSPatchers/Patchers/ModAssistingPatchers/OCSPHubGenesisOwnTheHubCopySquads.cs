@@ -4,7 +4,7 @@ using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 
-namespace OCSPatchers.Patchers
+namespace OCSPatchers.Patchers.ModAssistingPatchers
 {
     // wip, require manual squads edits in FCS after
     internal class OCSPHubGenesisOwnTheHubCopySquads : OCSPatcherBase
@@ -42,9 +42,9 @@ namespace OCSPatchers.Patchers
                 .ToArray();
 
             // set lists to fill
-            var theHubSquads = new Dictionary<string, OpenConstructionSet.Mods.ModReference>();
-            var theHubResidents = new Dictionary<string, OpenConstructionSet.Mods.ModReference>();
-            var listsData = new (Dictionary<string, OpenConstructionSet.Mods.ModReference> List, string id)[]
+            var theHubSquads = new Dictionary<string, ModReference>();
+            var theHubResidents = new Dictionary<string, ModReference>();
+            var listsData = new (Dictionary<string, ModReference> List, string id)[]
                         {
                             (theHubSquads, "bar squads"),
                             //(theHubResidents, "residents"),
@@ -73,7 +73,7 @@ namespace OCSPatchers.Patchers
             return Task.CompletedTask;
         }
 
-        private void AddMissingSquadsResidentsToInstances(ref ModItem[] hubWorldStateInstances, (Dictionary<string, OpenConstructionSet.Mods.ModReference> List, string id)[] listsData)
+        private void AddMissingSquadsResidentsToInstances(ref ModItem[] hubWorldStateInstances, (Dictionary<string, ModReference> List, string id)[] listsData)
         {
             foreach (var theHubInstance in hubWorldStateInstances)
             {
@@ -93,7 +93,7 @@ namespace OCSPatchers.Patchers
             }
         }
 
-        private void FillOverallSquadsResidentsLists(ModItem[] hubWorldStateInstances, (Dictionary<string, OpenConstructionSet.Mods.ModReference> List, string id)[] listsData)
+        private void FillOverallSquadsResidentsLists(ModItem[] hubWorldStateInstances, (Dictionary<string, ModReference> List, string id)[] listsData)
         {
             foreach (var theHubInstance in hubWorldStateInstances)
             {

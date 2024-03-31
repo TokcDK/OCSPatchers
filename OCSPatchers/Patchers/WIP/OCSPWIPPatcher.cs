@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods.Context;
 
-namespace OCSPatchers.Patchers
+namespace OCSPatchers.Patchers.WIP
 {
     internal class OCSPWIPPatcher : OCSPatcherBase
     {
