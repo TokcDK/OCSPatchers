@@ -43,6 +43,8 @@ namespace OCSPatchers.Patchers.ReferencesShare
                 if (!TryGetSoundsID(raceModItem, out int soundsID)) continue;
                 if (!referenceCategoriesSharingRecordsBySoundIDData.ContainsKey(soundsID)) continue;
 
+                PreProcess(raceModItem, soundsID);
+
                 var categoriesBySoundsID = referenceCategoriesSharingRecordsBySoundIDData[soundsID];
                 foreach (var categoryReferencesData in categoriesBySoundsID)
                 {
@@ -64,6 +66,8 @@ namespace OCSPatchers.Patchers.ReferencesShare
             }
         }
 
+        protected virtual void PreProcess(ModItem raceModItem, int soundsID) { };
+
         private void GetData(IModContext context, Dictionary<int, Dictionary<string, Dictionary<string, ModReference>>> referenceCategoriesSharingRecordsBySoundIDData)
         {
             var races = context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted());
@@ -73,15 +77,6 @@ namespace OCSPatchers.Patchers.ReferencesShare
 
                 // get by sounds value
                 if (!TryGetSoundsID(raceModItem, out int soundsID)) continue;
-
-                //// add some base animatio ids?
-                //if (race.ReferenceCategories.ContainsKey(ANIMATIONS_REFERENCE_CATEGORY_NAME))
-                //    race.ReferenceCategories.Add(ANIMATIONS_REFERENCE_CATEGORY_NAME);
-                //var animFiles = race.ReferenceCategories[ANIMATIONS_REFERENCE_CATEGORY_NAME];
-                //foreach (var animRef in _animStrIDs)
-                //{
-                //    if (!animFiles.References.ContainsKey(animRef)) animFiles.References.Add(animRef);
-                //}
 
                 referenceCategoriesSharingRecordsBySoundIDData.TryAdd(soundsID, new());
                 var referencesCategoryBySoundIDData = referenceCategoriesSharingRecordsBySoundIDData[soundsID];

@@ -38,5 +38,18 @@ namespace OCSPatchers.Patchers.ReferencesShare
             //Military craft
             "1535133-Military craft.mod",
         };
+
+        protected override void PreProcess(ModItem raceModItem, int soundsID)
+        {
+            // add some base animatio ids?
+            if (raceModItem.ReferenceCategories.ContainsKey(ANIMATIONS_REFERENCE_CATEGORY_NAME))
+                raceModItem.ReferenceCategories.Add(ANIMATIONS_REFERENCE_CATEGORY_NAME);
+
+            var animFiles = raceModItem.ReferenceCategories[ANIMATIONS_REFERENCE_CATEGORY_NAME];
+            foreach (var animRef in _animStrIDs)
+            {
+                if (!animFiles.References.ContainsKey(animRef)) animFiles.References.Add(animRef);
+            }
+        }
     }
 }

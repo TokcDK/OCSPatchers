@@ -23,7 +23,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
 
         protected override bool IsValidReferences(ModReferenceCollection? references)
         {
-            return references != null && !references.IsReadOnly || references.Keys.Count() > 1;
+            return references != null && !references.IsReadOnly && references.Count > 1;
         }
     }
 }
