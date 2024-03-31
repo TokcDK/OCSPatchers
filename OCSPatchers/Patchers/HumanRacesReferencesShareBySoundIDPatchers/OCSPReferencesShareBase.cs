@@ -66,7 +66,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
             }
         }
 
-        protected virtual void PreProcess(ModItem raceModItem, int soundsID) { };
+        protected virtual void PreProcess(ModItem raceModItem, int soundsID) { }
 
         private void GetData(IModContext context, Dictionary<int, Dictionary<string, Dictionary<string, ModReference>>> referenceCategoriesSharingRecordsBySoundIDData)
         {
