@@ -20,6 +20,11 @@ namespace OCSPatchers.Patchers.ReferencesShare
         const string ANIMATIONS_REFERENCE_CATEGORY_NAME = "animation files";
         protected override List<string> ReferenceCategoryNames => new() { ANIMATIONS_REFERENCE_CATEGORY_NAME };
 
+        protected override List<string> ExcludedToShareReferenceIDs => new List<string>() 
+        { 
+            "5008210-The Matrix Trinity!.mod" // unique trinity recruit animations
+        };
+
         // Get all races where editor limits are set i.e. it is not an animal race
         readonly List<string> _animStrIDs = new List<string>()
         {

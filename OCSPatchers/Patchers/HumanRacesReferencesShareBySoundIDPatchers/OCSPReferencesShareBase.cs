@@ -1,4 +1,5 @@
-﻿using OpenConstructionSet;
+﻿using System.Linq;
+using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
@@ -17,6 +18,8 @@ namespace OCSPatchers.Patchers.ReferencesShare
 
         const string SOUNDS_VALUE_NAME = "sounds";
         protected abstract List<string> ReferenceCategoryNames { get; }
+        protected virtual List<string> ExcludedToShareReferenceIDs { get; } = new List<string>();
+        protected virtual bool IsValidReferences(ModReferenceCollection? references) { return true; }
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
@@ -47,6 +50,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
                     //if (!raceModItem.ReferenceCategories.ContainsKey(categoryReferences.Key)) raceModItem.ReferenceCategories.Add(categoryReferences.Key);
 
                     var categoryReferences = raceModItem.ReferenceCategories[categoryReferencesData.Key].References;
+                    if (!IsValidReferences(categoryReferences)) continue;
                     //if (refList.Count < 2) continue; // breaking patch file!! ??? //the check must exclude races where only one unique hair
 
                     foreach (var modReference in categoryReferencesData.Value)
@@ -54,7 +58,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
                         if (!IsValidToAdd(raceModItem, modReference.Value, categoryReferencesData.Key)) continue;
                         if (categoryReferences.ContainsKey(modReference.Value.TargetId)) continue;
 
-                        categoryReferences.Add(modReference.Value);
+                        categoryReferences.Add(new ModReference(modReference.Value));
                     }
                 }
             }
@@ -145,7 +149,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
             //    return false;
             //}
 
-            return true;
+            return !ExcludedToShareReferenceIDs.Contains(reference.TargetId);
         }
 
         /// <summary>

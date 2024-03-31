@@ -1,4 +1,7 @@
 ﻿using OCSPatchers.Patchers;
+using OCSPatchers.Patchers.ModAssistingPatchers;
+using OCSPatchers.Patchers.ReferencesShare;
+using OCSPatchers.Patchers.Tweaks;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;

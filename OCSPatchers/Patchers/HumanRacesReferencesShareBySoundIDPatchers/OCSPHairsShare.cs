@@ -20,5 +20,10 @@ namespace OCSPatchers.Patchers.ReferencesShare
         const string HAIRS_REFERENCE_CATEGORY_NAME = "hairs";
         const string HAIR_COLORS_REFERENCE_CATEGORY_NAME = "hair colors";
         protected override List<string> ReferenceCategoryNames => new() { HAIRS_REFERENCE_CATEGORY_NAME, HAIR_COLORS_REFERENCE_CATEGORY_NAME };
+
+        protected override bool IsValidReferences(ModReferenceCollection? references)
+        {
+            return references != null && !references.IsReadOnly || references.Keys.Count() > 1;
+        }
     }
 }
