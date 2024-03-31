@@ -13,10 +13,8 @@ using OpenConstructionSet.Mods.Context;
 
 namespace OCSPatchers.Patchers
 {
-    internal class OCSPAnimationModsMerged : OCSPatcherBase
+    internal abstract class OCSPReferencesShareBase : OCSPatcherBase
     {
-        public override string PatcherName => "Animations hairs merge";
-
         readonly Dictionary<string, int> _raceIDOverrides = new Dictionary<string, int>()
         {
             // 2b has human appearance
@@ -24,61 +22,43 @@ namespace OCSPatchers.Patchers
             {"76-2B.mod",0 }
         };
 
-        // Get all races where editor limits are set i.e. it is not an animal race
-        readonly List<string> _animStrIDs = new List<string>()
-        {
-            //Animations Overhaul Crafting
-            "1535098-AnimationOverhaul.mod",
-            "1535113-AnimationOverhaul.mod",
-            //Great Anims
-            "10-Great Anims Mod.mod",
-            //More Combat Animations
-            "1535143-More Combat Animation.mod",
-            //Military craft
-            "1535133-Military craft.mod",
-        };
-
         const string SOUNDS_VALUE_NAME = "sounds";
-        const string HAIRS_REFERENCE_CATEGORY_NAME = "hairs";
-        const string HAIR_COLORS_REFERENCE_CATEGORY_NAME = "hair colors";
-        const string ANIMATIONS_REFERENCE_CATEGORY_NAME = "animation files";
-        readonly List<string> partKinds = new() { HAIRS_REFERENCE_CATEGORY_NAME, HAIR_COLORS_REFERENCE_CATEGORY_NAME, ANIMATIONS_REFERENCE_CATEGORY_NAME };
+        protected abstract List<string> ReferenceCategoryNames { get; }
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
-            var referenceCategoriesSharingRecordsBySondID = new Dictionary<int, Dictionary<string, HashSet<ModReference>>>();
+            Dictionary<int, Dictionary<string, HashSet<ModReference>>> referenceCategoriesSharingRecordsBySoundIDData = new();
 
-            foreach (var race in context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted()))
+            foreach (var raceModItem in context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted()))
             {
-                // Animation mods merge
-                if (IsAnimal(race)) continue;
+                if (IsAnimal(raceModItem)) continue;
 
-                // add some base animatio ids?
-                if (race.ReferenceCategories.ContainsKey(ANIMATIONS_REFERENCE_CATEGORY_NAME)) 
-                    race.ReferenceCategories.Add(ANIMATIONS_REFERENCE_CATEGORY_NAME);
-                var animFiles = race.ReferenceCategories[ANIMATIONS_REFERENCE_CATEGORY_NAME];
-                foreach (var animRef in _animStrIDs)
+                // get by sounds value
+                if (!TryGetSoundsID(raceModItem, out int soundsID)) continue;
+
+                //// add some base animatio ids?
+                //if (race.ReferenceCategories.ContainsKey(ANIMATIONS_REFERENCE_CATEGORY_NAME))
+                //    race.ReferenceCategories.Add(ANIMATIONS_REFERENCE_CATEGORY_NAME);
+                //var animFiles = race.ReferenceCategories[ANIMATIONS_REFERENCE_CATEGORY_NAME];
+                //foreach (var animRef in _animStrIDs)
+                //{
+                //    if (!animFiles.References.ContainsKey(animRef)) animFiles.References.Add(animRef);
+                //}
+
+                referenceCategoriesSharingRecordsBySoundIDData.TryAdd(soundsID, new());
+                var referencesCategoryBySoundIDData = referenceCategoriesSharingRecordsBySoundIDData[soundsID];
+
+                foreach (var referenceCategoryName in ReferenceCategoryNames)
                 {
-                    if (!animFiles.References.ContainsKey(animRef)) animFiles.References.Add(animRef);
-                }
+                    if (!raceModItem.ReferenceCategories.ContainsKey(referenceCategoryName)) continue;
 
-                // hairs beards heads animations GET by sounds value
-                if (!TryGetSoundsID(race, out int soundsID)) continue;
+                    referencesCategoryBySoundIDData.TryAdd(referenceCategoryName, new());
 
-                referenceCategoriesSharingRecordsBySondID.TryAdd(soundsID, new());
-                var parent = referenceCategoriesSharingRecordsBySondID[soundsID];
-
-                foreach (var propertyName in partKinds)
-                {
-                    if (!race.ReferenceCategories.ContainsKey(propertyName)) continue;
-
-                    parent.TryAdd(propertyName, new());
-
-                    var propCat = parent[propertyName];
-                    var propRefs = race.ReferenceCategories[propertyName].References;
-                    foreach (var propref in propRefs)
+                    var referencesByCategoryData = referencesCategoryBySoundIDData[referenceCategoryName];
+                    var raceCategoryReferences = raceModItem.ReferenceCategories[referenceCategoryName].References;
+                    foreach (var reference in raceCategoryReferences)
                     {
-                        if (!propCat.Contains(propref)) propCat.Add(propref);
+                        if (!referencesByCategoryData.Contains(reference)) referencesByCategoryData.Add(reference);
                     }
                 }
             }
@@ -88,21 +68,22 @@ namespace OCSPatchers.Patchers
             {
                 if (!TryGetSoundsID(race, out int soundsID)) continue;
 
-                if (!referenceCategoriesSharingRecordsBySondID.ContainsKey(soundsID)) continue;
+                if (!referenceCategoriesSharingRecordsBySoundIDData.ContainsKey(soundsID)) continue;
 
                 if (IsAnimal(race)) continue;
 
-                var itemsBySoundsID = referenceCategoriesSharingRecordsBySondID[soundsID];
+                var itemsBySoundsID = referenceCategoriesSharingRecordsBySoundIDData[soundsID];
                 foreach (var categoryReferences in itemsBySoundsID)
                 {
                     if (!race.ReferenceCategories.ContainsKey(categoryReferences.Key)) race.ReferenceCategories.Add(categoryReferences.Key);
 
                     var refList = race.ReferenceCategories[categoryReferences.Key].References;
                     //if (refList.Count < 2) continue; // breaking patch file!! ??? //the check must exclude races where only one unique hair
+                    //if (refList.Count < 2) continue; // breaking patch file!! ??? //the check must exclude races where only one unique hair
 
                     foreach (var reference in categoryReferences.Value)
                     {
-                        if (!IsValidToAdd(race, reference, categoryReferences.Key) 
+                        if (!IsValidToAdd(race, reference, categoryReferences.Key)
                             || refList.ContainsKey(reference.TargetId)) continue;
 
                         refList.Add(reference.TargetId, GetVal0(race, categoryReferences.Key), GetVal1(race, categoryReferences.Key), GetVal2(race, categoryReferences.Key));
@@ -111,6 +92,7 @@ namespace OCSPatchers.Patchers
             }
             return Task.CompletedTask;
         }
+
 
         private bool TryGetSoundsID(ModItem race, out int soundsID)
         {
