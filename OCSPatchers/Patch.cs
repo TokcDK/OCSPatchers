@@ -69,6 +69,9 @@ namespace OCSPatchers
             enabledMods.Add(ModFileName);
 
             await installation.WriteEnabledModsAsync(enabledMods);
+
+            Console.WriteLine("Finished!");
+            Console.ReadKey();
         }
 
         private static IOCSPatcher[] FilterPatchersByReferencedMods(IOCSPatcher[] patchers, IInstallation? installation)
