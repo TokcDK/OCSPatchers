@@ -42,7 +42,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
         protected override void PreProcess(ModItem raceModItem, int soundsID)
         {
             // add some base animatio ids?
-            if (raceModItem.ReferenceCategories.ContainsKey(ANIMATIONS_REFERENCE_CATEGORY_NAME))
+            if (!raceModItem.ReferenceCategories.ContainsKey(ANIMATIONS_REFERENCE_CATEGORY_NAME))
                 raceModItem.ReferenceCategories.Add(ANIMATIONS_REFERENCE_CATEGORY_NAME);
 
             var animFiles = raceModItem.ReferenceCategories[ANIMATIONS_REFERENCE_CATEGORY_NAME];
