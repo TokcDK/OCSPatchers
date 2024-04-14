@@ -12,6 +12,7 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
         protected abstract string[] LimitInventoryItemIdsToCheck { get; }
         protected abstract int ItemFunctionNumToAdd { get; }
 
+        const string VALUE_NAME_HAS_INVENTORY = "has inventory";
         const string CATEGORY_NAME = "limit inventory";
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
@@ -21,14 +22,15 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
             HashSet<ModItem> SpecificItemStorages = new();
             foreach (var item in storages)
             {
+                if (!item.Values.ContainsKey(VALUE_NAME_HAS_INVENTORY)) continue;
+                if (item.Values[VALUE_NAME_HAS_INVENTORY] is not bool hasInventory) continue;
+                if (!hasInventory) continue;
+
                 if (!item.ReferenceCategories.ContainsKey(CATEGORY_NAME)) continue;
 
                 var limitInventoryRef = item.ReferenceCategories[CATEGORY_NAME].References;
 
-                foreach(var id in LimitInventoryItemIdsToCheck)
-                {
-                    if (!limitInventoryRef.ContainsKey(id)) continue;
-                }
+                if (!IsValidInventoryItems(limitInventoryRef)) continue;
 
                 if (SpecificItemStorages.Contains(item)) continue;
 
@@ -63,6 +65,11 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
             }
 
             return Task.CompletedTask;
+        }
+
+        private bool IsValidInventoryItems(ModReferenceCollection limitInventoryRef)
+        {
+            return !(LimitInventoryItemIdsToCheck.Any(id => !limitInventoryRef.ContainsKey(id)));
         }
     }
 }
