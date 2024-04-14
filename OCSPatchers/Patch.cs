@@ -27,7 +27,7 @@ namespace OCSPatchers
                 new OCSPAnimationsShare(),
                 new OCSPHairsShare(),
                 new OCSPStackableItems1000(),
-                new OCSPBiggerBackpacks(),
+                //new OCSPBiggerBackpacks(),
                 new OCSPHubGenesisOwnTheHubCopySquads(),
                 new OCSPFoodStoragesAddMoreFoods(),
             };
