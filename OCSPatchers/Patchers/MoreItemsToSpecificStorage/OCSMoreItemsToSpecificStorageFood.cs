@@ -17,7 +17,5 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
         };
 
         protected override int ItemFunctionNumToAdd => 3;
-
-        protected override string ValidItemContentName => "Food Items";
     }
 }

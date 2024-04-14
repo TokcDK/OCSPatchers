@@ -9,11 +9,9 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
 {
     internal abstract class OCSMoreItemsToSpecificStorageBase : OCSPatcherBase
     {
-        protected abstract string ValidItemContentName { get; }
         protected abstract string[] LimitInventoryItemIdsToCheck { get; }
         protected abstract int ItemFunctionNumToAdd { get; }
 
-        const string CONTENT_VALUE_NAME = "inventory content name";
         const string CATEGORY_NAME = "limit inventory";
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
@@ -23,8 +21,6 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
             HashSet<ModItem> SpecificItemStorages = new();
             foreach (var item in storages)
             {
-                if (!item.Values.TryGetValue(CONTENT_VALUE_NAME, out var value)) continue;
-                if (value is not string v || v != ValidItemContentName) continue;
                 if (!item.ReferenceCategories.ContainsKey(CATEGORY_NAME)) continue;
 
                 var limitInventoryRef = item.ReferenceCategories[CATEGORY_NAME].References;

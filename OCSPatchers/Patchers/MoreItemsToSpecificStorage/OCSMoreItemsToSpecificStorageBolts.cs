@@ -17,7 +17,5 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
         };
 
         protected override int ItemFunctionNumToAdd => 16;
-
-        protected override string ValidItemContentName => "Bolts";
     }
 }
