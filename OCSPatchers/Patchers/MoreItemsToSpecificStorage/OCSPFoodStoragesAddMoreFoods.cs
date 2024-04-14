@@ -4,7 +4,7 @@ using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 
-namespace OCSPatchers.Patchers
+namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
 {
     internal class OCSPFoodStoragesAddMoreFoods : OCSPatcherBase
     {
@@ -46,13 +46,13 @@ namespace OCSPatchers.Patchers
             }
 
             // add missing food items
-            foreach(var item in foodStorages)
+            foreach (var item in foodStorages)
             {
                 var limitInventoryRef = item.ReferenceCategories["limit inventory"].References;
 
-                foreach(var foodItem in foodItems)
+                foreach (var foodItem in foodItems)
                 {
-                    if(limitInventoryRef.ContainsKey(foodItem)) continue;
+                    if (limitInventoryRef.ContainsKey(foodItem)) continue;
 
                     limitInventoryRef.Add(new ModReference(foodItem));
                 }

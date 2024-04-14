@@ -1,5 +1,6 @@
 ﻿using OCSPatchers.Patchers;
 using OCSPatchers.Patchers.ModAssistingPatchers;
+using OCSPatchers.Patchers.MoreItemsToSpecificStorage;
 using OCSPatchers.Patchers.ReferencesShare;
 using OCSPatchers.Patchers.Tweaks;
 using OpenConstructionSet;
@@ -29,7 +30,8 @@ namespace OCSPatchers
                 new OCSPStackableItems1000(),
                 //new OCSPBiggerBackpacks(),
                 new OCSPHubGenesisOwnTheHubCopySquads(),
-                new OCSPFoodStoragesAddMoreFoods(),
+                new OCSMoreItemsToSpecificStorageFood(),
+                new OCSMoreItemsToSpecificStorageBolts(),
             };
 
             patchers = FilterPatchersByReferencedMods(patchers, installation);
