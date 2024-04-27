@@ -20,14 +20,18 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
 
         protected override bool IsValidItemSpecific(ModItem item)
         {
-            return _validNameKeywords.Any(i => item.Name.Contains(i));
+            return _validNameKeywords.Any(i => item.Name.Contains(i)) || _validIds.Contains(item.StringId);
         }
 
-        List<string> _validNameKeywords = new List<string>()
+        readonly List<string> _validNameKeywords = new List<string>()
         {
             "CPU",
             "ЦПУ",
             "роцессор",
+        };
+        readonly List<string> _validIds = new List<string>()
+        {
+            "43398-changes_otto.mod",
         };
     }
 }
