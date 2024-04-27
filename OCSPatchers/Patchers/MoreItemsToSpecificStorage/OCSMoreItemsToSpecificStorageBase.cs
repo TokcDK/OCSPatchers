@@ -45,6 +45,7 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
                 if (item.Name.StartsWith('@')) continue;
                 if (!item.Values.TryGetValue("item function", out var value)) continue;
                 if (value is not int v || v != ItemFunctionNumToAdd) continue;
+                if (!IsValidItemSpecific(item)) continue;
 
                 if (itemsToAdd.Contains(item.StringId)) continue;
 
@@ -66,6 +67,8 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
 
             return Task.CompletedTask;
         }
+
+        protected virtual bool IsValidItemSpecific(ModItem item) => true;
 
         private bool IsValidInventoryItems(ModReferenceCollection limitInventoryRef)
         {

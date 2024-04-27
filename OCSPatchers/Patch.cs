@@ -32,6 +32,7 @@ namespace OCSPatchers
                 new OCSPHubGenesisOwnTheHubCopySquads(),
                 new OCSMoreItemsToSpecificStorageFood(),
                 new OCSMoreItemsToSpecificStorageBolts(),
+                new OCSMoreItemsToSpecificStorageRobotParts(),
             };
 
             patchers = FilterPatchersByReferencedMods(patchers, installation);
