@@ -29,6 +29,7 @@ namespace OCSPatchers
                 new OCSPHairsShare(),
                 new OCSPStackableItems1000(),
                 //new OCSPBiggerBackpacks(),
+                //new OCSPEveryoneHasName(),
                 new OCSPHubGenesisOwnTheHubCopySquads(),
                 new OCSMoreItemsToSpecificStorageFood(),
                 new OCSMoreItemsToSpecificStorageBolts(),
