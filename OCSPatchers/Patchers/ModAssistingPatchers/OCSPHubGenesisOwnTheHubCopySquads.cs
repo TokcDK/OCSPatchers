@@ -27,9 +27,14 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
             "gamedata.base",
             "Dialogue.mod",
             "Newwworld.mod",
+            "rebirth.mod",
             "Own the Hub.mod",
             "Genesis.mod",
             "Buy the Hub - Genesis.mod",
+        };
+        readonly Dictionary<string, string> _stringIdsAddOnlyFor = new()
+        {
+            { "14-overall patch.mod", "owned" }, // id, string in name
         };
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
@@ -47,7 +52,7 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
             var listsData = new (Dictionary<string, ModReference> List, string id)[]
                         {
                             (theHubSquads, "bar squads"),
-                            //(theHubResidents, "residents"),
+                            (theHubResidents, "residents"),
                         };
 
             FillOverallSquadsResidentsLists(hubWorldStateInstances, listsData);
@@ -65,6 +70,16 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
                         if (refs.ContainsKey(reference.Key)) continue;
                         if (reference.Value.IsDeleted()) continue;
 
+                        if (_stringIdsAddOnlyFor.ContainsKey(reference.Key))
+                        {
+                            // skip when specific record must be added to specific town instance
+                            var str = _stringIdsAddOnlyFor[reference.Key];
+                            if (string.IsNullOrEmpty(str) || !theHubInstance.Name.Contains(str, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                continue;
+                            }
+                        }
+
                         refs.Add(new ModReference(reference.Value));
                     }
                 }
@@ -73,25 +88,25 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
             return Task.CompletedTask;
         }
 
-        private void AddMissingSquadsResidentsToInstances(ref ModItem[] hubWorldStateInstances, (Dictionary<string, ModReference> List, string id)[] listsData)
-        {
-            foreach (var theHubInstance in hubWorldStateInstances)
-            {
-                foreach (var listData in listsData)
-                {
-                    var refsGroup = theHubInstance.ReferenceCategories[listData.id];
-                    var refs = refsGroup.References;
+        //private void AddMissingSquadsResidentsToInstances(ref ModItem[] hubWorldStateInstances, (Dictionary<string, ModReference> List, string id)[] listsData)
+        //{
+        //    foreach (var theHubInstance in hubWorldStateInstances)
+        //    {
+        //        foreach (var listData in listsData)
+        //        {
+        //            var refsGroup = theHubInstance.ReferenceCategories[listData.id];
+        //            var refs = refsGroup.References;
 
-                    foreach (var reference in listData.List)
-                    {
-                        if (refs.ContainsKey(reference.Key)) continue;
-                        if (reference.Value.IsDeleted()) continue;
+        //            foreach (var reference in listData.List)
+        //            {
+        //                if (refs.ContainsKey(reference.Key)) continue;
+        //                if (reference.Value.IsDeleted()) continue;
 
-                        refs.Add(reference.Value);
-                    }
-                }
-            }
-        }
+        //                refs.Add(reference.Value);
+        //            }
+        //        }
+        //    }
+        //}
 
         private void FillOverallSquadsResidentsLists(ModItem[] hubWorldStateInstances, (Dictionary<string, ModReference> List, string id)[] listsData)
         {
