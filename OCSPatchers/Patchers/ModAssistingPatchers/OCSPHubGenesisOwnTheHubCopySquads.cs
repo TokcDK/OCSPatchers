@@ -43,7 +43,8 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
             var hubWorldStateInstances = context.Items
                 .OfType(ItemType.Town)
                 .Where(i => !i.IsDeleted())
-                .Where(i => _hubIds.Contains(i.StringId))
+                .Where(i => _hubIds.Contains(i.StringId) 
+                || i.Name.StartsWith("The Hub", StringComparison.InvariantCultureIgnoreCase))
                 .ToArray();
 
             // set lists to fill
