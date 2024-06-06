@@ -3,6 +3,7 @@ using OCSPatchers.Patchers.ModAssistingPatchers;
 using OCSPatchers.Patchers.MoreItemsToSpecificStorage;
 using OCSPatchers.Patchers.ReferencesShare;
 using OCSPatchers.Patchers.Tweaks;
+using OCSPatchers.Patchers.WIP;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
@@ -30,6 +31,7 @@ namespace OCSPatchers
                 new OCSPStackableItems1000(),
                 //new OCSPBiggerBackpacks(),
                 //new OCSPEveryoneHasName(),
+                new OCSPResetToAOMAnims(),
                 new OCSPHubGenesisOwnTheHubCopySquads(),
                 new OCSMoreItemsToSpecificStorageFood(),
                 new OCSMoreItemsToSpecificStorageBolts(),
