@@ -21,7 +21,7 @@ namespace OCSPatchers
         {
             IInstallation? installation = await SelectInstallation();
 
-            IOCSPatcher[] patchers = new IOCSPatcher[]
+            var patchers = new IOCSPatcher[]
             {
                 new OCSPatcherGeneral(),
                 new OSCPScarsPathfindingFix(),

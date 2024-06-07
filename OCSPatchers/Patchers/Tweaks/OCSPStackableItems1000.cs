@@ -33,7 +33,15 @@ namespace OCSPatchers.Patchers.Tweaks
         {
             if (!item.Values.ContainsKey("stackable bonus mult")) return;
 
-            item.Values["stackable bonus mult"] = 1000;
+            if (item.Values.ContainsKey("stackable bonus minimum"))
+            {
+                item.Values["stackable bonus minimum"] = 100;
+                item.Values["stackable bonus mult"] = 100;
+            }
+            else
+            {
+                item.Values["stackable bonus mult"] = 1000;
+            }
         }
 
         private bool TryParseAsStackableItem(ModItem item)
