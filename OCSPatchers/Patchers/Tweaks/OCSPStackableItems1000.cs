@@ -29,9 +29,9 @@ namespace OCSPatchers.Patchers.Tweaks
             return Task.CompletedTask;
         }
 
-        private void TryParseAsStackingStorage(ModItem item)
+        private bool TryParseAsStackingStorage(ModItem item)
         {
-            if (!item.Values.ContainsKey("stackable bonus mult")) return;
+            if (!item.Values.ContainsKey("stackable bonus mult")) return false;
 
             if (item.Values.ContainsKey("stackable bonus minimum"))
             {
@@ -42,10 +42,14 @@ namespace OCSPatchers.Patchers.Tweaks
             {
                 item.Values["stackable bonus mult"] = 1000;
             }
+
+            return true;
         }
 
         private bool TryParseAsStackableItem(ModItem item)
         {
+            if (TryParseAsStackingStorage(item)) return true;
+
             if (!item.Values.TryGetValue("stackable", out var value)) return false;
             if (!item.Values.TryGetValue("slot", out var slotValue)) return false;
             if (slotValue is not int i || i != 7) return false; // attach slot none
