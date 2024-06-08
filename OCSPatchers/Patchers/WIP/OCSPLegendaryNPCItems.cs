@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenConstructionSet;
+﻿using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
-using static OCSPatchers.Data.Enums;
 
 namespace OCSPatchers.Patchers.WIP
 {
@@ -18,11 +12,9 @@ namespace OCSPatchers.Patchers.WIP
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
-            var legendaryCharas = new Dictionary<string, ModItem>();
-
             foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate))
             {
-                TryAddLegendary(modItem, legendaryCharas);
+                TryAddLegendary(modItem, _legendaryCharas);
             }
 
             return Task.CompletedTask;
@@ -33,13 +25,13 @@ namespace OCSPatchers.Patchers.WIP
             if (modItem.ReferenceCategories.ContainsKey("choosefrom list")) return; // most likely already have legendary?
             if (modItem.ReferenceCategories.ContainsKey("squad")) return; // missing squad members?
 
-            if(!TryFillLegendary(modItem, legendaryCharas)) return;
+            if (!TryFillLegendary(modItem)) return;
 
             modItem.Values.Add("num random chars", 1);
             modItem.Values.Add("num random chars max", 1);
         }
 
-        private bool TryFillLegendary(ModItem modItem, Dictionary<string, ModItem> legendaryCharas)
+        private bool TryFillLegendary(ModItem modItem)
         {
             var listOfMembers = GetListOfValidMembers(modItem);
             modItem.ReferenceCategories.Add("choosefrom list");
@@ -47,7 +39,7 @@ namespace OCSPatchers.Patchers.WIP
             int addedLegs = 0;
             foreach (var chara in listOfMembers.Values)
             {
-                var legCharacter = GetLegendayCharacter(chara, legendaryCharas);
+                var legCharacter = GetLegendayCharacter(chara);
                 if (legCharacter == null) continue;
 
                 choosefromList.References.Add(legCharacter);
@@ -79,15 +71,60 @@ namespace OCSPatchers.Patchers.WIP
             return listOfMembers;
         }
 
-        private ModItem GetLegendayCharacter(ModItem chara, Dictionary<string, ModItem> legendaryCharas)
+        Dictionary<string, ModItem> _legendaryCharas = new();
+        private ModItem? GetLegendayCharacter(ModItem charaModItem)
         {
-            if (legendaryCharas.ContainsKey(chara.StringId)) return legendaryCharas[chara.StringId];
+            if (_legendaryCharas.ContainsKey(charaModItem.StringId)) return _legendaryCharas[charaModItem.StringId];
 
-            var legendaryChara = chara.DeepClone();
+            var legendaryChara = charaModItem.DeepClone();
 
             legendaryChara.Values["armour upgrade chance"] = 50;
 
+            AddLegendaryItemsVariants(legendaryChara);
+
             return legendaryChara;
+        }
+
+        private void AddLegendaryItemsVariants(ModItem legendaryChara)
+        {
+            var validWeapons = new Dictionary<string, ModReference>();
+            foreach (var weaponRef in legendaryChara.ReferenceCategories["weapons"].References)
+            {
+                if (weaponRef.Target == default) continue;
+                if (validWeapons.ContainsKey(weaponRef.TargetId)) continue;
+
+                validWeapons.Add(weaponRef.Target.StringId, weaponRef);
+            }
+
+            var newWeaponsList = new List<(string, int,int,int)>();
+            foreach (var weaponRef in validWeapons.Values)
+            {
+                var legendaryWeapon = GetLegendaryWeapon(weaponRef.Target);
+                newWeaponsList.Add((legendaryWeapon != default ? legendaryWeapon.StringId : weaponRef.TargetId, weaponRef.Value0, weaponRef.Value1, weaponRef.Value2));
+
+            }
+
+            if (newWeaponsList.Count == 0) return;
+
+            var refs = legendaryChara.ReferenceCategories["weapons"].References;
+            refs.Clear();
+            foreach (var weaponToAdd in newWeaponsList)
+            {
+                if (refs.ContainsKey(weaponToAdd.Item1)) continue;
+
+                refs.Add(new ModReference(weaponToAdd.Item1, weaponToAdd.Item2, weaponToAdd.Item3, weaponToAdd.Item4));
+            }
+        }
+
+        Dictionary<string, ModItem> _legendaryWeapons = new();
+        private ModItem? GetLegendaryWeapon(ModItem? weaponModItem)
+        {
+            return null;
+        }
+        Dictionary<string, ModItem> _legendaryArmors = new();
+        private ModItem? GetLegendaryArmor(ModItem? armorModItem)
+        {
+            return null;
         }
     }
 
