@@ -14,24 +14,24 @@ namespace OCSPatchers.Patchers.WIP
         {
             foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate))
             {
-                TryAddLegendary(modItem, _legendaryCharas);
+                TryAddLegendary(modItem, context);
             }
 
             return Task.CompletedTask;
         }
 
-        private void TryAddLegendary(ModItem modItem, Dictionary<string, ModItem> legendaryCharas)
+        private void TryAddLegendary(ModItem modItem, IModContext context)
         {
             if (modItem.ReferenceCategories.ContainsKey("choosefrom list")) return; // most likely already have legendary?
             if (modItem.ReferenceCategories.ContainsKey("squad")) return; // missing squad members?
 
-            if (!TryFillLegendary(modItem)) return;
+            if (!TryFillLegendary(modItem, context)) return;
 
             modItem.Values.Add("num random chars", 1);
             modItem.Values.Add("num random chars max", 1);
         }
 
-        private bool TryFillLegendary(ModItem modItem)
+        private bool TryFillLegendary(ModItem modItem, IModContext context)
         {
             var listOfMembers = GetListOfValidMembers(modItem);
             modItem.ReferenceCategories.Add("choosefrom list");
@@ -39,7 +39,7 @@ namespace OCSPatchers.Patchers.WIP
             int addedLegs = 0;
             foreach (var chara in listOfMembers.Values)
             {
-                var legCharacter = GetLegendayCharacter(chara);
+                var legCharacter = GetLegendayCharacter(chara, context);
                 if (legCharacter == null) continue;
 
                 choosefromList.References.Add(legCharacter);
@@ -71,8 +71,8 @@ namespace OCSPatchers.Patchers.WIP
             return listOfMembers;
         }
 
-        Dictionary<string, ModItem> _legendaryCharas = new();
-        private ModItem? GetLegendayCharacter(ModItem charaModItem)
+        readonly Dictionary<string, ModItem> _legendaryCharas = new();
+        private ModItem? GetLegendayCharacter(ModItem charaModItem, IModContext context)
         {
             if (_legendaryCharas.ContainsKey(charaModItem.StringId)) return _legendaryCharas[charaModItem.StringId];
 
@@ -80,12 +80,14 @@ namespace OCSPatchers.Patchers.WIP
 
             legendaryChara.Values["armour upgrade chance"] = 50;
 
-            AddLegendaryItemsVariants(legendaryChara);
+            AddLegendaryItemsVariants(legendaryChara, context);
+
+            // reset weapon manufacturer for the character here
 
             return legendaryChara;
         }
 
-        private void AddLegendaryItemsVariants(ModItem legendaryChara)
+        private void AddLegendaryItemsVariants(ModItem legendaryChara, IModContext context)
         {
             var validWeapons = new Dictionary<string, ModReference>();
             foreach (var weaponRef in legendaryChara.ReferenceCategories["weapons"].References)
@@ -99,9 +101,18 @@ namespace OCSPatchers.Patchers.WIP
             var newWeaponsList = new List<(string, int,int,int)>();
             foreach (var weaponRef in validWeapons.Values)
             {
-                var legendaryWeapon = GetLegendaryWeapon(weaponRef.Target);
-                newWeaponsList.Add((legendaryWeapon != default ? legendaryWeapon.StringId : weaponRef.TargetId, weaponRef.Value0, weaponRef.Value1, weaponRef.Value2));
-
+                var legendaryWeaponsList = GetLegendaryWeapons(weaponRef.Target, context);
+                if(legendaryWeaponsList.Count==0)
+                {
+                    newWeaponsList.Add((weaponRef.TargetId, weaponRef.Value0, weaponRef.Value1, weaponRef.Value2));
+                }
+                else
+                {
+                    foreach (var legendaryWeapon in legendaryWeaponsList)
+                    {
+                        newWeaponsList.Add((legendaryWeapon.StringId, weaponRef.Value0, weaponRef.Value1, weaponRef.Value2));
+                    }
+                }
             }
 
             if (newWeaponsList.Count == 0) return;
@@ -116,12 +127,31 @@ namespace OCSPatchers.Patchers.WIP
             }
         }
 
-        Dictionary<string, ModItem> _legendaryWeapons = new();
-        private ModItem? GetLegendaryWeapon(ModItem? weaponModItem)
+        readonly Dictionary<string, List<ModItem?>> _legendaryWeapons = new();
+        private List<ModItem?> GetLegendaryWeapons(ModItem? weaponModItem, IModContext context)
         {
+            if (_legendaryWeapons.ContainsKey(weaponModItem.StringId))
+            {
+                return _legendaryWeapons[weaponModItem.StringId];
+            }
+
+            foreach(var effectData in new ILegendaryItemEffect[]
+            {
+                new ShieldLegendaryItemEffect(),
+                new SharpLegendaryItemEffect(),
+            })
+            {
+                var weaponClone = weaponModItem.DeepClone();
+
+                if (!effectData.TryApplyEffect(weaponClone)) continue;
+
+                weaponClone.Values["Description"] = $"#000000Это оружие имеет легендарный эффект #ff0000『{effectData.Name}』#000000, со следующими эффектами.\r\n{effectData.Description}";
+            }
+
             return null;
         }
-        Dictionary<string, ModItem> _legendaryArmors = new();
+
+        readonly Dictionary<string, ModItem> _legendaryArmors = new();
         private ModItem? GetLegendaryArmor(ModItem? armorModItem)
         {
             return null;
