@@ -98,7 +98,11 @@ namespace OCSPatchers.Patchers.WIP
                 _itemFound = true;
             }
 
-            if (!modItem.ReferenceCategories.ContainsKey("dialogue package")) return;
+            if (!modItem.ReferenceCategories.ContainsKey("dialogue package"))
+            {
+                modItem.ReferenceCategories.Add("dialogue package");
+            }
+
             if (modItem.ReferenceCategories["dialogue package"].References.ContainsKey(_dialogStringId)) return;
 
             modItem.ReferenceCategories["dialogue package"].References.Add(_dialogStringId);
