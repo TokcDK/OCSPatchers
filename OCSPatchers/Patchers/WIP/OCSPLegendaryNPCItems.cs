@@ -142,6 +142,7 @@ namespace OCSPatchers.Patchers.WIP
             })
             {
                 var weaponClone = weaponModItem.DeepClone();
+                context.Items.AddFrom(weaponClone);
 
                 if (!effectData.TryApplyEffect(weaponClone)) continue;
 
