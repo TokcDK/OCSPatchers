@@ -11,6 +11,16 @@ namespace OCSPatchers.Data
 {
     internal static class Enums
     {
+        public enum ArmorGrades
+        {
+            GEAR_PROTOTYPE,
+            GEAR_CHEAP,
+            GEAR_STANDARD,
+            GEAR_GOOD,
+            GREAT_QUALITY,
+            GEAR_MASTER,
+        }
+
         public enum CharacterStats
         {
             STAT_NONE,
