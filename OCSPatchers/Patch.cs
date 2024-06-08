@@ -36,6 +36,8 @@ namespace OCSPatchers
                 new OCSMoreItemsToSpecificStorageFood(),
                 new OCSMoreItemsToSpecificStorageBolts(),
                 new OCSMoreItemsToSpecificStorageRobotParts(),
+
+                new OCSPRecrutablePrisonersDialogsAdd(),
             };
 
             patchers = FilterPatchersByReferencedMods(patchers, installation);
