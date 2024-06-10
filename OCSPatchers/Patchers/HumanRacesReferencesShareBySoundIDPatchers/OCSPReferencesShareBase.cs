@@ -9,12 +9,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
 {
     internal abstract class OCSPReferencesShareBase : OCSPatcherBase
     {
-        readonly Dictionary<string, int> _raceIDOverrides = new Dictionary<string, int>()
-        {
-            // 2b has human appearance
-            {"10-2B.mod",0 },
-            {"76-2B.mod",0 }
-        };
+        readonly Dictionary<string, int> _raceIDOverrides = new Dictionary<string, int>();
 
         const string SOUNDS_VALUE_NAME = "sounds";
         protected abstract List<string> ReferenceCategoryNames { get; }
@@ -35,6 +30,8 @@ namespace OCSPatchers.Patchers.ReferencesShare
 
         private void ShareReferencesFromData(IModContext context, Dictionary<int, Dictionary<string, Dictionary<string, ModReference>>> referenceCategoriesSharingRecordsBySoundIDData)
         {
+            EarlyPreProcess(context);
+
             // add by sounds value
             var races = context.Items.OfType(ItemType.Race).Where(i => !i.IsDeleted());
             foreach (var raceModItem in races)
@@ -66,6 +63,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
             }
         }
 
+        protected virtual void EarlyPreProcess(IModContext context) { }
         protected virtual void PreProcess(ModItem raceModItem, int soundsID) { }
 
         private void GetData(IModContext context, Dictionary<int, Dictionary<string, Dictionary<string, ModReference>>> referenceCategoriesSharingRecordsBySoundIDData)
@@ -137,7 +135,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
             return 0;
         }
 
-        bool IsValidToAdd(ModItem race, ModReference reference, string categoryName)
+        protected virtual bool IsValidToAdd(ModItem race, ModReference reference, string categoryName)
         {
             //if (categoryName == "robot limbs" && race.Values.ContainsKey("unique") && race.Values["unique"] is bool b && b)
             //{
