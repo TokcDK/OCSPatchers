@@ -18,14 +18,31 @@ namespace OCSPatchers.Patchers.WIP
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
-            var statKeyNames = new string[3] { "assassin", "stealth", "thievery" };
+            var statKeyNames = new string[] { 
+                //stealth
+                "assassin", 
+                "stealth", 
+                "thievery",
+                //science
+                "medic",
+                "robotics",
+                "science", 
+                "engineer",
+                //trade
+                "armour smith",
+                "bow smith",
+                "cooking",
+                "farming",
+                "labouring",
+                "weapon smith", 
+            };
 
             foreach (var modItem in context.Items.OfType(ItemType.Stats))
             {
                 foreach(var keyName in statKeyNames)
                 {
                     if (!modItem.Values.TryGetValue(keyName, out var obj)) continue;
-                    if (obj is not int statValue) continue;
+                    if (obj is not float statValue) continue;
                     if (statValue < 111) continue;
 
                     modItem.Values[keyName] = 100;
