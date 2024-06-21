@@ -50,5 +50,27 @@ namespace OCSPatchers.Patchers.WIP
             }
             return Task.CompletedTask;
         }
+
+        // maybe will be using for hard values changing for example set different new value depending on other stats
+        interface IStatToReduce
+        {
+            public string? KeyName { get; }
+            public float GetNewValue(ModItem? modItem);
+        }
+
+        public abstract class StatToReduceBase : IStatToReduce
+        {
+            public abstract string? KeyName { get; }
+
+            public virtual float GetNewValue(ModItem? modItem)
+            {
+                return 100;
+            }
+        }
+
+        public class StatAssassin : StatToReduceBase
+        {
+            public override string? KeyName => "assassin";
+        }
     }
 }
