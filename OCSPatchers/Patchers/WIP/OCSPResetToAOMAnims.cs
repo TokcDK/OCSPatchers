@@ -55,6 +55,13 @@ namespace OCSPatchers.Patchers.WIP
 
                 var animationsCategoryReferences = item.ReferenceCategories["animation"].References;
 
+                if(animationsCategoryReferences.Count > 1) // fix possible more of one animation of crafting, they not selected automatically in game if more of one?
+                {
+                    var firstAnim = animationsCategoryReferences.First();
+                    animationsCategoryReferences.Clear();
+                    animationsCategoryReferences.Add(firstAnim);
+                }
+
                 if (animationsCategoryReferences.ContainsKey(animationStringId)) continue;
                 if(animationsCategoryReferences.Any(i=>i.TargetId.Contains("AnimationOverhaul.mod"))) continue;
 
