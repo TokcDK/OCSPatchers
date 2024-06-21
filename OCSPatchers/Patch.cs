@@ -38,6 +38,7 @@ namespace OCSPatchers
                 new OCSMoreItemsToSpecificStorageRobotParts(),
 
                 new OCSPRecrutablePrisonersDialogsAdd(),
+                new OCSPRemoveNpcOverpoweredStealthStats(),
             };
 
             patchers = FilterPatchersByReferencedMods(patchers, installation);
