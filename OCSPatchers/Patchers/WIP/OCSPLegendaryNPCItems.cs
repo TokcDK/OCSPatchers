@@ -1,4 +1,5 @@
-﻿using OpenConstructionSet;
+﻿using System.Linq;
+using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
@@ -27,8 +28,8 @@ namespace OCSPatchers.Patchers.WIP
 
             if (!TryFillLegendary(modItem, context)) return;
 
-            modItem.Values.Add("num random chars", 1);
-            modItem.Values.Add("num random chars max", 1);
+            modItem.Values.TryAdd("num random chars", 1);
+            modItem.Values.TryAdd("num random chars max", 1);
         }
 
         private bool TryFillLegendary(ModItem modItem, IModContext context)
@@ -44,7 +45,9 @@ namespace OCSPatchers.Patchers.WIP
                 var legCharacter = GetLegendayCharacter(chara, context);
                 if (legCharacter == null) continue;
 
-                choosefromList.References.Add(legCharacter);
+                bool isExistChara = listOfMembers.ContainsKey(legCharacter.StringId);
+
+                choosefromList.References.Add(legCharacter, isExistChara ? 30 : 1); // 30% chance for usual extra chars and 1% for legendaries
                 addedLegs += 1;
             }
 
@@ -78,13 +81,14 @@ namespace OCSPatchers.Patchers.WIP
         {
             if (_legendaryCharas.ContainsKey(charaModItem.StringId)) return _legendaryCharas[charaModItem.StringId];
 
-            var legendaryChara = context.NewItem(charaModItem);
-
-            legendaryChara.Values["armour upgrade chance"] = 50;
+            var legendaryChara = charaModItem.DeepClone();
 
             if (!AddLegendaryItemsVariants(legendaryChara, context)) return null;
 
-            // reset weapon manufacturer for the character here
+            legendaryChara = context.NewItem(charaModItem); // add only when legendary weapons was added
+            legendaryChara.Values["armour upgrade chance"] = 50;
+
+            // reset weapon manufacturer for the character here, maybe apply here mods for weapons manufacturer, maybe add different manufacturers
 
             return legendaryChara;
         }
