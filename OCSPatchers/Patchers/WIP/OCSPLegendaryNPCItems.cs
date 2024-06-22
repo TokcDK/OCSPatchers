@@ -13,7 +13,7 @@ namespace OCSPatchers.Patchers.WIP
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
-            foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate))
+            foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
             {
                 TryAddLegendary(modItem, context);
             }
