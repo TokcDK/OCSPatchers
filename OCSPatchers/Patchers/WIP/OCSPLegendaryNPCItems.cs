@@ -78,7 +78,7 @@ namespace OCSPatchers.Patchers.WIP
         {
             if (_legendaryCharas.ContainsKey(charaModItem.StringId)) return _legendaryCharas[charaModItem.StringId];
 
-            var legendaryChara = charaModItem.DeepClone();
+            var legendaryChara = context.NewItem(charaModItem);
 
             legendaryChara.Values["armour upgrade chance"] = 50;
 
@@ -95,7 +95,8 @@ namespace OCSPatchers.Patchers.WIP
 
             var validWeapons = new Dictionary<string, ModReference>();
 
-            var weaponsRefs = legendaryChara.ReferenceCategories["weapons"].References;
+            var weaponsCategory = legendaryChara.ReferenceCategories["weapons"];
+            var weaponsRefs = weaponsCategory.References;
             foreach (var weaponRef in weaponsRefs)
             {
                 if (weaponRef.Target == default) continue;
@@ -135,28 +136,35 @@ namespace OCSPatchers.Patchers.WIP
         }
 
         readonly Dictionary<string, List<ModItem?>> _legendaryWeapons = new();
-        private List<ModItem?> GetLegendaryWeapons(ModItem? weaponModItem, IModContext context)
+        private List<ModItem> GetLegendaryWeapons(ModItem? weaponModItem, IModContext context)
         {
+            if (weaponModItem!.StringId.Contains("CL Legendary")) return new List<ModItem>();
+
             if (_legendaryWeapons.ContainsKey(weaponModItem.StringId))
             {
                 return _legendaryWeapons[weaponModItem.StringId];
             }
 
-            foreach(var effectData in new ILegendaryItemEffect[]
+            var legendaryWeapons = new List<ModItem>();
+            foreach (var effectData in new ILegendaryItemEffect[]
             {
                 new ShieldLegendaryItemEffect(),
                 new SharpLegendaryItemEffect(),
             })
             {
-                var weaponClone = weaponModItem.DeepClone();
-                context.Items.AddFrom(weaponClone);
+                var legendaryWeapon = weaponModItem.DeepClone(); // create temp copy for mod
 
-                if (!effectData.TryApplyEffect(weaponClone)) continue;
+                if (!effectData.TryApplyEffect(legendaryWeapon)) continue;
 
-                weaponClone.Values["Description"] = $"#000000Это оружие имеет легендарный эффект #ff0000『{effectData.Name}』#000000, со следующими эффектами.\r\n{effectData.Description}";
+                legendaryWeapon.Values["description"] = $"#000000Это оружие имеет легендарный эффект \"#ff0000{effectData.Name}#000000\", со следующими эффектами.\r\n{effectData.Description}";
+                legendaryWeapon.Name += $"\"#ff0000{effectData.Name}\"";
+
+                legendaryWeapon = context.NewItem(legendaryWeapon); // add as new only when the mod was applied
+
+                legendaryWeapons.Add(legendaryWeapon);
             }
 
-            return null;
+            return legendaryWeapons;
         }
 
         readonly Dictionary<string, ModItem> _legendaryArmors = new();
@@ -206,7 +214,7 @@ namespace OCSPatchers.Patchers.WIP
         {
             if (!modItem.Values.ContainsKey("cut damage multiplier")) return false;
 
-            modItem.Values["cut damage multiplier"] = (int)modItem.Values["cut damage multiplier"] + 0.2;
+            modItem.Values["cut damage multiplier"] = (float)modItem.Values["cut damage multiplier"] + 0.2;
 
             return true;
         }
