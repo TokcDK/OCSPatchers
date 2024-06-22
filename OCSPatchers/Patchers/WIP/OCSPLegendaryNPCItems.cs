@@ -22,8 +22,8 @@ namespace OCSPatchers.Patchers.WIP
 
         private void TryAddLegendary(ModItem modItem, IModContext context)
         {
-            if (modItem.ReferenceCategories.ContainsKey("choosefrom list")) return; // most likely already have legendary?
-            if (modItem.ReferenceCategories.ContainsKey("squad")) return; // missing squad members?
+            if (!modItem.ReferenceCategories.ContainsKey("choosefrom list")) return; // most likely already have legendary?
+            if (!modItem.ReferenceCategories.ContainsKey("squad")) return; // missing squad members?
 
             if (!TryFillLegendary(modItem, context)) return;
 
@@ -34,7 +34,9 @@ namespace OCSPatchers.Patchers.WIP
         private bool TryFillLegendary(ModItem modItem, IModContext context)
         {
             var listOfMembers = GetListOfValidMembers(modItem);
-            modItem.ReferenceCategories.Add("choosefrom list");
+            if(!modItem.ReferenceCategories.ContainsKey("choosefrom list")) 
+                modItem.ReferenceCategories.Add("choosefrom list");
+
             var choosefromList = modItem.ReferenceCategories["choosefrom list"];
             int addedLegs = 0;
             foreach (var chara in listOfMembers.Values)
@@ -80,17 +82,21 @@ namespace OCSPatchers.Patchers.WIP
 
             legendaryChara.Values["armour upgrade chance"] = 50;
 
-            AddLegendaryItemsVariants(legendaryChara, context);
+            if (!AddLegendaryItemsVariants(legendaryChara, context)) return null;
 
             // reset weapon manufacturer for the character here
 
             return legendaryChara;
         }
 
-        private void AddLegendaryItemsVariants(ModItem legendaryChara, IModContext context)
+        private bool AddLegendaryItemsVariants(ModItem legendaryChara, IModContext context)
         {
+            if (!legendaryChara.ReferenceCategories.ContainsKey("weapons")) return false;
+
             var validWeapons = new Dictionary<string, ModReference>();
-            foreach (var weaponRef in legendaryChara.ReferenceCategories["weapons"].References)
+
+            var weaponsRefs = legendaryChara.ReferenceCategories["weapons"].References;
+            foreach (var weaponRef in weaponsRefs)
             {
                 if (weaponRef.Target == default) continue;
                 if (validWeapons.ContainsKey(weaponRef.TargetId)) continue;
@@ -115,16 +121,17 @@ namespace OCSPatchers.Patchers.WIP
                 }
             }
 
-            if (newWeaponsList.Count == 0) return;
+            if (newWeaponsList.Count == 0) return false;
 
-            var refs = legendaryChara.ReferenceCategories["weapons"].References;
-            refs.Clear();
+            weaponsRefs.Clear();
             foreach (var weaponToAdd in newWeaponsList)
             {
-                if (refs.ContainsKey(weaponToAdd.Item1)) continue;
+                if (weaponsRefs.ContainsKey(weaponToAdd.Item1)) continue;
 
-                refs.Add(new ModReference(weaponToAdd.Item1, weaponToAdd.Item2, weaponToAdd.Item3, weaponToAdd.Item4));
+                weaponsRefs.Add(new ModReference(weaponToAdd.Item1, weaponToAdd.Item2, weaponToAdd.Item3, weaponToAdd.Item4));
             }
+
+            return true;
         }
 
         readonly Dictionary<string, List<ModItem?>> _legendaryWeapons = new();
