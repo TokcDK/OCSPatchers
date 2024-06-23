@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
@@ -42,11 +43,16 @@ namespace OCSPatchers.Patchers.WIP
             int addedLegs = 0;
             foreach (var chara in listOfMembers.Values)
             {
+                if (chara.Values.TryGetValue("unique", out var v) && v is bool isUnique && isUnique)
+                {
+                    continue; // skip unique
+                }
+
                 var legCharacter = GetLegendayCharacter(chara, context);
                 if (legCharacter == null) continue;
 
                 bool isExistChara = listOfMembers.ContainsKey(legCharacter.StringId);
-
+                                
                 choosefromList.References.Add(legCharacter, isExistChara ? 30 : 1); // 30% chance for usual extra chars and 1% for legendaries
                 addedLegs += 1;
             }
@@ -75,7 +81,7 @@ namespace OCSPatchers.Patchers.WIP
 
             return listOfMembers;
         }
-
+                
         readonly Dictionary<string, ModItem> _legendaryCharas = new();
         private ModItem? GetLegendayCharacter(ModItem charaModItem, IModContext context)
         {
