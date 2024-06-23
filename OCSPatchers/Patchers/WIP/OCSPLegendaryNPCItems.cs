@@ -105,7 +105,9 @@ namespace OCSPatchers.Patchers.WIP
             var weaponsRefs = weaponsCategory.References;
             foreach (var weaponRef in weaponsRefs)
             {
-                if (weaponRef.Target == default) continue;
+                var wRef = context.Items.OfType(ItemType.Weapon).First(i => i.StringId == weaponRef.TargetId);
+
+                //if (weaponRef.Target == default) continue;
                 if (validWeapons.ContainsKey(weaponRef.TargetId)) continue;
 
                 validWeapons.Add(weaponRef.Target.StringId, weaponRef);
