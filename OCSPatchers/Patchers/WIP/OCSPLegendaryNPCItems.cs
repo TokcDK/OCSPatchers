@@ -51,6 +51,7 @@ namespace OCSPatchers.Patchers.WIP
                 if (chara.Name.StartsWith("_")) continue;
                 if (chara.Name.StartsWith("@")) continue;
                 if (chara.Name.StartsWith("#")) continue;
+                if (chara.StringId.Contains("CL Legendary")) continue;
 
                 if (chara.Values.TryGetValue("unique", out var v) && v is bool isUnique && isUnique)
                 {
