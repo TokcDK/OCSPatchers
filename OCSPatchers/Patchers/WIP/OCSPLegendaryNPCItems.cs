@@ -94,10 +94,10 @@ namespace OCSPatchers.Patchers.WIP
             return listOfMembers;
         }
                 
-        readonly Dictionary<string, ModItem> _legendaryCharas = new();
+        readonly Dictionary<string, ModItem> _cacheOfAddedLegendaryCharasByOrigin = new();
         private ModItem? GetLegendayCharacter(ModItem charaModItem, IModContext context)
         {
-            if (_legendaryCharas.ContainsKey(charaModItem.StringId)) return _legendaryCharas[charaModItem.StringId];
+            if (_cacheOfAddedLegendaryCharasByOrigin.ContainsKey(charaModItem.StringId)) return _cacheOfAddedLegendaryCharasByOrigin[charaModItem.StringId];
 
             var legendaryCharaCandidate = charaModItem.DeepClone();
 
@@ -109,6 +109,8 @@ namespace OCSPatchers.Patchers.WIP
 
             // reset weapon manufacturer for the character here, maybe apply here mods for weapons manufacturer, maybe add different manufacturers
             ReSetWeaponManufacturer(legendaryChara, context);
+
+            _cacheOfAddedLegendaryCharasByOrigin.Add(charaModItem.StringId, legendaryChara);
 
             return legendaryChara;
         }
@@ -209,17 +211,17 @@ namespace OCSPatchers.Patchers.WIP
             return true;
         }
 
-        readonly Dictionary<string, List<ModItem>> _legendaryWeapons = new();
+        readonly Dictionary<string, List<ModItem>> _cacheOfAddedLegendaryWeaponsByOrigin = new();
         private List<ModItem> GetLegendaryWeapons(ModItem? weaponModItem, IModContext context)
         {
             if (weaponModItem!.StringId.Contains("CL Legendary")) return new List<ModItem>();
 
-            if (_legendaryWeapons.ContainsKey(weaponModItem.StringId))
+            if (_cacheOfAddedLegendaryWeaponsByOrigin.ContainsKey(weaponModItem.StringId))
             {
-                return _legendaryWeapons[weaponModItem.StringId]; // already made legendaries
+                return _cacheOfAddedLegendaryWeaponsByOrigin[weaponModItem.StringId]; // already made legendaries
             }
 
-            var addedLegendaryWeaponsListByOrigin = _legendaryWeapons.ContainsKey(weaponModItem.StringId) ? _legendaryWeapons[weaponModItem.StringId] : new List<ModItem>();
+            var addedLegendaryWeaponsListByOrigin = _cacheOfAddedLegendaryWeaponsByOrigin.ContainsKey(weaponModItem.StringId) ? _cacheOfAddedLegendaryWeaponsByOrigin[weaponModItem.StringId] : new List<ModItem>();
 
             var legendaryWeapons = new List<ModItem>();
             foreach (var effectData in new ILegendaryItemEffect[]
