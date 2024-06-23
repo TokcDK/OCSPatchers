@@ -20,9 +20,6 @@ namespace OCSPatchers.Patchers.WIP
                 if (modItem.Name.StartsWith("@")) continue;
                 if (modItem.Name.StartsWith("_")) continue;
                 if (modItem.Name.StartsWith("*")) continue;
-                if (modItem.StringId== "96520-Dialogue.mod")
-                {
-                }
 
                 TryAddLegendary(modItem, context);
             }
@@ -69,9 +66,9 @@ namespace OCSPatchers.Patchers.WIP
                 addedLegs += 1;
             }
 
-            if (addedLegs == 0)
+            if (addedLegs == 0 && choosefromList.References.Count == 0)
             {
-                modItem.ReferenceCategories.RemoveByKey("choosefrom list");
+                modItem.ReferenceCategories.RemoveByKey("choosefrom list"); // remove empty list where was not added any char
                 return false;
             }
 
