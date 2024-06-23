@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OCSPatchers", "OCSPatchers\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConstructionSet", "..\OpenConstructionSet\OpenConstructionSet\OpenConstructionSet.csproj", "{A600448D-B88B-4032-B471-F7BD663F7716}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net6", "net6", "{16F80640-1C8F-4C04-BCF1-6312F99AAEFB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net7", "net7", "{34E2665A-082F-4069-A796-9792583A3DD1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6CADF089-F6F2-4EFF-B0E8-97BB04210B91} = {16F80640-1C8F-4C04-BCF1-6312F99AAEFB}
+		{A600448D-B88B-4032-B471-F7BD663F7716} = {16F80640-1C8F-4C04-BCF1-6312F99AAEFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4B17B12B-569D-4813-8909-5A88F3725C0F}
