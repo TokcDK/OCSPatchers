@@ -91,7 +91,7 @@ namespace OCSPatchers.Patchers.WIP
 
             if (!AddLegendaryItemsVariants(legendaryChara, context)) return null;
 
-            legendaryChara = context.NewItem(charaModItem); // add only when legendary weapons was added
+            legendaryChara = context.NewItem(legendaryChara); // add only when legendary weapons was added
             legendaryChara.Values["armour upgrade chance"] = 50;
             legendaryChara.Name = "#ff0002\"Легендарн/аяый1/\" " + legendaryChara.Name;
 
@@ -170,7 +170,7 @@ namespace OCSPatchers.Patchers.WIP
                 if (!effectData.TryApplyEffect(legendaryWeapon)) continue;
 
                 legendaryWeapon.Values["description"] = $"#000000Это оружие имеет легендарный эффект \"#ff0000{effectData.Name}#000000\", со следующими эффектами.\r\n{effectData.Description}";
-                legendaryWeapon.Name += $" \"#ff0000{effectData.Name}\"";
+                legendaryWeapon.Name += $" \"#ff0000{effectData.Name}#000000\"";
 
                 legendaryWeapon = context.NewItem(legendaryWeapon); // add as new only when the mod was applied
 
