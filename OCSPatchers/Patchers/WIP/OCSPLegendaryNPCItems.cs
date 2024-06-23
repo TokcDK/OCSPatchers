@@ -88,7 +88,6 @@ namespace OCSPatchers.Patchers.WIP
             if (_legendaryCharas.ContainsKey(charaModItem.StringId)) return _legendaryCharas[charaModItem.StringId];
 
             var legendaryChara = charaModItem.DeepClone();
-            // BUG! REFERENCES LIST IS EMPTY FOR NEW CHARACTERS! SAME FOR WEAPONS!
 
             if (!AddLegendaryItemsVariants(legendaryChara, context)) return null;
 
