@@ -87,17 +87,65 @@ namespace OCSPatchers.Patchers.WIP
         {
             if (_legendaryCharas.ContainsKey(charaModItem.StringId)) return _legendaryCharas[charaModItem.StringId];
 
-            var legendaryChara = charaModItem.DeepClone();
+            var legendaryCharaCandidate = charaModItem.DeepClone();
 
-            if (!AddLegendaryItemsVariants(legendaryChara, context)) return null;
+            if (!AddLegendaryItemsVariants(legendaryCharaCandidate, context)) return null;
 
-            legendaryChara = context.NewItem(legendaryChara); // add only when legendary weapons was added
+            var legendaryChara = context.NewItem(legendaryCharaCandidate); // add only when legendary weapons was added
             legendaryChara.Values["armour upgrade chance"] = 50;
-            legendaryChara.Name = "#ff0002\"Легендарн/аяый1/\" " + legendaryChara.Name;
+            legendaryChara.Name = ("#ff0002\"Легендарн/аяый1/\" " + legendaryChara.Name);
 
             // reset weapon manufacturer for the character here, maybe apply here mods for weapons manufacturer, maybe add different manufacturers
+            ReSetWeaponManufacturer(legendaryChara, context);
 
             return legendaryChara;
+        }
+
+
+        bool isLegendaryManufacturerSet = false;
+        ModItem? _legendaryWeaponManufacturer;
+        private void ReSetWeaponManufacturer(ModItem legendaryChara, IModContext context)
+        {
+            MakeWeaponManufacturer(context);
+
+            if (!legendaryChara.ReferenceCategories.ContainsKey("weapon level"))
+            {
+                legendaryChara.ReferenceCategories.Add(new ModReferenceCategory("weapon level"));
+            }
+            var weaponLevelReference = legendaryChara.ReferenceCategories["weapon level"].References;
+            weaponLevelReference.Clear();
+            weaponLevelReference.Add(new ModReference(_legendaryWeaponManufacturer!.StringId));
+        }
+
+        private void MakeWeaponManufacturer(IModContext context)
+        {
+            if (isLegendaryManufacturerSet) return;
+
+            //52293-rebirth.mod meitou model
+            //52288-rebirth.mod meitou manufacturer
+            var crestManufacturer = context.Items.OfType(ItemType.WeaponManufacturer).First(i=>i.StringId== "52288-rebirth.mod");
+            _legendaryWeaponManufacturer = crestManufacturer.DeepClone();
+            _legendaryWeaponManufacturer.Name = "Легендарный кузнец";
+            _legendaryWeaponManufacturer.Values["company description"] = "Выкованное однажды оружие неизвестным легендарным кузнецом.";
+            _legendaryWeaponManufacturer.Values["cut damage mod"] = (float)1.08;
+            _legendaryWeaponManufacturer.Values["price mod"] = (float)1.8;
+            if(_legendaryWeaponManufacturer.ReferenceCategories.ContainsKey("weapon types")) 
+                _legendaryWeaponManufacturer.ReferenceCategories["weapon types"].References.Clear(); // can be values
+            var weaponModels = _legendaryWeaponManufacturer.ReferenceCategories["weapon models"];
+            weaponModels.References.Clear();
+
+            // set legendary model
+            var meitouWeaponModels = context.Items.OfType(ItemType.MaterialSpecsWeapon).First(i => i.StringId == "52293-rebirth.mod");
+            var legendaryModel = meitouWeaponModels.DeepClone();
+            legendaryModel.Values["description"] = "Легендарное снаряжение обладает особыми эффектами.";
+            legendaryModel.Name = "Легендарное оружие";
+            legendaryModel = context.NewItem(legendaryModel);
+
+
+            weaponModels.References.Add(new ModReference(legendaryModel.StringId, 80, 100));
+            _legendaryWeaponManufacturer = context.NewItem(_legendaryWeaponManufacturer);
+
+            isLegendaryManufacturerSet = true;
         }
 
         private bool AddLegendaryItemsVariants(ModItem legendaryChara, IModContext context)
@@ -165,14 +213,14 @@ namespace OCSPatchers.Patchers.WIP
                 new SharpLegendaryItemEffect(),
             })
             {
-                var legendaryWeapon = weaponModItem.DeepClone(); // create temp copy for mod
+                var legendaryWeaponCandidate = weaponModItem.DeepClone(); // create temp copy for mod
 
-                if (!effectData.TryApplyEffect(legendaryWeapon)) continue;
+                if (!effectData.TryApplyEffect(legendaryWeaponCandidate)) continue;
 
-                legendaryWeapon.Values["description"] = $"#000000Это оружие имеет легендарный эффект \"#ff0000{effectData.Name}#000000\", со следующими эффектами.\r\n{effectData.Description}";
-                legendaryWeapon.Name += $" \"#ff0000{effectData.Name}#000000\"";
+                legendaryWeaponCandidate.Values["description"] = $"#000000Это оружие имеет легендарный эффект \"#ff0000{effectData.Name}#000000\", со следующими эффектами.\r\n{effectData.Description}";
+                legendaryWeaponCandidate.Name += $" \"#ff0000{effectData.Name}#000000\"";
 
-                legendaryWeapon = context.NewItem(legendaryWeapon); // add as new only when the mod was applied
+                var legendaryWeapon = context.NewItem(legendaryWeaponCandidate); // add as new only when the mod was applied
 
                 legendaryWeapons.Add(legendaryWeapon);
             }
