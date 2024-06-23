@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
@@ -16,6 +17,10 @@ namespace OCSPatchers.Patchers.WIP
         {
             foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
             {
+                if (modItem.Name.StartsWith("@")) continue;
+                if (modItem.Name.StartsWith("_")) continue;
+                if (modItem.Name.StartsWith("*")) continue;
+
                 TryAddLegendary(modItem, context);
             }
 
@@ -43,6 +48,10 @@ namespace OCSPatchers.Patchers.WIP
             int addedLegs = 0;
             foreach (var chara in listOfMembers.Values)
             {
+                if (chara.Name.StartsWith("_")) continue;
+                if (chara.Name.StartsWith("@")) continue;
+                if (chara.Name.StartsWith("#")) continue;
+
                 if (chara.Values.TryGetValue("unique", out var v) && v is bool isUnique && isUnique)
                 {
                     continue; // skip unique
@@ -126,7 +135,7 @@ namespace OCSPatchers.Patchers.WIP
             var crestManufacturer = context.Items.OfType(ItemType.WeaponManufacturer).First(i=>i.StringId== "52288-rebirth.mod");
             _legendaryWeaponManufacturer = crestManufacturer.DeepClone();
             _legendaryWeaponManufacturer.Name = "Легендарный кузнец";
-            _legendaryWeaponManufacturer.Values["company description"] = "Выкованное однажды оружие неизвестным легендарным кузнецом.";
+            _legendaryWeaponManufacturer.Values["company description"] = (string)"Выкованное однажды оружие неизвестным легендарным кузнецом.";
             _legendaryWeaponManufacturer.Values["cut damage mod"] = (float)1.08;
             _legendaryWeaponManufacturer.Values["price mod"] = (float)1.8;
             if(_legendaryWeaponManufacturer.ReferenceCategories.ContainsKey("weapon types")) 
@@ -161,6 +170,7 @@ namespace OCSPatchers.Patchers.WIP
                 //var wRef = context.Items.OfType(ItemType.Weapon).First(i => i.StringId == weaponRef.TargetId);
 
                 if (weaponRef.Target == default) continue;
+                if (weaponRef.Target.Name.StartsWith("_")) continue;
                 if (validWeapons.ContainsKey(weaponRef.TargetId)) continue;
 
                 validWeapons.Add(weaponRef.Target.StringId, weaponRef);
