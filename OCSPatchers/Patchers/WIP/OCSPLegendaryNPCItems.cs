@@ -20,6 +20,9 @@ namespace OCSPatchers.Patchers.WIP
                 if (modItem.Name.StartsWith("@")) continue;
                 if (modItem.Name.StartsWith("_")) continue;
                 if (modItem.Name.StartsWith("*")) continue;
+                if (modItem.StringId== "96520-Dialogue.mod")
+                {
+                }
 
                 TryAddLegendary(modItem, context);
             }
@@ -206,15 +209,17 @@ namespace OCSPatchers.Patchers.WIP
             return true;
         }
 
-        readonly Dictionary<string, List<ModItem?>> _legendaryWeapons = new();
+        readonly Dictionary<string, List<ModItem>> _legendaryWeapons = new();
         private List<ModItem> GetLegendaryWeapons(ModItem? weaponModItem, IModContext context)
         {
             if (weaponModItem!.StringId.Contains("CL Legendary")) return new List<ModItem>();
 
             if (_legendaryWeapons.ContainsKey(weaponModItem.StringId))
             {
-                return _legendaryWeapons[weaponModItem.StringId];
+                return _legendaryWeapons[weaponModItem.StringId]; // already made legendaries
             }
+
+            var addedLegendaryWeaponsListByOrigin = _legendaryWeapons.ContainsKey(weaponModItem.StringId) ? _legendaryWeapons[weaponModItem.StringId] : new List<ModItem>();
 
             var legendaryWeapons = new List<ModItem>();
             foreach (var effectData in new ILegendaryItemEffect[]
@@ -231,6 +236,8 @@ namespace OCSPatchers.Patchers.WIP
                 legendaryWeaponCandidate.Name += $" #ff0000\"{effectData.Name}\"";
 
                 var legendaryWeapon = context.NewItem(legendaryWeaponCandidate); // add as new only when the mod was applied
+
+                addedLegendaryWeaponsListByOrigin.Add(legendaryWeapon); // add to prevent making variants for the same weapons many times
 
                 legendaryWeapons.Add(legendaryWeapon);
             }
