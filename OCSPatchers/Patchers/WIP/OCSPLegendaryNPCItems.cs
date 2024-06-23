@@ -105,9 +105,9 @@ namespace OCSPatchers.Patchers.WIP
             var weaponsRefs = weaponsCategory.References;
             foreach (var weaponRef in weaponsRefs)
             {
-                var wRef = context.Items.OfType(ItemType.Weapon).First(i => i.StringId == weaponRef.TargetId);
+                //var wRef = context.Items.OfType(ItemType.Weapon).First(i => i.StringId == weaponRef.TargetId);
 
-                //if (weaponRef.Target == default) continue;
+                if (weaponRef.Target == default) continue;
                 if (validWeapons.ContainsKey(weaponRef.TargetId)) continue;
 
                 validWeapons.Add(weaponRef.Target.StringId, weaponRef);
@@ -165,7 +165,7 @@ namespace OCSPatchers.Patchers.WIP
                 if (!effectData.TryApplyEffect(legendaryWeapon)) continue;
 
                 legendaryWeapon.Values["description"] = $"#000000Это оружие имеет легендарный эффект \"#ff0000{effectData.Name}#000000\", со следующими эффектами.\r\n{effectData.Description}";
-                legendaryWeapon.Name += $"\"#ff0000{effectData.Name}\"";
+                legendaryWeapon.Name += $" \"#ff0000{effectData.Name}\"";
 
                 legendaryWeapon = context.NewItem(legendaryWeapon); // add as new only when the mod was applied
 
