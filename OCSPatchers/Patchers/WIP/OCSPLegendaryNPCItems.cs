@@ -88,6 +88,7 @@ namespace OCSPatchers.Patchers.WIP
 
             legendaryChara = context.NewItem(charaModItem); // add only when legendary weapons was added
             legendaryChara.Values["armour upgrade chance"] = 50;
+            legendaryChara.Name = "#ff0002\"Легендарн/аяый1/\" " + legendaryChara.Name;
 
             // reset weapon manufacturer for the character here, maybe apply here mods for weapons manufacturer, maybe add different manufacturers
 
