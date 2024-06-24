@@ -22,6 +22,7 @@ namespace OCSPatchers.Patchers.WIP
                 if (modItem.Name.StartsWith("*")) continue;
 
                 TryAddLegendary(modItem, context);
+                break;
             }
 
             return Task.CompletedTask;
@@ -32,13 +33,13 @@ namespace OCSPatchers.Patchers.WIP
             if (!modItem.ReferenceCategories.ContainsKey("choosefrom list")) return; // most likely already have legendary?
             if (!modItem.ReferenceCategories.ContainsKey("squad")) return; // missing squad members?
 
-            if (!TryFillLegendary(modItem, context)) return;
+            if (!TryAddLegendaryCharacters(modItem, context)) return;
 
             modItem.Values.TryAdd("num random chars", 1);
             modItem.Values.TryAdd("num random chars max", 1);
         }
 
-        private bool TryFillLegendary(ModItem modItem, IModContext context)
+        private bool TryAddLegendaryCharacters(ModItem modItem, IModContext context)
         {
             var listOfMembers = GetListOfValidMembers(modItem);
             if(!modItem.ReferenceCategories.ContainsKey("choosefrom list")) 
@@ -51,7 +52,7 @@ namespace OCSPatchers.Patchers.WIP
                 if (chara.Name.StartsWith("_")) continue;
                 if (chara.Name.StartsWith("@")) continue;
                 if (chara.Name.StartsWith("#")) continue;
-                if (chara.StringId.Contains("CL Legendary")) continue;
+                if (chara.StringId.Contains("CL Legendary")) continue; // do not touch chars from legendary equipment mod
 
                 if (chara.Values.TryGetValue("unique", out var v) && v is bool isUnique && isUnique)
                 {
