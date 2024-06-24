@@ -224,7 +224,7 @@ namespace OCSPatchers.Patchers.WIP
             var keys = stats.Values.Keys.Select(v=>v).ToArray();
             foreach (var key in keys)
             {
-                if (stats.Values.TryGetValue(key, out var statObject) || statObject is not float i || i >= 100) continue;
+                if (!stats.Values.TryGetValue(key, out var statObject) || statObject is not float i || i >= 100) continue;
 
                 stats.Values[key] = GetNewIntStatValue(i);
             }
