@@ -220,11 +220,13 @@ namespace OCSPatchers.Patchers.WIP
 
         private void EnforceByReferencedStats(ModItem stats)
         {
-            foreach (var s in stats.Values)
-            {
-                if (s.Value is not float i || i >= 100) continue;
 
-                stats.Values[s.Key] = GetNewIntStatValue(i);
+            var keys = stats.Values.Keys.Select(v=>v).ToArray();
+            foreach (var key in keys)
+            {
+                if (stats.Values.TryGetValue(key, out var statObject) || statObject is not float i || i >= 100) continue;
+
+                stats.Values[key] = GetNewIntStatValue(i);
             }
         }
 
