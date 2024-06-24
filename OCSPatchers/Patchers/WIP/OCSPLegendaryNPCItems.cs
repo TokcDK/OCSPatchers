@@ -21,14 +21,8 @@ namespace OCSPatchers.Patchers.WIP
             foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
             {
                 if (!IsValidSquadItem(modItem)) continue;
-                //if (modItem.ReferenceCategories.Count == 0) continue;
-
-                //var clone = modItem.DeepClone();
-
-                //context.NewItem(clone);
 
                 TryAddLegendaryToTheSquad(modItem, context);
-                //break;
             }
 
             return Task.CompletedTask;
