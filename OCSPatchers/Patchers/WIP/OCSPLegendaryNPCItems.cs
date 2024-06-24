@@ -205,7 +205,7 @@ namespace OCSPatchers.Patchers.WIP
                 //var wRef = context.Items.OfType(ItemType.Weapon).First(i => i.StringId == weaponRef.TargetId);
 
                 if (weaponRef.Target == default) continue;
-                if (weaponRef.Target.Name.StartsWith("_")) continue;
+                if (!IsValidModItem(weaponRef.Target)) continue;
                 if (validWeapons.ContainsKey(weaponRef.TargetId)) continue;
 
                 validWeapons.Add(weaponRef.Target.StringId, weaponRef);
