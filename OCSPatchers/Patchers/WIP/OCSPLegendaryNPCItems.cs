@@ -215,16 +215,14 @@ namespace OCSPatchers.Patchers.WIP
             foreach (var weaponRef in validWeapons.Values)
             {
                 var legendaryWeaponsList = GetLegendaryWeapons(weaponRef.Target, context);
-                if(legendaryWeaponsList.Count==0)
+                if(legendaryWeaponsList == null || legendaryWeaponsList.Count==0)
                 {
-                    newWeaponsList.Add((weaponRef.TargetId, weaponRef.Value0, weaponRef.Value1, weaponRef.Value2));
+                    continue;
                 }
-                else
+
+                foreach (var legendaryWeapon in legendaryWeaponsList)
                 {
-                    foreach (var legendaryWeapon in legendaryWeaponsList)
-                    {
-                        newWeaponsList.Add((legendaryWeapon.StringId, weaponRef.Value0, weaponRef.Value1, weaponRef.Value2));
-                    }
+                    newWeaponsList.Add((legendaryWeapon.StringId, weaponRef.Value0, weaponRef.Value1, weaponRef.Value2));
                 }
             }
 
