@@ -205,16 +205,16 @@ namespace OCSPatchers.Patchers.WIP
             })
             {
                 if (!legendaryChara.Values.TryGetValue(s, out var v) || v is not int i || i >= 100) continue;
-
-                legendaryChara.Values[s] = GetNewIntStatValue(i);
+                
+                legendaryChara.Values[s] = (int)Math.Ceiling(GetNewIntStatValue(i));
             }
 
         }
 
-        private object GetNewIntStatValue(int i)
+        private float GetNewIntStatValue(float i)
         {
-            int v1 = (int)(i * 1.5);
-            int newValue = v1 > 100 ? 100 : v1 < 30 ? 30 : v1;
+            float v1 = (float)(i * 1.5);
+            float newValue = v1 > 100 ? 100 : v1 < 30 ? 30 : v1;
             return newValue;
         }
 
@@ -224,7 +224,7 @@ namespace OCSPatchers.Patchers.WIP
             {
                 if (s.Value is not float i || i >= 100) continue;
 
-                stats.Values[s.Key] = (float)GetNewIntStatValue(i);
+                stats.Values[s.Key] = GetNewIntStatValue(i);
             }
         }
 
