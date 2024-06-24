@@ -20,7 +20,9 @@ namespace OCSPatchers.Patchers.WIP
                 if (!IsValidSquadItem(modItem)) continue;
                 if (modItem.Name.StartsWith("_")) continue;
 
-                TryAddLegendary(modItem, context);
+                context.NewItem(modItem);
+
+                //TryAddLegendary(modItem, context);
                 break;
             }
 
