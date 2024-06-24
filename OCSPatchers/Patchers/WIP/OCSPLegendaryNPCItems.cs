@@ -260,7 +260,7 @@ namespace OCSPatchers.Patchers.WIP
                 if (!effectData.TryApplyEffect(legendaryWeaponCandidate)) continue;
 
                 legendaryWeaponCandidate.Values["description"] = $"#000000Это оружие имеет легендарный эффект \"#ff0000{effectData.Name}#000000\", со следующими эффектами.\r\n{effectData.Description}";
-                legendaryWeaponCandidate.Name += $" #ff0000\"{effectData.Name}\"";
+                legendaryWeaponCandidate.Name += $" \"#ff0000{effectData.Name}#000000\"";
 
                 var legendaryWeapon = context.NewItem(legendaryWeaponCandidate); // add as new only when the mod was applied
 
