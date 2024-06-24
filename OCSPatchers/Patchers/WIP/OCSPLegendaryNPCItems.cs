@@ -17,15 +17,20 @@ namespace OCSPatchers.Patchers.WIP
         {
             foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
             {
-                if (modItem.Name.StartsWith("@")) continue;
+                if (!IsValidSquadItem(modItem)) continue;
                 if (modItem.Name.StartsWith("_")) continue;
-                if (modItem.Name.StartsWith("*")) continue;
 
                 TryAddLegendary(modItem, context);
                 break;
             }
 
             return Task.CompletedTask;
+        }
+        private bool IsValidSquadItem(ModItem modItem)
+        {
+            if (!IsValidModItem(modItem)) return false;
+
+            return true;
         }
 
         private void TryAddLegendary(ModItem modItem, IModContext context)
@@ -49,10 +54,7 @@ namespace OCSPatchers.Patchers.WIP
             int addedLegs = 0;
             foreach (var chara in listOfMembers.Values)
             {
-                if (chara.Name.StartsWith("_")) continue;
-                if (chara.Name.StartsWith("@")) continue;
-                if (chara.Name.StartsWith("#")) continue;
-                if (chara.StringId.Contains("CL Legendary")) continue; // do not touch chars from legendary equipment mod
+                if(!IsValidCharacter(chara)) continue;
 
                 if (chara.Values.TryGetValue("unique", out var v) && v is bool isUnique && isUnique)
                 {
@@ -73,6 +75,30 @@ namespace OCSPatchers.Patchers.WIP
                 modItem.ReferenceCategories.RemoveByKey("choosefrom list"); // remove empty list where was not added any char
                 return false;
             }
+
+            return true;
+        }
+
+        private bool IsValidModItem(ModItem modItem)
+        {
+            if (!IsValidItemName(modItem)) return false;
+            if (modItem.StringId.Contains("CL Legendary")) return false; // do not touch from legendary equipment mod
+
+            return true;
+        }
+
+        private bool IsValidCharacter(ModItem modItem)
+        {
+            if (!IsValidModItem(modItem)) return false;
+
+            return true;
+        }
+
+        private bool IsValidItemName(ModItem characterItem)
+        {
+            if (characterItem.Name.StartsWith("_")) return false;
+            if (characterItem.Name.StartsWith("@")) return false;
+            if (characterItem.Name.StartsWith("#")) return false;
 
             return true;
         }
