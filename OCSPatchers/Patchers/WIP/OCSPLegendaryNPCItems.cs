@@ -350,6 +350,10 @@ namespace OCSPatchers.Patchers.WIP
 
                 legendaryWeapons.Add(legendaryWeapon);
             }
+            if (legendaryWeapons.Count > 0)
+            {
+                _cacheOfAddedLegendaryWeaponsByOrigin.Add(weaponModItem!.StringId, legendaryWeapons);
+            }
 
             return legendaryWeapons;
         }
