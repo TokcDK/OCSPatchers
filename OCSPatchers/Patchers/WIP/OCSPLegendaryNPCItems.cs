@@ -308,7 +308,7 @@ namespace OCSPatchers.Patchers.WIP
         public bool TryApplyEffect(ModItem modItem)
         {
             if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
-            if (modItem.Values[KEY_NAME] is not float originValue) return false;
+            if (modItem.Values[KEY_NAME] is not int originValue) return false;
 
             modItem.Values[KEY_NAME] = originValue + 20;
 
