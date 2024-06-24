@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Authentication.ExtendedProtection;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
@@ -142,28 +144,48 @@ namespace OCSPatchers.Patchers.WIP
             // reset weapon manufacturer for the character here, maybe apply here mods for weapons manufacturer, maybe add different manufacturers
             ReSetWeaponManufacturer(legendaryChara, context);
 
-            EnforceStats(legendaryChara);
+            EnforceStats(legendaryChara, context);
 
             _cacheOfAddedLegendaryCharasByOrigin.Add(charaModItem.StringId, legendaryChara);
 
             return legendaryChara;
         }
 
-        private void EnforceStats(ModItem legendaryChara)
+        private void EnforceStats(ModItem legendaryChara, IModContext context)
         {
-            if (TrySetStatsByReferencedStats(legendaryChara)) return;
+            if (TrySetStatsByReferencedStats(legendaryChara, context)) return;
 
             EnforceStatsByValues(legendaryChara);
         }
 
-        private bool TrySetStatsByReferencedStats(ModItem legendaryChara)
+        Dictionary<string, ModItem> _addedLegendaryCharaStatsItemsCache = new();
+        private bool TrySetStatsByReferencedStats(ModItem legendaryChara, IModContext context)
         {
             if (!legendaryChara.ReferenceCategories.ContainsKey("stats")) return false;
-            if(legendaryChara.ReferenceCategories["stats"].References.Count == 0) return false;
-            var referencedStats = legendaryChara.ReferenceCategories["stats"].References.First();
+            var refs = legendaryChara.ReferenceCategories["stats"].References;
+            if (refs.Count == 0) return false;
+            var referencedStats = refs.First();
             if(referencedStats.Target == null) return false;
 
-            EnforceByReferencedStats(referencedStats.Target);
+
+            if (_addedLegendaryCharaStatsItemsCache.ContainsKey(referencedStats.Target.StringId))
+            {
+                refs.Clear();
+
+                var refStats = _addedLegendaryCharaStatsItemsCache[referencedStats.Target.StringId];
+                var newModRef = new ModReference(refStats.StringId);
+                refs.Add(newModRef);
+
+                return true;
+            }
+
+
+            var stats = context.NewItem(referencedStats.Target.DeepClone());
+            EnforceByReferencedStats(stats);
+            refs.Clear();
+            var newModRef1 = new ModReference(stats.StringId);
+            refs.Add(newModRef1);
+            _addedLegendaryCharaStatsItemsCache.Add(referencedStats.Target.StringId, stats);
 
             return true;
         }
@@ -195,7 +217,7 @@ namespace OCSPatchers.Patchers.WIP
 
         private void EnforceByReferencedStats(ModItem stats)
         {
-            foreach(var s in stats.Values)
+            foreach (var s in stats.Values)
             {
                 if (s.Value is not int i || i >= 100) continue;
 
