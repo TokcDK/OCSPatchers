@@ -33,6 +33,7 @@ namespace OCSPatchers.Patchers.WIP
         private bool IsValidSquadItem(ModItem modItem)
         {
             if (!IsValidModItem(modItem)) return false;
+            if (!modItem.ReferenceCategories.ContainsKey("AI packages")) return false; // behavour is not set, not referenced, deleted but partially set by some mod?
 
             return true;
         }
