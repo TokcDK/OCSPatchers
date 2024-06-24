@@ -83,12 +83,6 @@ namespace OCSPatchers.Patchers.WIP
                 modItem.ReferenceCategories.RemoveByKey("choosefrom list"); // remove empty list where was not added any char
                 return false;
             }
-            foreach(var chara in listOfMembers.Values)
-            {
-                var modRef = new ModReference(chara.StringId, 36);
-                choosefromList.References.Add(modRef);
-            }
-
             return true;
         }
 
