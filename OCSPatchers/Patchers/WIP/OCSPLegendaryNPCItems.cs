@@ -25,7 +25,7 @@ namespace OCSPatchers.Patchers.WIP
                 //context.NewItem(clone);
 
                 TryAddLegendaryToTheSquad(modItem, context);
-                //break;
+                break;
             }
 
             return Task.CompletedTask;
