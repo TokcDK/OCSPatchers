@@ -69,11 +69,6 @@ namespace OCSPatchers.Patchers.WIP
                 var legCharacter = GetLegendayCharacter(chara, context);
                 if (legCharacter == null) continue;
 
-                if (chara.Values.TryGetValue("named", out var v1) && v1 is bool isNamed && !isNamed)
-                {
-                    chara.Values["named"] = !isNamed; // always set legendary as named
-                }
-
                 bool isExistChara = listOfMembers.ContainsKey(legCharacter.StringId);
                                 
                 choosefromList.References.Add(legCharacter, isExistChara ? 30 : 1); // 30% chance for usual extra chars and 1% for legendaries
