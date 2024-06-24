@@ -273,7 +273,7 @@ namespace OCSPatchers.Patchers.WIP
         }
 
         readonly Dictionary<string, ModItem> _legendaryArmors = new();
-        private ModItem? GetLegendaryArmor(ModItem? armorModItem)
+        private ModItem? GetLegendaryArmor(ModItem armorModItem)
         {
             return null;
         }
@@ -284,7 +284,7 @@ namespace OCSPatchers.Patchers.WIP
         string Name { get; }
         string Description { get; }
 
-        bool TryApplyEffect(ModItem? modItem);
+        bool TryApplyEffect(ModItem modItem);
     }
     interface ILegendaryWeaponEffect : ILegendaryItemEffect
     {
@@ -299,11 +299,14 @@ namespace OCSPatchers.Patchers.WIP
 
         public string Description => "#afa68bЗащита #a8b774+20";
 
-        public bool TryApplyEffect(ModItem? modItem)
-        {
-            if (!modItem.Values.ContainsKey("defence mod")) return false;
+        const string KEY_NAME = "defence mod";
 
-            modItem.Values["defence mod"] = (int)modItem.Values["defence mod"] + 20;
+        public bool TryApplyEffect(ModItem modItem)
+        {
+            if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
+            if (modItem.Values[KEY_NAME] is not float originValue) return false;
+
+            modItem.Values[KEY_NAME] = (int)modItem.Values["defence mod"] + 20;
 
             return true;
         }
@@ -315,11 +318,14 @@ namespace OCSPatchers.Patchers.WIP
 
         public string Description => "#afa68bРежущий урон #a8b774+20%";
 
-        public bool TryApplyEffect(ModItem? modItem)
-        {
-            if (!modItem.Values.ContainsKey("cut damage multiplier")) return false;
+        const string KEY_NAME = "cut damage multiplier";
 
-            modItem.Values["cut damage multiplier"] = (float)modItem.Values["cut damage multiplier"] + 0.2;
+        public bool TryApplyEffect(ModItem modItem)
+        {
+            if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
+            if (modItem.Values[KEY_NAME] is not float originValue) return false;
+
+            modItem.Values[KEY_NAME] = originValue + (float)0.2;
 
             return true;
         }
