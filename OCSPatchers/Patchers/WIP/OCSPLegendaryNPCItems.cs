@@ -222,9 +222,9 @@ namespace OCSPatchers.Patchers.WIP
         {
             foreach (var s in stats.Values)
             {
-                if (s.Value is not int i || i >= 100) continue;
+                if (s.Value is not float i || i >= 100) continue;
 
-                stats.Values[s.Key] = GetNewIntStatValue(i);
+                stats.Values[s.Key] = (float)GetNewIntStatValue(i);
             }
         }
 
