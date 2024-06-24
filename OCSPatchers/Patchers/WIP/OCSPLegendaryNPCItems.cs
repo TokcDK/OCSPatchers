@@ -310,7 +310,7 @@ namespace OCSPatchers.Patchers.WIP
             if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
             if (modItem.Values[KEY_NAME] is not float originValue) return false;
 
-            modItem.Values[KEY_NAME] = (int)modItem.Values["defence mod"] + 20;
+            modItem.Values[KEY_NAME] = originValue + 20;
 
             return true;
         }
