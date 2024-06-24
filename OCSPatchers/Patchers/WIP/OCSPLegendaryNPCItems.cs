@@ -15,14 +15,17 @@ namespace OCSPatchers.Patchers.WIP
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
-            foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
+            foreach (var modItem in context.Items.OfType(ItemType.Character).ToArray()) // to array because will be added new items and for enumerable will error
             {
                 if (!IsValidSquadItem(modItem)) continue;
+                //if (modItem.ReferenceCategories.Count == 0) continue;
 
-                context.NewItem(modItem);
+                //var clone = modItem.DeepClone();
 
-                //TryAddLegendary(modItem, context);
-                break;
+                //context.NewItem(clone);
+
+                TryAddLegendaryToTheSquad(modItem, context);
+                //break;
             }
 
             return Task.CompletedTask;
@@ -34,9 +37,9 @@ namespace OCSPatchers.Patchers.WIP
             return true;
         }
 
-        private void TryAddLegendary(ModItem modItem, IModContext context)
+        private void TryAddLegendaryToTheSquad(ModItem modItem, IModContext context)
         {
-            if (!modItem.ReferenceCategories.ContainsKey("choosefrom list")) return; // most likely already have legendary?
+            //if (modItem.ReferenceCategories.ContainsKey("choosefrom list")) return; // most likely already have legendary?
             if (!modItem.ReferenceCategories.ContainsKey("squad")) return; // missing squad members?
 
             if (!TryAddLegendaryCharacters(modItem, context)) return;
@@ -83,6 +86,7 @@ namespace OCSPatchers.Patchers.WIP
         private bool IsValidModItem(ModItem modItem)
         {
             if (!IsValidItemName(modItem)) return false;
+            if (modItem.IsDeleted()) return false;
             if (modItem.StringId.Contains("CL Legendary")) return false; // do not touch from legendary equipment mod
 
             return true;
