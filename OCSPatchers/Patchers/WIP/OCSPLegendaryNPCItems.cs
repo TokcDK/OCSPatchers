@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication.ExtendedProtection;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
@@ -141,11 +142,66 @@ namespace OCSPatchers.Patchers.WIP
             // reset weapon manufacturer for the character here, maybe apply here mods for weapons manufacturer, maybe add different manufacturers
             ReSetWeaponManufacturer(legendaryChara, context);
 
+            EnforceStats(legendaryChara);
+
             _cacheOfAddedLegendaryCharasByOrigin.Add(charaModItem.StringId, legendaryChara);
 
             return legendaryChara;
         }
 
+        private void EnforceStats(ModItem legendaryChara)
+        {
+            if (TrySetStatsByReferencedStats(legendaryChara)) return;
+
+            EnforceStatsByValues(legendaryChara);
+        }
+
+        private bool TrySetStatsByReferencedStats(ModItem legendaryChara)
+        {
+            if (!legendaryChara.ReferenceCategories.ContainsKey("stats")) return false;
+            if(legendaryChara.ReferenceCategories["stats"].References.Count == 0) return false;
+            var referencedStats = legendaryChara.ReferenceCategories["stats"].References.First();
+            if(referencedStats.Target == null) return false;
+
+            EnforceByReferencedStats(referencedStats.Target);
+
+            return true;
+        }
+
+        private void EnforceStatsByValues(ModItem legendaryChara)
+        {
+            foreach(var s in new string[] 
+            { 
+                "combat stats",
+                "ranged stats",
+                "stealth stats",
+                "strength",
+                "unarmed stats",
+            })
+            {
+                if (!legendaryChara.Values.TryGetValue(s, out var v) || v is not int i || i >= 100) continue;
+
+                legendaryChara.Values[s] = GetNewIntStatValue(i);
+            }
+
+        }
+
+        private object GetNewIntStatValue(int i)
+        {
+            int v1 = (int)(i * 1.5);
+            int newValue = v1 > 100 ? 100 : v1 < 30 ? 30 : v1;
+            return newValue;
+        }
+
+        private void EnforceByReferencedStats(ModItem stats)
+        {
+            foreach(var s in stats.Values)
+            {
+                if (s.Value is not int i || i >= 100) continue;
+
+                stats.Values[s.Key] = GetNewIntStatValue(i);
+            }
+        }
 
         bool isLegendaryManufacturerSet = false;
         ModItem? _legendaryWeaponManufacturer;
