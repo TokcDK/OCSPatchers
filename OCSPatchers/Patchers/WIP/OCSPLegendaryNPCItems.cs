@@ -48,8 +48,8 @@ namespace OCSPatchers.Patchers.WIP
 
             if (!TryAddLegendaryCharacters(modItem, context)) return;
 
-            modItem.Values.TryAdd("num random chars", 1);
-            modItem.Values.TryAdd("num random chars max", 1);
+            modItem.Values["num random chars"] = 1;
+            modItem.Values["num random chars max"] =  1;
         }
 
         private bool TryAddLegendaryCharacters(ModItem modItem, IModContext context)
