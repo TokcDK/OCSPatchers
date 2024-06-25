@@ -4,7 +4,7 @@ using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 
-namespace OCSPatchers.Patchers.WIP
+namespace OCSPatchers.Patchers.NewItems
 {
     internal class OCSPLegendaryNPCItems : OCSPatcherBase
     {
@@ -22,25 +22,22 @@ namespace OCSPatchers.Patchers.WIP
         {
             MakeWeaponManufacturer(context); // add first to make it always with first and second ids in patch mod
 
-            foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
-            {
-                if (!IsValidSquadItem(modItem)) continue;
-
-                TryAddLegendaryToTheSquad(modItem, context);
-            }
+            ParseSquadTemplates(context);
 
             RemoveWeaponManufacturerIfNoLegendariesAdded(context);
 
             return Task.CompletedTask;
         }
 
-        private void RemoveWeaponManufacturerIfNoLegendariesAdded(IModContext context)
+        #region SquadSetup
+        private void ParseSquadTemplates(IModContext context)
         {
-            if (_cacheOfAddedLegendaryCharasByOrigin.Count > 0) return;
+            foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
+            {
+                if (!IsValidSquadItem(modItem)) continue;
 
-            var model = _legendaryWeaponManufacturer!.ReferenceCategories["weapon models"].References.First();
-            context.Items.RemoveByKey(model.Target!.StringId); // remove model
-            context.Items.RemoveByKey(_legendaryWeaponManufacturer.StringId); // remove manufacturer
+                TryAddLegendaryToTheSquad(modItem, context);
+            }
         }
 
         private bool IsValidSquadItem(ModItem modItem)
@@ -60,8 +57,38 @@ namespace OCSPatchers.Patchers.WIP
 
             modItem.Values["num random chars"] = 1;
             modItem.Values["num random chars max"] = 1;
+        } 
+        #endregion
+
+        #region SafeChecks
+        private bool IsValidModItem(ModItem modItem)
+        {
+            if (!IsValidItemName(modItem)) return false;
+            if (modItem.IsDeleted()) return false;
+            if (modItem.StringId.Contains("CL Legendary")) return false; // do not touch from legendary equipment mod
+
+            return true;
         }
 
+        private bool IsValidCharacter(ModItem modItem)
+        {
+            if (!IsValidModItem(modItem)) return false;
+
+            return true;
+        }
+
+        private bool IsValidItemName(ModItem characterItem)
+        {
+            if (characterItem.Name.StartsWith("_")) return false;
+            if (characterItem.Name.StartsWith("@")) return false;
+            if (characterItem.Name.StartsWith("#")) return false;
+
+            return true;
+        }
+        #endregion
+
+
+        #region CharacterSetup
         private bool TryAddLegendaryCharacters(ModItem modItem, IModContext context)
         {
             var listOfMembers = GetListOfValidMembers(modItem);
@@ -96,31 +123,6 @@ namespace OCSPatchers.Patchers.WIP
             return true;
         }
 
-        private bool IsValidModItem(ModItem modItem)
-        {
-            if (!IsValidItemName(modItem)) return false;
-            if (modItem.IsDeleted()) return false;
-            if (modItem.StringId.Contains("CL Legendary")) return false; // do not touch from legendary equipment mod
-
-            return true;
-        }
-
-        private bool IsValidCharacter(ModItem modItem)
-        {
-            if (!IsValidModItem(modItem)) return false;
-
-            return true;
-        }
-
-        private bool IsValidItemName(ModItem characterItem)
-        {
-            if (characterItem.Name.StartsWith("_")) return false;
-            if (characterItem.Name.StartsWith("@")) return false;
-            if (characterItem.Name.StartsWith("#")) return false;
-
-            return true;
-        }
-
         private Dictionary<string, ModItem> GetListOfValidMembers(ModItem modItem)
         {
             var listOfMembers = new Dictionary<string, ModItem>();
@@ -151,7 +153,7 @@ namespace OCSPatchers.Patchers.WIP
             if (legendaryChara.Values.TryGetValue("named", out var v) && v is bool isNamed && isNamed)
             {
             }
-            else legendaryChara.Name = ("#ff0002\"Легендарн/аяый1/\" " + legendaryChara.Name);
+            else legendaryChara.Name = "#ff0002\"Легендарн/аяый1/\" " + legendaryChara.Name;
 
             // reset weapon manufacturer for the character here, maybe apply here mods for weapons manufacturer, maybe add different manufacturers
             ReSetWeaponManufacturer(legendaryChara, context);
@@ -251,6 +253,15 @@ namespace OCSPatchers.Patchers.WIP
             weaponLevelReference.Add(new ModReference(_legendaryWeaponManufacturer!.StringId));
         }
 
+        private void RemoveWeaponManufacturerIfNoLegendariesAdded(IModContext context)
+        {
+            if (_cacheOfAddedLegendaryCharasByOrigin.Count > 0) return;
+
+            var model = _legendaryWeaponManufacturer!.ReferenceCategories["weapon models"].References.First();
+            context.Items.RemoveByKey(model.Target!.StringId); // remove model
+            context.Items.RemoveByKey(_legendaryWeaponManufacturer.StringId); // remove manufacturer
+        }
+
         private void MakeWeaponManufacturer(IModContext context)
         {
             if (isLegendaryManufacturerSet) return;
@@ -260,7 +271,7 @@ namespace OCSPatchers.Patchers.WIP
             var crestManufacturer = context.Items.OfType(ItemType.WeaponManufacturer).First(i => i.StringId == "52288-rebirth.mod");
             _legendaryWeaponManufacturer = crestManufacturer.DeepClone();
             _legendaryWeaponManufacturer.Name = "Легендарный кузнец";
-            _legendaryWeaponManufacturer.Values["company description"] = (string)"Выкованное однажды оружие неизвестным легендарным кузнецом.";
+            _legendaryWeaponManufacturer.Values["company description"] = "Выкованное однажды оружие неизвестным легендарным кузнецом.";
             _legendaryWeaponManufacturer.Values["cut damage mod"] = (float)1.08;
             _legendaryWeaponManufacturer.Values["price mod"] = (float)1.8;
             if (_legendaryWeaponManufacturer.ReferenceCategories.ContainsKey("weapon types"))
@@ -280,12 +291,26 @@ namespace OCSPatchers.Patchers.WIP
             _legendaryWeaponManufacturer = context.NewItem(_legendaryWeaponManufacturer);
 
             isLegendaryManufacturerSet = true;
-        }
+        } 
+        #endregion
 
         private bool AddLegendaryItemsVariants(ModItem legendaryChara, IModContext context)
         {
             if (!legendaryChara.ReferenceCategories.ContainsKey("weapons")) return false;
 
+            return (TryWeaponsSetup(legendaryChara, context) || TryArmorsSetup(legendaryChara, context));
+
+            return true;
+        }
+
+        private bool TryArmorsSetup(ModItem legendaryChara, IModContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        #region WeaponsSetup
+        private bool TryWeaponsSetup(ModItem legendaryChara, IModContext context)
+        {
             var validWeapons = new Dictionary<string, ModReference>();
 
             var weaponsCategory = legendaryChara.ReferenceCategories["weapons"];
@@ -366,9 +391,9 @@ namespace OCSPatchers.Patchers.WIP
             }
 
             return legendaryWeapons;
-        }
+        } 
+        #endregion
 
-        readonly Dictionary<string, ModItem> _legendaryArmors = new();
         private ModItem? GetLegendaryArmor(ModItem armorModItem)
         {
             return null;
@@ -377,8 +402,8 @@ namespace OCSPatchers.Patchers.WIP
 
     interface ILegendaryItemEffect
     {
-        string Name { get; }
-        string Description { get; }
+        public string Name { get; }
+        public string Description { get; }
 
         bool TryApplyEffect(ModItem modItem);
     }
@@ -389,16 +414,32 @@ namespace OCSPatchers.Patchers.WIP
     {
     }
 
-    internal class ShieldLegendaryItemEffect : ILegendaryWeaponEffect
+    internal abstract class LegendaryItemEffectWeaponBase : ILegendaryWeaponEffect
     {
-        public string Name => "Щит";
+        public abstract string Name { get; }
 
-        public string Description => "#afa68bЗащита #a8b774+20";
+        public abstract string Description { get; }
 
         const string KEY_NAME = "defence mod";
 
         public bool TryApplyEffect(ModItem modItem)
         {
+            return modItem.Type == ItemType.Weapon && TryApplyWeaponEffect(modItem);
+        }
+        public abstract bool TryApplyWeaponEffect(ModItem modItem);
+    }
+
+    internal class ShieldLegendaryItemEffect : LegendaryItemEffectWeaponBase
+    {
+        public override string Name => "Щит";
+
+        public override string Description => "#afa68bЗащита #a8b774+20";
+
+        const string KEY_NAME = "defence mod";
+
+        public override bool TryApplyWeaponEffect(ModItem modItem)
+        {
+            if (modItem.Type != ItemType.Weapon) return false;
             if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
             if (modItem.Values[KEY_NAME] is not int originValue) return false;
 
@@ -408,16 +449,17 @@ namespace OCSPatchers.Patchers.WIP
         }
     }
 
-    internal class SharpLegendaryItemEffect : ILegendaryWeaponEffect
+    internal class SharpLegendaryItemEffect : LegendaryItemEffectWeaponBase
     {
-        public string Name => "Острота";
+        public override string Name => "Острота";
 
-        public string Description => "#afa68bРежущий урон #a8b774+20%";
+        public override string Description => "#afa68bРежущий урон #a8b774+20%";
 
         const string KEY_NAME = "cut damage multiplier";
 
-        public bool TryApplyEffect(ModItem modItem)
+        public override bool TryApplyWeaponEffect(ModItem modItem)
         {
+            if (modItem.Type != ItemType.Weapon) return false;
             if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
             if (modItem.Values[KEY_NAME] is not float originValue) return false;
 
