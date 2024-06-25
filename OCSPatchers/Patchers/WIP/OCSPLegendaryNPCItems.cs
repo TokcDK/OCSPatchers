@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Authentication.ExtendedProtection;
-using OpenConstructionSet;
+﻿using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
@@ -14,6 +8,14 @@ namespace OCSPatchers.Patchers.WIP
 {
     internal class OCSPLegendaryNPCItems : OCSPatcherBase
     {
+        bool isLegendaryManufacturerSet = false; // determine if manufacturer is set
+        ModItem? _legendaryWeaponManufacturer; // manufacturer item reference
+
+        // cache of added items for repeat using by original stringId
+        readonly Dictionary<string, ModItem> _cacheOfAddedLegendaryCharasByOrigin = new();
+        readonly Dictionary<string, ModItem> _addedLegendaryCharaStatsItemsCache = new();
+        readonly Dictionary<string, List<ModItem>> _cacheOfAddedLegendaryWeaponsByOrigin = new();
+
         public override string PatcherName => "Add legendary characters and items";
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
@@ -34,6 +36,8 @@ namespace OCSPatchers.Patchers.WIP
 
         private void RemoveWeaponManufacturerIfNoLegendariesAdded(IModContext context)
         {
+            if (_cacheOfAddedLegendaryCharasByOrigin.Count > 0) return;
+
             var model = _legendaryWeaponManufacturer!.ReferenceCategories["weapon models"].References.First();
             context.Items.RemoveByKey(model.Target!.StringId); // remove model
             context.Items.RemoveByKey(_legendaryWeaponManufacturer.StringId); // remove manufacturer
@@ -55,20 +59,20 @@ namespace OCSPatchers.Patchers.WIP
             if (!TryAddLegendaryCharacters(modItem, context)) return;
 
             modItem.Values["num random chars"] = 1;
-            modItem.Values["num random chars max"] =  1;
+            modItem.Values["num random chars max"] = 1;
         }
 
         private bool TryAddLegendaryCharacters(ModItem modItem, IModContext context)
         {
             var listOfMembers = GetListOfValidMembers(modItem);
-            if(!modItem.ReferenceCategories.ContainsKey("choosefrom list")) 
+            if (!modItem.ReferenceCategories.ContainsKey("choosefrom list"))
                 modItem.ReferenceCategories.Add("choosefrom list");
 
             var choosefromList = modItem.ReferenceCategories["choosefrom list"];
             int addedLegs = 0;
             foreach (var chara in listOfMembers.Values)
             {
-                if(!IsValidCharacter(chara)) continue;
+                if (!IsValidCharacter(chara)) continue;
 
                 if (chara.Values.TryGetValue("unique", out var v) && v is bool isUnique && isUnique)
                 {
@@ -79,7 +83,7 @@ namespace OCSPatchers.Patchers.WIP
                 if (legCharacter == null) continue;
 
                 bool isExistChara = listOfMembers.ContainsKey(legCharacter.StringId);
-                                
+
                 choosefromList.References.Add(legCharacter, isExistChara ? 30 : 1); // 30% chance for usual extra chars and 1% for legendaries
                 addedLegs += 1;
             }
@@ -132,8 +136,7 @@ namespace OCSPatchers.Patchers.WIP
 
             return listOfMembers;
         }
-                
-        readonly Dictionary<string, ModItem> _cacheOfAddedLegendaryCharasByOrigin = new();
+
         private ModItem? GetLegendayCharacter(ModItem charaModItem, IModContext context)
         {
             if (_cacheOfAddedLegendaryCharasByOrigin.ContainsKey(charaModItem.StringId)) return _cacheOfAddedLegendaryCharasByOrigin[charaModItem.StringId];
@@ -167,14 +170,13 @@ namespace OCSPatchers.Patchers.WIP
             EnforceStatsByValues(legendaryChara);
         }
 
-        Dictionary<string, ModItem> _addedLegendaryCharaStatsItemsCache = new();
         private bool TrySetStatsByReferencedStats(ModItem legendaryChara, IModContext context)
         {
             if (!legendaryChara.ReferenceCategories.ContainsKey("stats")) return false;
             var refs = legendaryChara.ReferenceCategories["stats"].References;
             if (refs.Count == 0) return false;
             var referencedStats = refs.First();
-            if(referencedStats.Target == null) return false;
+            if (referencedStats.Target == null) return false;
 
 
             if (_addedLegendaryCharaStatsItemsCache.ContainsKey(referencedStats.Target.StringId))
@@ -201,8 +203,8 @@ namespace OCSPatchers.Patchers.WIP
 
         private void EnforceStatsByValues(ModItem legendaryChara)
         {
-            foreach(var s in new string[] 
-            { 
+            foreach (var s in new string[]
+            {
                 "combat stats",
                 "ranged stats",
                 "stealth stats",
@@ -211,7 +213,7 @@ namespace OCSPatchers.Patchers.WIP
             })
             {
                 if (!legendaryChara.Values.TryGetValue(s, out var v) || v is not int i || i >= 100) continue;
-                
+
                 legendaryChara.Values[s] = (int)Math.Ceiling(GetNewIntStatValue(i));
             }
 
@@ -227,7 +229,7 @@ namespace OCSPatchers.Patchers.WIP
         private void EnforceByReferencedStats(ModItem stats)
         {
 
-            var keys = stats.Values.Keys.Select(v=>v).ToArray();
+            var keys = stats.Values.Keys.Select(v => v).ToArray();
             foreach (var key in keys)
             {
                 if (!stats.Values.TryGetValue(key, out var statObject) || statObject is not float i || i >= 100) continue;
@@ -236,8 +238,6 @@ namespace OCSPatchers.Patchers.WIP
             }
         }
 
-        bool isLegendaryManufacturerSet = false;
-        ModItem? _legendaryWeaponManufacturer;
         private void ReSetWeaponManufacturer(ModItem legendaryChara, IModContext context)
         {
             MakeWeaponManufacturer(context);
@@ -257,13 +257,13 @@ namespace OCSPatchers.Patchers.WIP
 
             //52293-rebirth.mod meitou model
             //52288-rebirth.mod meitou manufacturer
-            var crestManufacturer = context.Items.OfType(ItemType.WeaponManufacturer).First(i=>i.StringId== "52288-rebirth.mod");
+            var crestManufacturer = context.Items.OfType(ItemType.WeaponManufacturer).First(i => i.StringId == "52288-rebirth.mod");
             _legendaryWeaponManufacturer = crestManufacturer.DeepClone();
             _legendaryWeaponManufacturer.Name = "Легендарный кузнец";
             _legendaryWeaponManufacturer.Values["company description"] = (string)"Выкованное однажды оружие неизвестным легендарным кузнецом.";
             _legendaryWeaponManufacturer.Values["cut damage mod"] = (float)1.08;
             _legendaryWeaponManufacturer.Values["price mod"] = (float)1.8;
-            if(_legendaryWeaponManufacturer.ReferenceCategories.ContainsKey("weapon types")) 
+            if (_legendaryWeaponManufacturer.ReferenceCategories.ContainsKey("weapon types"))
                 _legendaryWeaponManufacturer.ReferenceCategories["weapon types"].References.Clear(); // can be values
             var weaponModels = _legendaryWeaponManufacturer.ReferenceCategories["weapon models"];
             weaponModels.References.Clear();
@@ -301,11 +301,11 @@ namespace OCSPatchers.Patchers.WIP
                 validWeapons.Add(weaponRef.Target.StringId, weaponRef);
             }
 
-            var newWeaponsList = new List<(string, int,int,int)>();
+            var newWeaponsList = new List<(string, int, int, int)>();
             foreach (var weaponRef in validWeapons.Values)
             {
                 var legendaryWeaponsList = GetLegendaryWeapons(weaponRef.Target, context);
-                if(legendaryWeaponsList == null || legendaryWeaponsList.Count==0)
+                if (legendaryWeaponsList == null || legendaryWeaponsList.Count == 0)
                 {
                     continue;
                 }
@@ -329,7 +329,6 @@ namespace OCSPatchers.Patchers.WIP
             return true;
         }
 
-        readonly Dictionary<string, List<ModItem>> _cacheOfAddedLegendaryWeaponsByOrigin = new();
         private List<ModItem> GetLegendaryWeapons(ModItem? weaponModItem, IModContext context)
         {
             if (weaponModItem!.StringId.Contains("CL Legendary")) return new List<ModItem>();
