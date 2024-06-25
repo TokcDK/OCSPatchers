@@ -3,7 +3,7 @@ using OpenConstructionSet.Mods;
 
 namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers
 {
-    public abstract class LegendaryItemEffectArmorBase : ILegendaryArmorEffect
+    public abstract class LegendaryItemEffectClothingBase : ILegendaryArmorEffect
     {
         public abstract string Name { get; }
 
@@ -11,8 +11,8 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers
 
         public bool TryApplyEffect(ModItem modItem)
         {
-            return modItem.Type == ItemType.Armour && TryApplyWeaponEffect(modItem);
+            return modItem.Type == ItemType.Armour && TryApplyClothingEffect(modItem);
         }
-        public abstract bool TryApplyWeaponEffect(ModItem modItem);
+        public abstract bool TryApplyClothingEffect(ModItem modItem);
     }
 }

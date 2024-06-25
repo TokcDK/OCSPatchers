@@ -137,6 +137,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 new CutDefenceLegendaryItemEffect(),
                 new DexterityLegendaryItemEffect(),
                 new CombatSpeedLegendaryItemEffect(),
+                new ExtraCoverageLegendaryItemEffect(),
         };
     }
 }
