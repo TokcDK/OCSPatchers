@@ -1,4 +1,5 @@
 ﻿using OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers;
+using OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.Patchers;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 
@@ -25,6 +26,21 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             {
                 return 5; // 5% chance to appear of legendary clothing
             }
+            protected override ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
+            {
+                // clothing
+                new AttackerSharpLegendaryItemEffect(),
+                new DefencerSharpLegendaryItemEffect(),
+                new RunnerLegendaryItemEffect(),
+                new RangerLegendaryItemEffect(),
+                new QualityLegendaryItemEffect(),
+                new BluntDefenceLegendaryItemEffect(),
+                new CutDefenceLegendaryItemEffect(),
+                new DexterityLegendaryItemEffect(),
+                new CombatSpeedLegendaryItemEffect(),
+                new ExtraCoverageLegendaryItemEffect(),
+                new UltraComfortabilityLegendaryItemEffect(),
+            };
         }
     }
 }

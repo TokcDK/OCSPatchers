@@ -115,30 +115,6 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
         protected abstract Dictionary<string, List<ModItem>> AddedItemsCache { get; }
 
-        protected virtual ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
-        {
-                // weapon
-                new ShieldLegendaryItemEffect(),
-                new SharpLegendaryItemEffect(),
-                new StunLegendaryItemEffect(),
-                new PenetratingLegendaryItemEffect(),
-                new JaggedLegendaryItemEffect(),
-                new AnimalKillerLegendaryItemEffect(),
-                new HumanKillerLegendaryItemEffect(),
-                new RobotKillerLegendaryItemEffect(),
-                new LivingKillerLegendaryItemEffect(),
-                // clothing
-                new AttackerSharpLegendaryItemEffect(),
-                new DefencerSharpLegendaryItemEffect(),
-                new RunnerLegendaryItemEffect(),
-                new RangerLegendaryItemEffect(),
-                new QualityLegendaryItemEffect(),
-                new BluntDefenceLegendaryItemEffect(),
-                new CutDefenceLegendaryItemEffect(),
-                new DexterityLegendaryItemEffect(),
-                new CombatSpeedLegendaryItemEffect(),
-                new ExtraCoverageLegendaryItemEffect(),
-                new UltraComfortabilityLegendaryItemEffect(),
-        };
+        protected virtual ILegendaryItemEffect[] EffectPatchers { get; } = Array.Empty<ILegendaryItemEffect>();
     }
 }
