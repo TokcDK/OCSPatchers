@@ -125,6 +125,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 new JaggedLegendaryItemEffect(),
                 new AnimalKillerLegendaryItemEffect(),
                 new HumanKillerLegendaryItemEffect(),
+                new RobotKillerLegendaryItemEffect(),
                 // clothing
                 new AttackerSharpLegendaryItemEffect(),
                 new DefencerSharpLegendaryItemEffect(),
