@@ -1,6 +1,7 @@
 ﻿using OCSPatchers.Patchers;
 using OCSPatchers.Patchers.ModAssistingPatchers;
 using OCSPatchers.Patchers.MoreItemsToSpecificStorage;
+using OCSPatchers.Patchers.NewItems;
 using OCSPatchers.Patchers.ReferencesShare;
 using OCSPatchers.Patchers.Tweaks;
 using OCSPatchers.Patchers.WIP;
