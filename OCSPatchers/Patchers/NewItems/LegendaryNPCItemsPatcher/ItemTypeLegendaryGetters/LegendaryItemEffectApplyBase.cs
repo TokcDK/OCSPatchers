@@ -126,9 +126,17 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 new AnimalKillerLegendaryItemEffect(),
                 new HumanKillerLegendaryItemEffect(),
                 new RobotKillerLegendaryItemEffect(),
+                new LivingKillerLegendaryItemEffect(),
                 // clothing
                 new AttackerSharpLegendaryItemEffect(),
                 new DefencerSharpLegendaryItemEffect(),
+                new RunnerLegendaryItemEffect(),
+                new RangerLegendaryItemEffect(),
+                new QualityLegendaryItemEffect(),
+                new BluntDefenceLegendaryItemEffect(),
+                new CutDefenceLegendaryItemEffect(),
+                new DexterityLegendaryItemEffect(),
+                new CombatSpeedLegendaryItemEffect(),
         };
     }
 }
