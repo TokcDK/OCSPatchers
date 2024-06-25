@@ -16,7 +16,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
             if (modItem.Values[KEY_NAME] is not int originValue) return false;
 
-            modItem.Values[KEY_NAME] = (float)(originValue + 10);
+            modItem.Values[KEY_NAME] = (int)(originValue + 10);
 
             return true;
         }

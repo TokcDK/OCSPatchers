@@ -38,13 +38,13 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
                 foreach (var legendaryItem in legendaryItemsList)
                 {
-                    newItemsList.Add((legendaryItem.StringId, itemRef.Value0, itemRef.Value1, itemRef.Value2));
+                    newItemsList.Add((legendaryItem.StringId, Set1(itemRef.Value0), Set2(itemRef.Value1), Set3(itemRef.Value2)));
                 }
             }
 
             if (newItemsList.Count == 0) return false;
 
-            itemRefs.Clear();
+            Clear(itemRefs);
             foreach (var itemToAdd in newItemsList)
             {
                 if (itemRefs.ContainsKey(itemToAdd.Item1)) continue;
@@ -53,6 +53,26 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             }
 
             return true;
+        }
+
+        protected virtual int Set3(int value2)
+        {
+            return value2;
+        }
+
+        protected virtual int Set2(int value1)
+        {
+            return value1;
+        }
+
+        protected virtual int Set1(int value0)
+        {
+            return value0;
+        }
+
+        protected virtual void Clear(ModReferenceCollection itemRefs)
+        {
+            itemRefs.Clear();
         }
 
         private List<ModItem> GetLegendaryItems(ModItem? weaponModItem, IModContext context)

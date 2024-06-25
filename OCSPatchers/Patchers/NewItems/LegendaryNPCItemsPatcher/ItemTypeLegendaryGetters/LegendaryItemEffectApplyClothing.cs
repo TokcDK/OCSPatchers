@@ -1,5 +1,6 @@
 ﻿using OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers;
 using OpenConstructionSet.Mods;
+using OpenConstructionSet.Mods.Context;
 
 namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 {
@@ -14,6 +15,16 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             protected override string GetPatchedItemescription(ILegendaryItemEffect effectPatcher) => $"#000000Эта часть одежды имеет легендарный эффект \"#ff0000{effectPatcher!.Name}#000000\", со следующими эффектами.\r\n{effectPatcher.Description}";
 
             protected override Dictionary<string, List<ModItem>> AddedItemsCache => _cacheOfAddedLegendaryClothingByOrigin;
+
+            protected override void Clear(ModReferenceCollection itemRefs)
+            {
+                // dont need to clear default clothing to reduce chance of other clothings to appear
+            }
+
+            protected override int Set2(int value1)
+            {
+                return 5; // 5% chance to appear of legendary clothing
+            }
         }
     }
 }
