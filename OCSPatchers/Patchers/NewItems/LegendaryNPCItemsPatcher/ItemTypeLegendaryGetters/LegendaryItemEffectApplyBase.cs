@@ -117,8 +117,15 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
         protected virtual ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
         {
+                // weapon
                 new ShieldLegendaryItemEffect(),
                 new SharpLegendaryItemEffect(),
+                new StunLegendaryItemEffect(),
+                new PenetratingLegendaryItemEffect(),
+                new JaggedLegendaryItemEffect(),
+                new AnimalKillerLegendaryItemEffect(),
+                new HumanKillerLegendaryItemEffect(),
+                // clothing
                 new AttackerSharpLegendaryItemEffect(),
                 new DefencerSharpLegendaryItemEffect(),
         };
