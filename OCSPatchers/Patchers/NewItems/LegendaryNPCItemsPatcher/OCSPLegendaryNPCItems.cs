@@ -1,12 +1,15 @@
-﻿using OpenConstructionSet;
+﻿using OCSPatchers.Patchers.LegendaryNPCItemsPatcher.Extensions;
+using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
+using OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters;
+using static OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters.OCSPLegendaryNPCItems;
 
-namespace OCSPatchers.Patchers.NewItems
+namespace OCSPatchers.Patchers
 {
-    internal class OCSPLegendaryNPCItems : OCSPatcherBase
+    internal partial class OCSPLegendaryNPCItems : OCSPatcherBase
     {
         bool isLegendaryManufacturerSet = false; // determine if manufacturer is set
         ModItem? _legendaryWeaponManufacturer; // manufacturer item reference
@@ -14,7 +17,6 @@ namespace OCSPatchers.Patchers.NewItems
         // cache of added items for repeat using by original stringId
         readonly Dictionary<string, ModItem> _cacheOfAddedLegendaryCharasByOrigin = new();
         readonly Dictionary<string, ModItem> _addedLegendaryCharaStatsItemsCache = new();
-        readonly Dictionary<string, List<ModItem>> _cacheOfAddedLegendaryWeaponsByOrigin = new();
 
         public override string PatcherName => "Add legendary characters and items";
 
@@ -61,34 +63,26 @@ namespace OCSPatchers.Patchers.NewItems
         #endregion
 
         #region SafeChecks
-        private bool IsValidModItem(ModItem modItem)
+        public bool IsValidModItem(ModItem modItem)
         {
-            if (!IsValidItemName(modItem)) return false;
-            if (modItem.IsDeleted()) return false;
-            if (modItem.StringId.Contains("CL Legendary")) return false; // do not touch from legendary equipment mod
-
-            return true;
+            return PatcherExtensions.IsValidModItem(modItem);
         }
 
-        private bool IsValidCharacter(ModItem modItem)
+        public bool IsValidItemName(ModItem characterItem)
         {
-            if (!IsValidModItem(modItem)) return false;
-
-            return true;
-        }
-
-        private bool IsValidItemName(ModItem characterItem)
-        {
-            if (characterItem.Name.StartsWith("_")) return false;
-            if (characterItem.Name.StartsWith("@")) return false;
-            if (characterItem.Name.StartsWith("#")) return false;
-
-            return true;
+            return PatcherExtensions.IsValidItemName(characterItem);
         }
         #endregion
 
 
         #region CharacterSetup
+
+        public bool IsValidCharacter(ModItem modItem)
+        {
+            if (!IsValidModItem(modItem)) return false;
+
+            return true;
+        }
         private bool TryAddLegendaryCharacters(ModItem modItem, IModContext context)
         {
             var listOfMembers = GetListOfValidMembers(modItem);
@@ -291,181 +285,18 @@ namespace OCSPatchers.Patchers.NewItems
             _legendaryWeaponManufacturer = context.NewItem(_legendaryWeaponManufacturer);
 
             isLegendaryManufacturerSet = true;
-        } 
+        }
         #endregion
 
+
+        readonly LegendaryItemEffectApplyBase _weaponsApply = new LegendaryItemEffectApplyWeapons();
+        readonly LegendaryItemEffectApplyBase _clothingApply = new LegendaryItemEffectApplyClothing();
         private bool AddLegendaryItemsVariants(ModItem legendaryChara, IModContext context)
         {
-            if (!legendaryChara.ReferenceCategories.ContainsKey("weapons")) return false;
+            bool ret1 = _weaponsApply.TryGetItems(legendaryChara, context);
+            bool ret2 = _clothingApply.TryGetItems(legendaryChara, context);
 
-            return (TryWeaponsSetup(legendaryChara, context) || TryArmorsSetup(legendaryChara, context));
-
-            return true;
-        }
-
-        private bool TryArmorsSetup(ModItem legendaryChara, IModContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        #region WeaponsSetup
-        private bool TryWeaponsSetup(ModItem legendaryChara, IModContext context)
-        {
-            var validWeapons = new Dictionary<string, ModReference>();
-
-            var weaponsCategory = legendaryChara.ReferenceCategories["weapons"];
-            var weaponsRefs = weaponsCategory.References;
-            foreach (var weaponRef in weaponsRefs)
-            {
-                //var wRef = context.Items.OfType(ItemType.Weapon).First(i => i.StringId == weaponRef.TargetId);
-
-                if (weaponRef.Target == default) continue;
-                if (!IsValidModItem(weaponRef.Target)) continue;
-                if (validWeapons.ContainsKey(weaponRef.TargetId)) continue;
-
-                validWeapons.Add(weaponRef.Target.StringId, weaponRef);
-            }
-
-            var newWeaponsList = new List<(string, int, int, int)>();
-            foreach (var weaponRef in validWeapons.Values)
-            {
-                var legendaryWeaponsList = GetLegendaryWeapons(weaponRef.Target, context);
-                if (legendaryWeaponsList == null || legendaryWeaponsList.Count == 0)
-                {
-                    continue;
-                }
-
-                foreach (var legendaryWeapon in legendaryWeaponsList)
-                {
-                    newWeaponsList.Add((legendaryWeapon.StringId, weaponRef.Value0, weaponRef.Value1, weaponRef.Value2));
-                }
-            }
-
-            if (newWeaponsList.Count == 0) return false;
-
-            weaponsRefs.Clear();
-            foreach (var weaponToAdd in newWeaponsList)
-            {
-                if (weaponsRefs.ContainsKey(weaponToAdd.Item1)) continue;
-
-                weaponsRefs.Add(new ModReference(weaponToAdd.Item1, weaponToAdd.Item2, weaponToAdd.Item3, weaponToAdd.Item4));
-            }
-
-            return true;
-        }
-
-        private List<ModItem> GetLegendaryWeapons(ModItem? weaponModItem, IModContext context)
-        {
-            if (weaponModItem!.StringId.Contains("CL Legendary")) return new List<ModItem>();
-
-            if (_cacheOfAddedLegendaryWeaponsByOrigin.ContainsKey(weaponModItem.StringId))
-            {
-                return _cacheOfAddedLegendaryWeaponsByOrigin[weaponModItem.StringId]; // already made legendaries
-            }
-
-            var addedLegendaryWeaponsListByOrigin = _cacheOfAddedLegendaryWeaponsByOrigin.ContainsKey(weaponModItem.StringId) ? _cacheOfAddedLegendaryWeaponsByOrigin[weaponModItem.StringId] : new List<ModItem>();
-
-            var legendaryWeapons = new List<ModItem>();
-            foreach (var effectData in new ILegendaryItemEffect[]
-            {
-                new ShieldLegendaryItemEffect(),
-                new SharpLegendaryItemEffect(),
-            })
-            {
-                var legendaryWeaponCandidate = weaponModItem.DeepClone(); // create temp copy for mod
-
-                if (!effectData.TryApplyEffect(legendaryWeaponCandidate)) continue;
-
-                legendaryWeaponCandidate.Values["description"] = $"#000000Это оружие имеет легендарный эффект \"#ff0000{effectData.Name}#000000\", со следующими эффектами.\r\n{effectData.Description}";
-                legendaryWeaponCandidate.Name += $" \"#ff0000{effectData.Name}#000000\"";
-
-                var legendaryWeapon = context.NewItem(legendaryWeaponCandidate); // add as new only when the mod was applied
-
-                addedLegendaryWeaponsListByOrigin.Add(legendaryWeapon); // add to prevent making variants for the same weapons many times
-
-                legendaryWeapons.Add(legendaryWeapon);
-            }
-            if (legendaryWeapons.Count > 0)
-            {
-                _cacheOfAddedLegendaryWeaponsByOrigin.Add(weaponModItem!.StringId, legendaryWeapons);
-            }
-
-            return legendaryWeapons;
-        } 
-        #endregion
-
-        private ModItem? GetLegendaryArmor(ModItem armorModItem)
-        {
-            return null;
-        }
-    }
-
-    interface ILegendaryItemEffect
-    {
-        public string Name { get; }
-        public string Description { get; }
-
-        bool TryApplyEffect(ModItem modItem);
-    }
-    interface ILegendaryWeaponEffect : ILegendaryItemEffect
-    {
-    }
-    interface ILegendaryArmorEffect : ILegendaryItemEffect
-    {
-    }
-
-    internal abstract class LegendaryItemEffectWeaponBase : ILegendaryWeaponEffect
-    {
-        public abstract string Name { get; }
-
-        public abstract string Description { get; }
-
-        const string KEY_NAME = "defence mod";
-
-        public bool TryApplyEffect(ModItem modItem)
-        {
-            return modItem.Type == ItemType.Weapon && TryApplyWeaponEffect(modItem);
-        }
-        public abstract bool TryApplyWeaponEffect(ModItem modItem);
-    }
-
-    internal class ShieldLegendaryItemEffect : LegendaryItemEffectWeaponBase
-    {
-        public override string Name => "Щит";
-
-        public override string Description => "#afa68bЗащита #a8b774+20";
-
-        const string KEY_NAME = "defence mod";
-
-        public override bool TryApplyWeaponEffect(ModItem modItem)
-        {
-            if (modItem.Type != ItemType.Weapon) return false;
-            if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
-            if (modItem.Values[KEY_NAME] is not int originValue) return false;
-
-            modItem.Values[KEY_NAME] = originValue + 20;
-
-            return true;
-        }
-    }
-
-    internal class SharpLegendaryItemEffect : LegendaryItemEffectWeaponBase
-    {
-        public override string Name => "Острота";
-
-        public override string Description => "#afa68bРежущий урон #a8b774+20%";
-
-        const string KEY_NAME = "cut damage multiplier";
-
-        public override bool TryApplyWeaponEffect(ModItem modItem)
-        {
-            if (modItem.Type != ItemType.Weapon) return false;
-            if (!modItem.Values.ContainsKey(KEY_NAME)) return false;
-            if (modItem.Values[KEY_NAME] is not float originValue) return false;
-
-            modItem.Values[KEY_NAME] = originValue + (float)0.2;
-
-            return true;
+            return ret1 || ret2;
         }
     }
 }
