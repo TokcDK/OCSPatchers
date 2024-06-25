@@ -51,7 +51,7 @@ namespace OCSPatchers
 
             //remove patch file, ocs reading it and i get already modified recodrs instead of mods
             string patchModFileName = Path.Combine(installation!.Mods.Path, ModName, ModFileName);
-            if (File.Exists(patchModFileName)) File.Delete(patchModFileName);
+            //if (File.Exists(patchModFileName)) File.Delete(patchModFileName);
 
             Console.WriteLine("Reading load order... ");
             var baseMods = await ModsToPatch(installation, excludedModNames);
