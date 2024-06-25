@@ -19,6 +19,14 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
             protected override void Clear(ModReferenceCollection itemRefs)
             {
+                int len = itemRefs.Count;
+                for(int i = 0; i<len; i++)
+                {
+                    var item = itemRefs[i];
+
+                    // double default items before add legendary, will reduce chance of legendary
+                    itemRefs.Add(new ModReference(item.TargetId, item.Value0, item.Value1, item.Value2));
+                }
                 // dont need to clear default clothing to reduce chance of other clothings to appear
             }
 
