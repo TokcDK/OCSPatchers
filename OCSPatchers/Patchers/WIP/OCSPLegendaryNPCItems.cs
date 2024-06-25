@@ -18,6 +18,8 @@ namespace OCSPatchers.Patchers.WIP
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
+            MakeWeaponManufacturer(context); // add first to make it always with first and second ids in patch mod
+
             foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
             {
                 if (!IsValidSquadItem(modItem)) continue;
@@ -25,8 +27,18 @@ namespace OCSPatchers.Patchers.WIP
                 TryAddLegendaryToTheSquad(modItem, context);
             }
 
+            RemoveWeaponManufacturerIfNoLegendariesAdded(context);
+
             return Task.CompletedTask;
         }
+
+        private void RemoveWeaponManufacturerIfNoLegendariesAdded(IModContext context)
+        {
+            var model = _legendaryWeaponManufacturer!.ReferenceCategories["weapon models"].References.First();
+            context.Items.RemoveByKey(model.Target!.StringId); // remove model
+            context.Items.RemoveByKey(_legendaryWeaponManufacturer.StringId); // remove manufacturer
+        }
+
         private bool IsValidSquadItem(ModItem modItem)
         {
             if (!IsValidModItem(modItem)) return false;

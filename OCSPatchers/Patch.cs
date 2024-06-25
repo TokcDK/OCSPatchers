@@ -39,7 +39,7 @@ namespace OCSPatchers
 
                 new OCSPRecrutablePrisonersDialogsAdd(),
                 new OCSPRemoveNpcOverpoweredStealthStats(),
-                new OCSPLegendaryNPCItems(),
+                new OCSPLegendaryNPCItems(), // new items here
             };
 
             patchers = FilterPatchersByReferencedMods(patchers, installation);
