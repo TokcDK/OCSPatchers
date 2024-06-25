@@ -99,6 +99,8 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
         {
                 new ShieldLegendaryItemEffect(),
                 new SharpLegendaryItemEffect(),
+                new AttackerSharpLegendaryItemEffect(),
+                new DefencerSharpLegendaryItemEffect(),
         };
     }
 }

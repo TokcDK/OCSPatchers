@@ -23,22 +23,22 @@ namespace OCSPatchers
 
             var patchers = new IOCSPatcher[]
             {
-                new OCSPatcherGeneral(),
-                new OSCPScarsPathfindingFix(),
-                new OSCPNPCEnjoysMoreShopping(),
-                new OCSPAnimationsShare(),
-                new OCSPHairsShare(),
-                new OCSPStackableItems1000(),
-                //new OCSPBiggerBackpacks(),
-                //new OCSPEveryoneHasName(),
-                new OCSPResetToAOMAnims(),
-                new OCSPHubGenesisOwnTheHubCopySquads(),
-                new OCSMoreItemsToSpecificStorageFood(),
-                new OCSMoreItemsToSpecificStorageBolts(),
-                new OCSMoreItemsToSpecificStorageRobotParts(),
+                //new OCSPatcherGeneral(),
+                //new OSCPScarsPathfindingFix(),
+                //new OSCPNPCEnjoysMoreShopping(),
+                //new OCSPAnimationsShare(),
+                //new OCSPHairsShare(),
+                //new OCSPStackableItems1000(),
+                ////new OCSPBiggerBackpacks(),
+                ////new OCSPEveryoneHasName(),
+                //new OCSPResetToAOMAnims(),
+                //new OCSPHubGenesisOwnTheHubCopySquads(),
+                //new OCSMoreItemsToSpecificStorageFood(),
+                //new OCSMoreItemsToSpecificStorageBolts(),
+                //new OCSMoreItemsToSpecificStorageRobotParts(),
 
-                new OCSPRecrutablePrisonersDialogsAdd(),
-                new OCSPRemoveNpcOverpoweredStealthStats(),
+                //new OCSPRecrutablePrisonersDialogsAdd(),
+                //new OCSPRemoveNpcOverpoweredStealthStats(),
                 new OCSPLegendaryNPCItems(), // new items here
             };
 
