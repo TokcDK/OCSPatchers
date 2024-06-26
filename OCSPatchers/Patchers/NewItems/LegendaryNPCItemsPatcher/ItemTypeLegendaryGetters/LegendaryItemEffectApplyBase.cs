@@ -92,7 +92,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 if (!effectPatcher.TryApplyEffect(legendaryItemCandidate)) continue;
 
                 legendaryItemCandidate.Values["description"] = GetPatchedItemescription(effectPatcher);
-                legendaryItemCandidate.Name += $" \"#ff0000{effectPatcher.Name}#000000\"";
+                legendaryItemCandidate.Name += $" #ff0000\"{effectPatcher.Name}\"";
 
                 var legendaryItem = context.NewItem(legendaryItemCandidate); // add as new only when the mod was applied
 
