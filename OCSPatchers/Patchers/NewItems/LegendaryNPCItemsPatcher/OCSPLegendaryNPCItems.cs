@@ -236,7 +236,8 @@ namespace OCSPatchers.Patchers
 
         private void EnforceStatsByValues(ModItem legendaryChara)
         {
-            foreach (var s in new string[]
+            var values = legendaryChara.Values;
+            foreach (var keyName in new string[]
             {
                 "combat stats",
                 "ranged stats",
@@ -245,9 +246,8 @@ namespace OCSPatchers.Patchers
                 "unarmed stats",
             })
             {
-                if (!legendaryChara.Values.TryGetValue(s, out var v) || v is not int i || i >= 100) continue;
-
-                legendaryChara.Values[s] = (int)Math.Ceiling(GetNewStatValue(i));
+                int value = (int)values[keyName];
+                values[keyName] = (int)Math.Ceiling(GetNewStatValue(value));
             }
 
         }
@@ -261,13 +261,12 @@ namespace OCSPatchers.Patchers
 
         private void EnforceByReferencedStats(ModItem stats)
         {
-
             var keys = stats.Values.Keys.Select(v => v).ToArray();
             foreach (var key in keys)
             {
-                if (!stats.Values.TryGetValue(key, out var statObject) || statObject is not float i || i >= 100) continue;
+                float value = (float)stats.Values[key];
 
-                stats.Values[key] = GetNewStatValue(i);
+                stats.Values[key] = GetNewStatValue(value);
             }
         }
 
