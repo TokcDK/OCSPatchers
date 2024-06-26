@@ -127,6 +127,9 @@ namespace OCSPatchers.Patchers
             {
                 return false; // skip unique
             }
+            if (modItem.ReferenceCategories.ContainsKey("vendors")
+                && modItem.ReferenceCategories["vendors"].References.Count > 0)
+                return false; // skip traders
 
             if (!IsValidModItem(modItem)) return false;
 
