@@ -142,7 +142,7 @@ namespace OCSPatchers.Patchers.ReferencesShare
             //    return false;
             //}
 
-            return !ExcludedToShareReferenceIDs.Contains(reference.TargetId);
+            return reference.Target != null && !reference.Target.IsDeleted() && !ExcludedToShareReferenceIDs.Contains(reference.TargetId);
         }
 
         /// <summary>
