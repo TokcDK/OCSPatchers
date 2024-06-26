@@ -95,10 +95,6 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 legendaryItemCandidate.Name += $" \"#ff0000{effectPatcher.Name}#000000\"";
 
                 var legendaryItem = context.NewItem(legendaryItemCandidate); // add as new only when the mod was applied
-                if (legendaryItem.StringId == "2918-OCSPatch2.mod")
-                {
-                    bool b = legendaryItem.IsDeleted();
-                }
 
                 legendaryItems.Add(legendaryItem);
             }
