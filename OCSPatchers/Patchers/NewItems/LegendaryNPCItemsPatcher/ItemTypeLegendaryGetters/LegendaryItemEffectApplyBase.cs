@@ -75,21 +75,19 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             itemRefs.Clear();
         }
 
-        private List<ModItem> GetLegendaryItems(ModItem? weaponModItem, IModContext context)
+        private List<ModItem> GetLegendaryItems(ModItem? sourceModItem, IModContext context)
         {
-            if (weaponModItem!.StringId.Contains("CL Legendary")) return new List<ModItem>();
+            if (sourceModItem!.StringId.Contains("CL Legendary")) return new List<ModItem>();
 
-            if (AddedItemsCache.ContainsKey(weaponModItem.StringId))
+            if (AddedItemsCache.ContainsKey(sourceModItem.StringId))
             {
-                return AddedItemsCache[weaponModItem.StringId]; // already made legendaries
+                return AddedItemsCache[sourceModItem.StringId]; // already made legendaries
             }
-
-            var addedLegendaryItemsListByOrigin = AddedItemsCache.ContainsKey(weaponModItem.StringId) ? AddedItemsCache[weaponModItem.StringId] : new List<ModItem>();
 
             var legendaryItems = new List<ModItem>();
             foreach (var effectPatcher in EffectPatchers)
             {
-                var legendaryItemCandidate = weaponModItem.DeepClone(); // create temp copy for mod
+                var legendaryItemCandidate = sourceModItem.DeepClone(); // create temp copy for mod
 
                 if (!effectPatcher.TryApplyEffect(legendaryItemCandidate)) continue;
 
@@ -98,16 +96,15 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
                 var legendaryItem = context.NewItem(legendaryItemCandidate); // add as new only when the mod was applied
                 if (legendaryItem.StringId == "2918-OCSPatch2.mod")
-                { 
+                {
+                    bool b = legendaryItem.IsDeleted();
                 }
-
-                addedLegendaryItemsListByOrigin.Add(legendaryItem); // add to prevent making variants for the same weapons many times
 
                 legendaryItems.Add(legendaryItem);
             }
             if (legendaryItems.Count > 0)
             {
-                AddedItemsCache.Add(weaponModItem!.StringId, legendaryItems);
+                AddedItemsCache.Add(sourceModItem!.StringId, legendaryItems);
             }
 
             return legendaryItems;
