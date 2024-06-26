@@ -23,7 +23,7 @@ namespace OCSPatchers.Patchers.Tweaks
             }
             foreach (var item in context.Items.OfType(ItemType.Building))
             {
-                TryParseAsStackingStorage(item);
+                TryParseAsStackableItem(item);
             }
             foreach (var item in context.Items.OfType(ItemType.Container))
             {

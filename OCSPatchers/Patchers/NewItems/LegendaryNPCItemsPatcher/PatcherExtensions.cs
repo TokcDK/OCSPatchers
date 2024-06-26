@@ -12,7 +12,8 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.Extensions
         public static bool IsValidModItem(ModItem modItem)
         {
             if (!IsValidItemName(modItem)) return false;
-            if (modItem.IsDeleted()) return false;
+            if (modItem.IsDeleted()) 
+                return false;
             if (modItem.StringId.Contains("CL Legendary")) return false; // do not touch from legendary equipment mod
 
             return true;
