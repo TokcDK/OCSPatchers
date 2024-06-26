@@ -7,6 +7,7 @@ using OpenConstructionSet.Mods.Context;
 using OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters;
 using static OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters.OCSPLegendaryNPCItems;
 using System.Linq;
+using System;
 
 namespace OCSPatchers.Patchers
 {
@@ -122,6 +123,11 @@ namespace OCSPatchers.Patchers
 
         public bool IsValidCharacter(ModItem modItem)
         {
+            if (modItem.Values.TryGetValue("unique", out var v) && v is bool isUnique && isUnique)
+            {
+                return false; // skip unique
+            }
+
             if (!IsValidModItem(modItem)) return false;
 
             return true;
@@ -137,11 +143,6 @@ namespace OCSPatchers.Patchers
             foreach (var chara in listOfMembers.Values)
             {
                 if (!IsValidCharacter(chara)) continue;
-
-                if (chara.Values.TryGetValue("unique", out var v) && v is bool isUnique && isUnique)
-                {
-                    continue; // skip unique
-                }
 
                 var legCharacter = GetLegendayCharacter(chara, context);
                 if (legCharacter == null) continue;
@@ -160,6 +161,8 @@ namespace OCSPatchers.Patchers
 
             foreach(var chara in listOfMembers.Values)
             {
+                if (!IsValidCharacter(chara)) continue;
+
                 // add original characters to prevent legendary appear in mos cases
                 if (choosefromList.References.ContainsKey(chara.StringId)) continue;
 
