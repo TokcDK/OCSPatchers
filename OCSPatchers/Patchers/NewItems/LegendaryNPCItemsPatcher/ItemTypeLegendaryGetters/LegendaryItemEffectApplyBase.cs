@@ -84,30 +84,33 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 return AddedItemsCache[weaponModItem.StringId]; // already made legendaries
             }
 
-            var addedLegendaryWeaponsListByOrigin = AddedItemsCache.ContainsKey(weaponModItem.StringId) ? AddedItemsCache[weaponModItem.StringId] : new List<ModItem>();
+            var addedLegendaryItemsListByOrigin = AddedItemsCache.ContainsKey(weaponModItem.StringId) ? AddedItemsCache[weaponModItem.StringId] : new List<ModItem>();
 
-            var legendaryWeapons = new List<ModItem>();
+            var legendaryItems = new List<ModItem>();
             foreach (var effectPatcher in EffectPatchers)
             {
-                var legendaryWeaponCandidate = weaponModItem.DeepClone(); // create temp copy for mod
+                var legendaryItemCandidate = weaponModItem.DeepClone(); // create temp copy for mod
 
-                if (!effectPatcher.TryApplyEffect(legendaryWeaponCandidate)) continue;
+                if (!effectPatcher.TryApplyEffect(legendaryItemCandidate)) continue;
 
-                legendaryWeaponCandidate.Values["description"] = GetPatchedItemescription(effectPatcher);
-                legendaryWeaponCandidate.Name += $" \"#ff0000{effectPatcher.Name}#000000\"";
+                legendaryItemCandidate.Values["description"] = GetPatchedItemescription(effectPatcher);
+                legendaryItemCandidate.Name += $" \"#ff0000{effectPatcher.Name}#000000\"";
 
-                var legendaryWeapon = context.NewItem(legendaryWeaponCandidate); // add as new only when the mod was applied
+                var legendaryItem = context.NewItem(legendaryItemCandidate); // add as new only when the mod was applied
+                if (legendaryItem.StringId == "2918-OCSPatch2.mod")
+                { 
+                }
 
-                addedLegendaryWeaponsListByOrigin.Add(legendaryWeapon); // add to prevent making variants for the same weapons many times
+                addedLegendaryItemsListByOrigin.Add(legendaryItem); // add to prevent making variants for the same weapons many times
 
-                legendaryWeapons.Add(legendaryWeapon);
+                legendaryItems.Add(legendaryItem);
             }
-            if (legendaryWeapons.Count > 0)
+            if (legendaryItems.Count > 0)
             {
-                AddedItemsCache.Add(weaponModItem!.StringId, legendaryWeapons);
+                AddedItemsCache.Add(weaponModItem!.StringId, legendaryItems);
             }
 
-            return legendaryWeapons;
+            return legendaryItems;
         }
 
         protected abstract string CategoryName { get; }
