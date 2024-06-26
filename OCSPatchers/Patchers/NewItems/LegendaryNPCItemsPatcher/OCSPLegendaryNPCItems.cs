@@ -247,12 +247,12 @@ namespace OCSPatchers.Patchers
             {
                 if (!legendaryChara.Values.TryGetValue(s, out var v) || v is not int i || i >= 100) continue;
 
-                legendaryChara.Values[s] = (int)Math.Ceiling(GetNewIntStatValue(i));
+                legendaryChara.Values[s] = (int)Math.Ceiling(GetNewStatValue(i));
             }
 
         }
 
-        private float GetNewIntStatValue(float i)
+        private float GetNewStatValue(float i)
         {
             float v1 = (float)(i * 1.5);
             float newValue = v1 > 100 ? 100 : v1 < 30 ? 30 : v1;
@@ -267,7 +267,7 @@ namespace OCSPatchers.Patchers
             {
                 if (!stats.Values.TryGetValue(key, out var statObject) || statObject is not float i || i >= 100) continue;
 
-                stats.Values[key] = GetNewIntStatValue(i);
+                stats.Values[key] = GetNewStatValue(i);
             }
         }
 
@@ -326,6 +326,7 @@ namespace OCSPatchers.Patchers
         #endregion
 
 
+        #region items
         readonly LegendaryItemEffectApplyBase _weaponsApply = new LegendaryItemEffectApplyWeapons();
         readonly LegendaryItemEffectApplyBase _clothingApply = new LegendaryItemEffectApplyClothing();
         private bool AddLegendaryItemsVariants(ModItem legendaryChara, IModContext context)
@@ -334,6 +335,7 @@ namespace OCSPatchers.Patchers
             bool ret2 = _clothingApply.TryGetItems(legendaryChara, context);
 
             return ret1 || ret2;
-        }
+        } 
+        #endregion
     }
 }
