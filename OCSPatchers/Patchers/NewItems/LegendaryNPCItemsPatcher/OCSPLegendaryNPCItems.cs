@@ -6,6 +6,7 @@ using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 using OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters;
 using static OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters.OCSPLegendaryNPCItems;
+using System.Linq;
 
 namespace OCSPatchers.Patchers
 {
@@ -34,6 +35,8 @@ namespace OCSPatchers.Patchers
         #region SquadSetup
         private void ParseSquadTemplates(IModContext context)
         {
+            SaveReferencedSquads(context);
+
             foreach (var modItem in context.Items.OfType(ItemType.SquadTemplate).ToArray()) // to array because will be added new items and for enumerable will error
             {
                 if (!IsValidSquadItem(modItem)) continue;
@@ -42,10 +45,44 @@ namespace OCSPatchers.Patchers
             }
         }
 
+        readonly HashSet<string> _referencedSquads = new();
+        private void SaveReferencedSquads(IModContext context)
+        {
+            var categoryNames = new string[2]
+            {
+                "bar squads",
+                "residents",
+            };
+
+            foreach (var modItem in context.Items.OfType(ItemType.Town))
+            {
+                if (modItem.IsDeleted()) continue;
+
+                foreach (var categoryName in categoryNames)
+                {
+                    if (!modItem.ReferenceCategories.ContainsKey(categoryName)) continue;
+
+                    foreach (var squadRef in modItem.ReferenceCategories[categoryName].References)
+                    {
+                        if (squadRef.Target == null) continue;
+                        if (_referencedSquads.Contains(squadRef.TargetId)) continue;
+
+                        _referencedSquads.Add(squadRef.TargetId);
+                    }
+                }
+            }
+        }
+
         private bool IsValidSquadItem(ModItem modItem)
         {
             if (!IsValidModItem(modItem)) return false;
+
+            // required some items to exist for the squad to be valid
             if (!modItem.ReferenceCategories.ContainsKey("AI packages")) return false; // behavour is not set, not referenced, deleted but partially set by some mod?
+            if (!modItem.Values.ContainsKey("force speed")) return false; // 
+
+            // squad must be referenced by town to be used
+            if (!_referencedSquads.Contains(modItem.StringId)) return false;
 
             return true;
         }
