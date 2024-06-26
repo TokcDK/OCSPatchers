@@ -246,7 +246,7 @@ namespace OCSPatchers.Patchers
                 "unarmed stats",
             })
             {
-                int value = (int)values[keyName];
+                int value = Convert.ToInt32(values[keyName]);
                 values[keyName] = (int)Math.Ceiling(GetNewStatValue(value));
             }
 
@@ -264,7 +264,8 @@ namespace OCSPatchers.Patchers
             var keys = stats.Values.Keys.Select(v => v).ToArray();
             foreach (var key in keys)
             {
-                float value = (float)stats.Values[key];
+                float value = (float)0.1;
+                value = Convert.ToSingle(stats.Values[key]);
 
                 stats.Values[key] = GetNewStatValue(value);
             }
