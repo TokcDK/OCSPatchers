@@ -264,8 +264,10 @@ namespace OCSPatchers.Patchers
             var keys = stats.Values.Keys.Select(v => v).ToArray();
             foreach (var key in keys)
             {
-                float value = (float)0.1;
-                value = Convert.ToSingle(stats.Values[key]);
+                var o = stats.Values[key];
+                if (o is not float && o is not int) continue; // can be other type value
+
+                float value = Convert.ToSingle(o);
 
                 stats.Values[key] = GetNewStatValue(value);
             }
