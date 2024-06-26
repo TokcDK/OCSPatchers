@@ -94,8 +94,14 @@ namespace OCSPatchers.Patchers
 
             if (!TryAddLegendaryCharacters(modItem, context)) return;
 
-            modItem.Values["num random chars"] = 1;
-            modItem.Values["num random chars max"] = 1;
+            if(!modItem.Values.ContainsKey("num random chars"))
+            {
+                modItem.Values["num random chars"] = 0;
+            }
+            if (!modItem.Values.ContainsKey("num random chars max"))
+            {
+                modItem.Values["num random chars max"] = 1;
+            }
         } 
         #endregion
 
@@ -151,6 +157,15 @@ namespace OCSPatchers.Patchers
                 modItem.ReferenceCategories.RemoveByKey("choosefrom list"); // remove empty list where was not added any char
                 return false;
             }
+
+            foreach(var chara in listOfMembers.Values)
+            {
+                // add original characters to prevent legendary appear in mos cases
+                if (choosefromList.References.ContainsKey(chara.StringId)) continue;
+
+                choosefromList.References.Add(chara, 40);
+            }
+
             return true;
         }
 
