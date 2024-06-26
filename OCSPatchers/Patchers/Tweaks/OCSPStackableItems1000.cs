@@ -17,8 +17,7 @@ namespace OCSPatchers.Patchers.Tweaks
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
-            var items = context.Items.OfType(ItemType.Item);
-            foreach (var item in items)
+            foreach (var item in context.Items.OfType(ItemType.Item))
             {
                 TryParseAsStackableItem(item);
             }
@@ -52,6 +51,12 @@ namespace OCSPatchers.Patchers.Tweaks
 
         private bool TryParseAsStackableItem(ModItem item)
         {
+            if(item.IsDeleted()) return false;
+            if(string.IsNullOrWhiteSpace(item.Name)) return false;
+            if(!item.Values.ContainsKey("itemtype limit") // building
+                && !item.Values.ContainsKey("value") // item
+                ) return false;
+
             TryParseAsStackingStorage(item);
 
             if (!item.Values.TryGetValue("stackable", out var value)) return false;
