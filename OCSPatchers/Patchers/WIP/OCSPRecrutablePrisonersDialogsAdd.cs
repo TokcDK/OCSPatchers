@@ -40,6 +40,7 @@ namespace OCSPatchers.Patchers.WIP
     {
         bool IsValid(ModItem modItem, IModContext context)
         {
+            if (modItem.IsDeleted()) return false;
             if (modItem.Type != ItemType.Character) return false;
 
             if (HaveNinjaName(modItem)) return true;
