@@ -179,7 +179,7 @@ namespace OCSPatchers.Patchers
             if (!AddLegendaryItemsVariants(legendaryCharaCandidate, context)) return null;
 
             var legendaryChara = context.NewItem(legendaryCharaCandidate); // add only when legendary weapons was added
-            legendaryChara.Values["armour upgrade chance"] = 50;
+            legendaryChara.Values["armour upgrade chance"] = 80;
 
             if (legendaryChara.Values.TryGetValue("named", out var v) && v is bool isNamed && isNamed)
             {
