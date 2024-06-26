@@ -94,11 +94,11 @@ namespace OCSPatchers.Patchers
 
             if (!TryAddLegendaryCharacters(modItem, context)) return;
 
-            if(!modItem.Values.ContainsKey("num random chars"))
+            if (!modItem.Values.TryGetValue("num random chars max", out var minValue) || (minValue is int min && min == 0))
             {
                 modItem.Values["num random chars"] = 0;
             }
-            if (!modItem.Values.ContainsKey("num random chars max"))
+            if (!modItem.Values.TryGetValue("num random chars max", out var maxValue) || (minValue is int max && max == 0))
             {
                 modItem.Values["num random chars max"] = 1;
             }
