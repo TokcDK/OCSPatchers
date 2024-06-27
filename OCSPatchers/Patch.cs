@@ -95,6 +95,8 @@ namespace OCSPatchers
                 await installation.WriteEnabledModsAsync(enabledMods);
             }
 
+            Console.WriteLine();
+            Console.WriteLine(".........");
             Console.WriteLine("All is finished!");
             Console.ReadKey();
         }
