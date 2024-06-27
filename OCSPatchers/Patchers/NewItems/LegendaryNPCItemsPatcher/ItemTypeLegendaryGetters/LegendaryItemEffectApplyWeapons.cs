@@ -18,7 +18,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             public override ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
             {
                 // weapon
-                new RandomTo4WeaponLegendaryItemEffect(),
+                //new RandomTo4WeaponLegendaryItemEffect(),
                 new ShieldLegendaryItemEffect(),
                 new SharpLegendaryItemEffect(),
                 new StunLegendaryItemEffect(),

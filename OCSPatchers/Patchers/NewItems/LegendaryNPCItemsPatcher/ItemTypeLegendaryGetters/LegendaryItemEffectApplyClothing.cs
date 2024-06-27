@@ -29,7 +29,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             public override ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
             {
                 // clothing
-                new RandomTo4LegendaryItemEffect(),
+                //new RandomTo4LegendaryItemEffect(),
                 new AttackerSharpLegendaryItemEffect(),
                 new DefencerSharpLegendaryItemEffect(),
                 new RunnerLegendaryItemEffect(),
