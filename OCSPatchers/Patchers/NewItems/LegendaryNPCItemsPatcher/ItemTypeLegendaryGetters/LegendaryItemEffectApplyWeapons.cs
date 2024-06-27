@@ -15,9 +15,10 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             protected override string GetPatchedItemDescription(ILegendaryItemEffect effectPatcher) => $"#ffffffЭто оружие имеет легендарный эффект \"#ff0000{effectPatcher!.Name}#ffffff\", со следующими эффектами.\r\n{effectPatcher.Description}";
 
             protected override Dictionary<string, List<ModItem>> AddedItemsCache => _cacheOfAddedLegendaryWeaponsByOrigin;
-            protected override ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
+            public override ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
             {
                 // weapon
+                new RandomTo4WeaponLegendaryItemEffect(),
                 new ShieldLegendaryItemEffect(),
                 new SharpLegendaryItemEffect(),
                 new StunLegendaryItemEffect(),

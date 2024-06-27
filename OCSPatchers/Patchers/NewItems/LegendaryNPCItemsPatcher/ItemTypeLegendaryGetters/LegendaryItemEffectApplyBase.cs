@@ -111,6 +111,6 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
         protected abstract Dictionary<string, List<ModItem>> AddedItemsCache { get; }
 
-        protected virtual ILegendaryItemEffect[] EffectPatchers { get; } = Array.Empty<ILegendaryItemEffect>();
+        public virtual ILegendaryItemEffect[] EffectPatchers { get; } = Array.Empty<ILegendaryItemEffect>();
     }
 }

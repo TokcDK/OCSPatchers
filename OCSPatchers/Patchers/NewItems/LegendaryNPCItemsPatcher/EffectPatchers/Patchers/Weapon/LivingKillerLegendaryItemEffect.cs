@@ -3,7 +3,7 @@ using OpenConstructionSet.Mods;
 
 namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.Patchers
 {
-    internal class LivingKillerLegendaryItemEffect : ILegendaryItemEffect
+    internal class LivingKillerLegendaryItemEffect : ILegendaryWeaponEffect
     {
         public string Name => "Убийца живого";
 

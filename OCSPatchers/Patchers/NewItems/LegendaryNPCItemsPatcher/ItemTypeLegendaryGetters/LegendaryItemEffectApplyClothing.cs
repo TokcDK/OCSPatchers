@@ -26,9 +26,10 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             {
                 return 5; // 5% chance to appear of legendary clothing
             }
-            protected override ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
+            public override ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
             {
                 // clothing
+                new RandomTo4LegendaryItemEffect(),
                 new AttackerSharpLegendaryItemEffect(),
                 new DefencerSharpLegendaryItemEffect(),
                 new RunnerLegendaryItemEffect(),
