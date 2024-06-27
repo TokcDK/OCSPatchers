@@ -145,10 +145,9 @@ namespace OCSPatchers.Patchers
 
             var choosefromList = modItem.ReferenceCategories["choosefrom list"];
             int addedLegs = 0;
-            foreach (var chara in listOfMembers.Values)
+            var validListOfMembers = listOfMembers.Values.Where(c=>IsValidCharacter(c)).ToList();
+            foreach (var chara in validListOfMembers)
             {
-                if (!IsValidCharacter(chara)) continue;
-
                 var legCharacter = GetLegendayCharacter(chara, context);
                 if (legCharacter == null) continue;
 
@@ -164,14 +163,12 @@ namespace OCSPatchers.Patchers
                 return false;
             }
 
-            foreach(var chara in listOfMembers.Values)
+            foreach(var chara in validListOfMembers)
             {
-                if (!IsValidCharacter(chara)) continue;
-
                 // add original characters to prevent legendary appear in mos cases
                 if (choosefromList.References.ContainsKey(chara.StringId)) continue;
 
-                choosefromList.References.Add(chara, 40);
+                choosefromList.References.Add(chara, 30);
             }
 
             return true;
