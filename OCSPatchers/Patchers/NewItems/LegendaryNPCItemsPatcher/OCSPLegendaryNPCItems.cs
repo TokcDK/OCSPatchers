@@ -13,6 +13,8 @@ namespace OCSPatchers.Patchers
 {
     internal partial class OCSPLegendaryNPCItems : OCSPatcherBase
     {
+        public override string PatchFileNameWithoutExtension => "OSCPatchLegendaryEquipment";
+
         bool isLegendaryManufacturerSet = false; // determine if manufacturer is set
         ModItem? _legendaryWeaponManufacturer; // manufacturer item reference
 

@@ -9,19 +9,19 @@ using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
+using System.Xml.Linq;
 
 namespace OCSPatchers
 {
     internal class Patch
     {
-        const string ModName = "OCSPatch";
-        const string ModFileName = ModName + ".mod";
+        static string ModName { get; set; } = "OCSPatch";
+
+        static string ModFileName => ModName + ".mod";
 
         internal static async Task Apply()
         {
-            IInstallation? installation = await SelectInstallation();
-
-            var patchers = new IOCSPatcher[]
+            var patchers = new List<IOCSPatcher>
             {
                 new OCSPatcherGeneral(),
                 new OSCPScarsPathfindingFix(),
@@ -43,56 +43,88 @@ namespace OCSPatchers
                 new OCSPLegendaryNPCItems(), // new items here
             };
 
-            patchers = FilterPatchersByReferencedMods(patchers, installation);
+            var patchersByPatchFileName = SortByPatchFileName(patchers);
 
-            Console.WriteLine();
-
-            // getlist of excluded mod names where must be merged patch name, referenced and excluded names
-            var excludedModNames = GetExcludedModNames(patchers);
-
-            //remove patch file, ocs reading it and i get already modified recodrs instead of mods
-            string patchModFileName = Path.Combine(installation!.Mods.Path, ModName, ModFileName);
-            //if (File.Exists(patchModFileName)) File.Delete(patchModFileName);
-
-            Console.WriteLine("Reading load order... ");
-            var baseMods = await ModsToPatch(installation, excludedModNames);
-
-            Console.WriteLine("Build context... ");
-            var context = await BuildModContext(installation, baseMods, patchers);
-
-            Console.WriteLine("Apply patchers... ");
-            foreach (var patcher in patchers)
+            foreach(var patchData in patchersByPatchFileName)
             {
-                Console.WriteLine($"Apply {patcher.PatcherName}");
-                await patcher.ApplyPatch(context, installation!);
+                Console.WriteLine(".........");
+
+                ModName = patchData.Key;
+                patchers = patchData.Value;
+
+                Console.WriteLine($"Creating {ModFileName}..");
+
+                IInstallation? installation = await SelectInstallation();
+                patchers = FilterPatchersByReferencedMods(patchers, installation);
+
+                Console.WriteLine();
+
+                // getlist of excluded mod names where must be merged patch name, referenced and excluded names
+                var excludedModNames = GetExcludedModNames(patchers);
+                excludedModNames.Add(ModName); // add patcher itself
+
+                //remove patch file, ocs reading it and i get already modified recodrs instead of mods
+                string patchModFileName = Path.Combine(installation!.Mods.Path, ModName, ModFileName);
+                //if (File.Exists(patchModFileName)) File.Delete(patchModFileName);
+
+                Console.WriteLine("Reading load order... ");
+                var baseMods = await ModsToPatch(installation, excludedModNames);
+
+                Console.WriteLine("Build context... ");
+                var context = await BuildModContext(installation, baseMods, patchers);
+
+                Console.WriteLine("Apply patchers... ");
+                foreach (var patcher in patchers)
+                {
+                    Console.WriteLine($"Apply {patcher.PatcherName}");
+                    await patcher.ApplyPatch(context, installation!);
+                }
+
+                Console.WriteLine($"Saving {ModFileName}... ");
+
+                await context.SaveAsync();
+
+                Console.WriteLine($"Adding {ModFileName} to end of load order... ");
+
+                var enabledMods = (await installation!.ReadEnabledModsAsync()).ToList();
+
+                // Remove this mod and then add to the end of the load order
+                enabledMods.RemoveAll(s => s == ModFileName);
+                enabledMods.Add(ModFileName);
+
+                await installation.WriteEnabledModsAsync(enabledMods);
             }
 
-            Console.WriteLine("Saving... ");
-
-            await context.SaveAsync();
-
-            Console.WriteLine("Adding patch to end of load order... ");
-
-            var enabledMods = (await installation!.ReadEnabledModsAsync()).ToList();
-
-            // Remove this mod and then add to the end of the load order
-            enabledMods.RemoveAll(s => s == ModFileName);
-            enabledMods.Add(ModFileName);
-
-            await installation.WriteEnabledModsAsync(enabledMods);
-
-            Console.WriteLine("Finished!");
+            Console.WriteLine("All is finished!");
             Console.ReadKey();
         }
 
-        private static IOCSPatcher[] FilterPatchersByReferencedMods(IOCSPatcher[] patchers, IInstallation? installation)
+        private static Dictionary<string, List<IOCSPatcher>> SortByPatchFileName(IEnumerable<IOCSPatcher> patchers)
         {
-            return patchers.Where(patcher =>
-            !(patcher.ReferenceModNames.Any(referenceModName => !installation!.Mods.TryFind(referenceModName, out var _))) // exclure patchers where any referenced mod name is missing in load order
-            ).ToArray();
+            var patchersByPatchFileName = new Dictionary<string, List<IOCSPatcher>>();
+            foreach (var patcher in patchers)
+            {
+                if (!patchersByPatchFileName.ContainsKey(patcher.PatchFileNameWithoutExtension))
+                {
+                    patchersByPatchFileName.Add(patcher.PatchFileNameWithoutExtension, new List<IOCSPatcher>() { patcher });
+                }
+                else
+                {
+                    patchersByPatchFileName[patcher.PatchFileNameWithoutExtension].Add(patcher);
+                }
+            }
+
+            return patchersByPatchFileName;
         }
 
-        static async Task<IModContext> BuildModContext(IInstallation? installation, List<string> baseMods, IOCSPatcher[] patchers, int version = 16)
+        private static List<IOCSPatcher> FilterPatchersByReferencedMods(IEnumerable<IOCSPatcher> patchers, IInstallation? installation)
+        {
+            return patchers.Where(patcher =>
+            !(patcher.ReferenceModNames.Any(referenceModName => !installation!.Mods.TryFind(referenceModName, out var _))) // exclude patchers where any referenced mod name is missing in load order
+            ).ToList();
+        }
+
+        static async Task<IModContext> BuildModContext(IInstallation? installation, List<string> baseMods, IEnumerable<IOCSPatcher> patchers, int version = 16)
         {
             // Build mod
             var header = new Header(version, "author", "merged patchers");
@@ -114,7 +146,7 @@ namespace OCSPatchers
             return await new ContextBuilder().BuildAsync(options);
         }
 
-        static private HashSet<string> GetExcludedModNames(IOCSPatcher[] patchers)
+        static private HashSet<string> GetExcludedModNames(IEnumerable<IOCSPatcher> patchers)
         {
             var excluded = new HashSet<string>
             {
@@ -135,7 +167,7 @@ namespace OCSPatchers
                         excluded.Add(name);
                     }
                 }
-            }
+            } 
 
             return excluded;
         }

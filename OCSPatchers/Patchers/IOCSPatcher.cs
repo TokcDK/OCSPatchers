@@ -10,6 +10,7 @@ namespace OCSPatchers.Patchers
 {
     public interface IOCSPatcher
     {
+        string PatchFileNameWithoutExtension { get; }
         string PatcherName { get; }
         string[] ReferenceModNames { get; }
         string[] ExcludedModNames { get; }
