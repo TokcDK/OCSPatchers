@@ -91,8 +91,8 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
                 if (!effectPatcher.TryApplyEffect(legendaryItemCandidate)) continue;
 
-                legendaryItemCandidate.Values["description"] = GetPatchedItemescription(effectPatcher);
-                legendaryItemCandidate.Name += $" #ff0000\"{effectPatcher.Name}\"";
+                legendaryItemCandidate.Values["description"] = GetPatchedItemDescription(effectPatcher);
+                legendaryItemCandidate.Name = $"#ff0000{legendaryItemCandidate.Name} \"{effectPatcher.Name}\"";
 
                 var legendaryItem = context.NewItem(legendaryItemCandidate); // add as new only when the mod was applied
 
@@ -107,7 +107,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
         }
 
         protected abstract string CategoryName { get; }
-        protected abstract string GetPatchedItemescription(ILegendaryItemEffect effectPatcher);
+        protected abstract string GetPatchedItemDescription(ILegendaryItemEffect effectPatcher);
 
         protected abstract Dictionary<string, List<ModItem>> AddedItemsCache { get; }
 

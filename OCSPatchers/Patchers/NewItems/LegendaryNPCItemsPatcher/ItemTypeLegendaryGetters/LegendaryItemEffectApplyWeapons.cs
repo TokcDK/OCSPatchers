@@ -12,7 +12,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
             protected override string CategoryName => "weapons";
 
-            protected override string GetPatchedItemescription(ILegendaryItemEffect effectPatcher) => $"#000000Это оружие имеет легендарный эффект \"#ff0000{effectPatcher!.Name}#000000\", со следующими эффектами.\r\n{effectPatcher.Description}";
+            protected override string GetPatchedItemDescription(ILegendaryItemEffect effectPatcher) => $"#ffffffЭто оружие имеет легендарный эффект \"#ff0000{effectPatcher!.Name}#ffffff\", со следующими эффектами.\r\n{effectPatcher.Description}";
 
             protected override Dictionary<string, List<ModItem>> AddedItemsCache => _cacheOfAddedLegendaryWeaponsByOrigin;
             protected override ILegendaryItemEffect[] EffectPatchers { get; } = new ILegendaryItemEffect[]
