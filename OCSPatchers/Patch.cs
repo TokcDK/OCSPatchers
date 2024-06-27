@@ -61,7 +61,13 @@ namespace OCSPatchers
 
                 // getlist of excluded mod names where must be merged patch name, referenced and excluded names
                 var excludedModNames = GetExcludedModNames(patchers);
-                excludedModNames.Add(ModName); // add patcher itself
+                // add current patch and later in load order
+                var patchNames = new List<string>(patchersByPatchFileName.Keys);
+                for (int i = patchNames.IndexOf(ModName); i < patchersByPatchFileName.Keys.Count; i++)
+                {
+                    excludedModNames.Add(patchNames[i]); 
+                }
+                patchNames = null;
 
                 //remove patch file, ocs reading it and i get already modified recodrs instead of mods
                 string patchModFileName = Path.Combine(installation!.Mods.Path, ModName, ModFileName);
