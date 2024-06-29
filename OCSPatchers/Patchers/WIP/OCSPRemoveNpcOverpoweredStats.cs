@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,10 @@ using OpenConstructionSet.Mods.Context;
 
 namespace OCSPatchers.Patchers.WIP
 {
-    internal class OCSPRemoveNpcOverpoweredStealthStats : OCSPatcherBase
+    internal class OCSPRemoveNpcOverpoweredStats : OCSPatcherBase
     {
         // for mods like brokeback with many overpowered content where so big stats made ti prevent any chance to use stealth skills on npc
-        public override string PatcherName => "RemoveNpcOverpoweredStealthStats";
+        public override string PatcherName => "RemoveNpcOverpoweredStats";
 
         public override Task ApplyPatch(IModContext context, IInstallation installation)
         {
@@ -35,17 +36,20 @@ namespace OCSPatchers.Patchers.WIP
                 "farming",
                 "labouring",
                 "weapon smith", 
+                //
+                "perception",
             };
 
             foreach (var modItem in context.Items.OfType(ItemType.Stats))
             {
                 foreach(var keyName in statKeyNames)
                 {
-                    if (!modItem.Values.TryGetValue(keyName, out var obj)) continue;
-                    if (obj is not float statValue) continue;
-                    if (statValue < 111) continue;
+                    var o = modItem.Values[keyName];
+                    if (o is not float && o is not int) continue; // can be other type value
 
-                    modItem.Values[keyName] = 100;
+                    float value = Convert.ToSingle(o);
+
+                    modItem.Values[keyName] = value > 200 ? value / 10 : 100;
                 }
             }
             return Task.CompletedTask;
