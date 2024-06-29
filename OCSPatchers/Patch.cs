@@ -38,7 +38,7 @@ namespace OCSPatchers
                 new OCSMoreItemsToSpecificStorageRobotParts(),
 
                 new OCSPRecrutablePrisonersDialogsAdd(),
-                new OCSPRemoveNpcOverpoweredStealthStats(),
+                new OCSPRemoveNpcOverpoweredStats(),
 
                 new OCSPLegendaryNPCItems(), // new items here
             };
