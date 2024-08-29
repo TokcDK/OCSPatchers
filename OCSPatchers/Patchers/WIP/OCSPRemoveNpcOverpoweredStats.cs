@@ -49,6 +49,8 @@ namespace OCSPatchers.Patchers.WIP
 
                     float value = Convert.ToSingle(o);
 
+                    if (value <= 100) continue;
+
                     modItem.Values[keyName] = value > 200 ? value / 10 : 100;
                 }
             }
