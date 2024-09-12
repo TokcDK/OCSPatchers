@@ -76,7 +76,14 @@ namespace OCSPatchers
                 foreach (var patcher in patchers)
                 {
                     Console.WriteLine($"Apply {patcher.PatcherName}");
-                    await patcher.ApplyPatch(context, installation!);
+                    try
+                    {
+                        await patcher.ApplyPatch(context, installation!);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An exception occured while the patch appling:\nPatcher:{patcher.PatcherName}\nException:{ex}");
+                    }
                 }
 
                 Console.WriteLine($"Saving {ModFileName}... ");

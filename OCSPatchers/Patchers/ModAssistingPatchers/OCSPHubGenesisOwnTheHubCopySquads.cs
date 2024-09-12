@@ -115,6 +115,11 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
             {
                 foreach (var listData in listsData)
                 {
+                    if (!theHubInstance.ReferenceCategories.ContainsKey(listData.id))
+                    {
+                        continue;
+                    }
+
                     foreach (var reference in theHubInstance.ReferenceCategories[listData.id].References)
                     {
                         if (listData.List.ContainsKey(reference.TargetId)) continue;
