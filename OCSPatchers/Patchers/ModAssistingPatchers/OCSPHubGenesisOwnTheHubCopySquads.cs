@@ -61,8 +61,18 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
             //AddMissingSquadsResidentsToInstances(ref hubWorldStateInstances, listsData);
             foreach (var theHubInstance in hubWorldStateInstances)
             {
+                if (theHubInstance.ReferenceCategories.Count == 0)
+                {
+                    continue;
+                }
+
                 foreach (var listData in listsData)
                 {
+                    if (!theHubInstance.ReferenceCategories.ContainsKey(listData.id))
+                    {
+                        continue;
+                    }
+
                     var refsGroup = theHubInstance.ReferenceCategories[listData.id];
                     var refs = refsGroup.References;
 
@@ -113,6 +123,11 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
         {
             foreach (var theHubInstance in hubWorldStateInstances)
             {
+                if (theHubInstance.ReferenceCategories.Count == 0)
+                {
+                    continue;
+                }
+
                 foreach (var listData in listsData)
                 {
                     if (!theHubInstance.ReferenceCategories.ContainsKey(listData.id))
