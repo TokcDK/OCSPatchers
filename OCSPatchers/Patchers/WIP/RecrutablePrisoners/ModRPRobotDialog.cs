@@ -11,17 +11,18 @@ namespace OCSPatchers.Patchers.WIP.RecrutablePrisoners
         bool _isMissingReferenceTarget = false;
 
         ModItem? _raceItem;
-        string _dialogStringId => "1535101-Reprogrammable skeletons.mod";
-        string _dialogForRacesStringId => "1535103-Reprogrammable skeletons.mod";
-        string _dialogCategorieName => "dialogue package";
+        readonly string _dialogToAddStringId = "1535101-Reprogrammable skeletons.mod";
+        readonly string _dialogForRacesStringId = "1535103-Reprogrammable skeletons.mod";
+        readonly string _dialogCategorieName = "dialogue package";
         ModItem? _dialogueItem;
+        bool _isDialogToAddAdded = false;
 
         bool IsValid(IDialogsPatcherData dialogsPatcherData)
         {
             if (_isCheckedMissingReferenceTarget 
                 && _isMissingReferenceTarget) return false;
 
-            if (dialogsPatcherData.ModItem.IsDeleted()) return false;
+            if (dialogsPatcherData.ModItem!.IsDeleted()) return false;
             if (dialogsPatcherData.ModItem.Type != ItemType.Character) return false;
 
             if (dialogsPatcherData.ModItem == default) return false;
@@ -67,6 +68,16 @@ namespace OCSPatchers.Patchers.WIP.RecrutablePrisoners
         }
         public void TryAdd(IDialogsPatcherData dialogsPatcherData)
         {
+            if (!_isDialogToAddAdded)
+            {
+                _isDialogToAddAdded = true;
+
+                if (!dialogsPatcherData.RecruitingDialogIds.Contains(_dialogToAddStringId))
+                {
+                    dialogsPatcherData.RecruitingDialogIds.Add(_dialogToAddStringId);
+                }
+            }
+
             if (!IsValid(dialogsPatcherData)) return;
 
             // set dialogue
@@ -88,14 +99,14 @@ namespace OCSPatchers.Patchers.WIP.RecrutablePrisoners
             {
                 dialogsPatcherData.ModItem.ReferenceCategories.Add(_dialogCategorieName);
             }
-            else if (dialogsPatcherData.ModItem.ReferenceCategories[_dialogCategorieName].References.ContainsKey(_dialogStringId)) return;
+            else if (dialogsPatcherData.ModItem.ReferenceCategories[_dialogCategorieName].References.ContainsKey(_dialogToAddStringId)) return;
 
             if (new CheckRecruitingDialogsTools().HaveRecruitingDialoguePackage(dialogsPatcherData.ModItem.ReferenceCategories[_dialogCategorieName], dialogsPatcherData)) return;
 
-            dialogsPatcherData.ModItem.ReferenceCategories[_dialogCategorieName].References.Add(_dialogStringId);
+            dialogsPatcherData.ModItem.ReferenceCategories[_dialogCategorieName].References.Add(_dialogToAddStringId);
 
-            if(!dialogsPatcherData.RecruitingDialogIds.Contains(_dialogStringId)) 
-                dialogsPatcherData.RecruitingDialogIds.Add(_dialogStringId); // add target dialog for check
+            if(!dialogsPatcherData.RecruitingDialogIds.Contains(_dialogToAddStringId)) 
+                dialogsPatcherData.RecruitingDialogIds.Add(_dialogToAddStringId); // add target dialog for check
 
             // add race reference to conditions
             var references = _dialogueItem!.ReferenceCategories["my race"].References;

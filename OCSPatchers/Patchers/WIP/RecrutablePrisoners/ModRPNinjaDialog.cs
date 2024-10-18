@@ -7,6 +7,11 @@ namespace OCSPatchers.Patchers.WIP.RecrutablePrisoners
 {
     internal class ModRPNinjaDialog : ICharacterDialogToAdd
     {
+        bool _failedToFindModItem = false;
+        bool _itemFound = false;
+        bool _isDialogToAddAdded = false;
+        string _dialogToAddStringId = "5007284-RecruitPrisoners.mod";
+
         bool IsValid(IDialogsPatcherData dialogsPatcherData)
         {
             if (dialogsPatcherData.ModItem.IsDeleted()) return false;
@@ -52,15 +57,24 @@ namespace OCSPatchers.Patchers.WIP.RecrutablePrisoners
             return false;
         }
 
-        string _dialogStringId => "5007284-RecruitPrisoners.mod";
         public void TryAdd(IDialogsPatcherData dialogsPatcherData)
         {
+            if (!_isDialogToAddAdded)
+            {
+                _isDialogToAddAdded = true;
+
+                if (!dialogsPatcherData.RecruitingDialogIds.Contains(_dialogToAddStringId))
+                {
+                    dialogsPatcherData.RecruitingDialogIds.Add(_dialogToAddStringId);
+                }
+            }
+
             if (!_itemFound && _failedToFindModItem) return;
             if (!IsValid(dialogsPatcherData)) return;
 
             if (!_itemFound && !_failedToFindModItem)
             {
-                var dialogReference = dialogsPatcherData.Context.Items.OfType(ItemType.DialoguePackage).FirstOrDefault(i => i.StringId == _dialogStringId);
+                var dialogReference = dialogsPatcherData.Context.Items.OfType(ItemType.DialoguePackage).FirstOrDefault(i => i.StringId == _dialogToAddStringId);
                 if (dialogReference == default)
                 {
                     _failedToFindModItem = true;
@@ -75,13 +89,11 @@ namespace OCSPatchers.Patchers.WIP.RecrutablePrisoners
                 dialogsPatcherData.ModItem.ReferenceCategories.Add("dialogue package");
             }
 
-            if (dialogsPatcherData.ModItem.ReferenceCategories["dialogue package"].References.ContainsKey(_dialogStringId)) return;
+            if (dialogsPatcherData.ModItem.ReferenceCategories["dialogue package"].References.ContainsKey(_dialogToAddStringId)) return;
 
-            dialogsPatcherData.ModItem.ReferenceCategories["dialogue package"].References.Add(_dialogStringId);
+            dialogsPatcherData.ModItem.ReferenceCategories["dialogue package"].References.Add(_dialogToAddStringId);
         }
 
-        bool _failedToFindModItem = false;
-        bool _itemFound = false;
         //ModItem? m;
     }
 }
