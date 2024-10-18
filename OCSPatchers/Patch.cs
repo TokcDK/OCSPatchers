@@ -24,24 +24,24 @@ namespace OCSPatchers
         {
             var patchers = new List<IOCSPatcher>
             {
-                //new OCSPatcherGeneral(),
-                //new OSCPScarsPathfindingFix(),
-                //new OSCPNPCEnjoysMoreShopping(),
-                //new OCSPAnimationsShare(),
-                //new OCSPHairsShare(),
-                //new OCSPStackableItems1000(),
-                ////////////new OCSPBiggerBackpacks(),
-                ////////////new OCSPEveryoneHasName(),
-                //new OCSPResetToAOMAnims(),
-                //new OCSPHubGenesisOwnTheHubCopySquads(),
-                //new OCSMoreItemsToSpecificStorageFood(),
-                //new OCSMoreItemsToSpecificStorageBolts(),
-                //new OCSMoreItemsToSpecificStorageRobotParts(),
+                new OCSPatcherGeneral(),
+                new OSCPScarsPathfindingFix(),
+                new OSCPNPCEnjoysMoreShopping(),
+                new OCSPAnimationsShare(),
+                new OCSPHairsShare(),
+                new OCSPStackableItems1000(),
+                //////////new OCSPBiggerBackpacks(),
+                //////////new OCSPEveryoneHasName(),
+                new OCSPResetToAOMAnims(),
+                new OCSPHubGenesisOwnTheHubCopySquads(),
+                new OCSMoreItemsToSpecificStorageFood(),
+                new OCSMoreItemsToSpecificStorageBolts(),
+                new OCSMoreItemsToSpecificStorageRobotParts(),
 
                 new OCSPRecrutablePrisonersDialogsAdd(),
-                //new OCSPRemoveNpcOverpoweredStats(),
+                new OCSPRemoveNpcOverpoweredStats(),
 
-                //new OCSPLegendaryNPCItems(), // new items here
+                new OCSPLegendaryNPCItems(), // new items here
             };
 
             var patchersByPatchFileName = SortByPatchFileName(patchers);
