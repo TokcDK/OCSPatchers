@@ -16,11 +16,13 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
             "583-gamedata.base"
         };
 
-        protected override int ItemFunctionNumToAdd => 0;
+        protected override int ItemFunctionIdToAdd => (int)Data.Enums.ItemFunction.ITEM_NO_FUNCTION;
+
+        protected override int InventorySoundIdOptionalToAdd => (int)Data.Enums.InventorySound.ROBOTIC_COMPONENT;
 
         protected override bool IsValidItemSpecific(ModItem item)
         {
-            return _validNameKeywords.Any(i => item.Name.Contains(i)) || _validIds.Contains(item.StringId);
+            return _validNameKeywords.Any(i => item.Name.Contains(i)) || _validIds.Contains(item.StringId) || _wasValidInventorySound;
         }
 
         readonly List<string> _validNameKeywords = new List<string>()

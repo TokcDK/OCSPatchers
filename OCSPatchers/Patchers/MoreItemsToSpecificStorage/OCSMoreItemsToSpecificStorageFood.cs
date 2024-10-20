@@ -16,6 +16,6 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
             "50514-Newwworld.mod"
         };
 
-        protected override int ItemFunctionNumToAdd => 3;
+        protected override int ItemFunctionIdToAdd => (int)Data.Enums.ItemFunction.ITEM_FOOD;
     }
 }

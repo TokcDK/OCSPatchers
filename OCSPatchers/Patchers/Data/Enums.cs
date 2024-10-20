@@ -130,5 +130,50 @@ namespace OCSPatchers.Data
             BF_ENGINE_STARTER,
             BF_GENERATOR_WIND
         }
+
+        public enum ItemFunction
+        {
+            ITEM_NO_FUNCTION,
+            ITEM_FIRSTAID,
+            ITEM_MEDRIGGING,
+            ITEM_FOOD,
+            ITEM_CONTAINER,
+            ITEM_WEAPON,
+            ITEM_CLOTHING,
+            ITEM____,
+            ITEM_NARCOTIC,
+            ITEM_TOOL,
+            ITEM_ANYTHING,
+            ITEM_BLUEPRINT,
+            ITEM_ROBOTREPAIR,
+            ITEM_BOOK,
+            ITEM_MONEY,
+            ITEM_FOOD_RESTRICTED,
+            ITEM_AMMO,
+            ITEM_SEVERED_LIMB
+        };
+        public enum InventorySound
+        {
+            BACKPACK = 0,
+            BUILDING_MATERIAL = 1,
+            FABRIC = 2,
+            FLOUR = 3,
+            FOOD = 4,
+            KITS = 5,
+            LEATHER = 6,
+            LUXURY = 7,
+            NARCOTICS = 8,
+            ORE = 9,
+            POTATO = 10,
+            ROBOTIC_COMPONENT = 11,
+            RUM = 12,
+            STEEL_BAR = 13,
+            TOOLS = 14,
+            WATER = 15,
+            WHEAT = 16,
+            ARMOR_PLATING = 17,
+            BLUEPRINTS = 18,
+            MEAT = 19,
+        };
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
@@ -10,7 +11,8 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
     internal abstract class OCSMoreItemsToSpecificStorageBase : OCSPatcherBase
     {
         protected abstract string[] LimitInventoryItemIdsToCheck { get; }
-        protected abstract int ItemFunctionNumToAdd { get; }
+        protected abstract int ItemFunctionIdToAdd { get; }
+        protected virtual int InventorySoundIdOptionalToAdd { get; } = -1;
 
         const string VALUE_NAME_HAS_INVENTORY = "has inventory";
         const string CATEGORY_NAME = "limit inventory";
@@ -43,8 +45,8 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
             {
                 if (item.Name.StartsWith('_')) continue;
                 if (item.Name.StartsWith('@')) continue;
-                if (!item.Values.TryGetValue("item function", out var value)) continue;
-                if (value is not int v || v != ItemFunctionNumToAdd) continue;
+
+                if (!IsValidItemFunction(item)) continue;
                 if (!IsValidItemSpecific(item)) continue;
 
                 if (itemsToAdd.Contains(item.StringId)) continue;
@@ -68,9 +70,37 @@ namespace OCSPatchers.Patchers.MoreItemsToSpecificStorage
             return Task.CompletedTask;
         }
 
+        protected virtual bool IsValidItemFunction(ModItem item)
+        {
+            return IsValidIntValue(item, "item function", ItemFunctionIdToAdd);
+        }
+
+        protected virtual bool IsValidInventorySound(ModItem item)
+        {
+            if (InventorySoundIdOptionalToAdd == -1) return true;
+
+            return _wasValidInventorySound = IsValidIntValue(item, "inventory sound", InventorySoundIdOptionalToAdd);
+        }
+        protected bool _wasValidInventorySound = false;
+
+        protected bool IsValidIntValue(ModItem item, string valueName, int intValue)
+        {
+            if (!item.Values.TryGetValue(valueName, out var value)) return false;
+            if (value is not int v || v != intValue) return false;
+
+            return true;
+        }
+        protected bool IsValidBoolValue(ModItem item, string valueName, bool boolValue)
+        {
+            if (!item.Values.TryGetValue(valueName, out var value)) return false;
+            if (value is not bool v || v != boolValue) return false;
+
+            return true;
+        }
+
         protected virtual bool IsValidItemSpecific(ModItem item) => true;
 
-        private bool IsValidInventoryItems(ModReferenceCollection limitInventoryRef)
+        protected virtual bool IsValidInventoryItems(ModReferenceCollection limitInventoryRef)
         {
             return !(LimitInventoryItemIdsToCheck.Any(id => !limitInventoryRef.ContainsKey(id)));
         }
