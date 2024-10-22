@@ -213,10 +213,10 @@ namespace OCSPatchers.Patchers
             return legendaryChara;
         }
 
-        private bool IsNamedCharacter(ModItem characterItem)
-        {
-            return characterItem.Values.TryGetValue("named", out var v) && v is bool isNamed && isNamed;
-        }
+        //private bool IsNamedCharacter(ModItem characterItem)
+        //{
+        //    return characterItem.Values.TryGetValue("named", out var v) && v is bool isNamed && isNamed;
+        //}
 
         private void EnforceStats(ModItem legendaryChara, IModContext context)
         {
