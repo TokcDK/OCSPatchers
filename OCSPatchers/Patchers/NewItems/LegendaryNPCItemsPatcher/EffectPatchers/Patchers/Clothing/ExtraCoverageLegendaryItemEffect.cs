@@ -32,15 +32,12 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             // increase coverage of exist parts
             var partCoverageRefs = modItem.ReferenceCategories["part coverage"].References;
 
-            var existCoveragePartIds = new HashSet<string>();
             foreach (var partCoverageRef in partCoverageRefs)
             {
                 TryIncreaseCoverageOfThePart(partCoverageRef);
-
-                existCoveragePartIds.Add(partCoverageRef.TargetId);
             }
 
-            SetExtraPartsCoverage(partCoverageRefs, context, existCoveragePartIds);
+            SetExtraPartsCoverage(partCoverageRefs, context);
 
             return true;
         }
@@ -58,12 +55,12 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
         }
 
         bool _isIncreasedAnyExistPartCoverage = false;
-        private void SetExtraPartsCoverage(OpenConstructionSet.Mods.Context.ModReferenceCollection partCoverageRefs, OpenConstructionSet.Mods.Context.IModContext context, HashSet<string> existCoveragePartIds)
+        private void SetExtraPartsCoverage(OpenConstructionSet.Mods.Context.ModReferenceCollection partCoverageRefs, OpenConstructionSet.Mods.Context.IModContext context)
         {
             GetAllCoveragePartIds(context);
 
             // vaiant when item have all parts coverage and no parts was covered
-            if (existCoveragePartIds.Count == 7)
+            if (partCoverageRefs.Count == 7)
             {
                 TryAddAtleastOnePartExtraCoverage(partCoverageRefs);
 
@@ -81,7 +78,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
                 string stringId = _coveragePartsStringIds[partIndex];
 
-                if (existCoveragePartIds.Contains(stringId))
+                if (partCoverageRefs.ContainsKey(stringId))
                 {
                     continue;
                 }
