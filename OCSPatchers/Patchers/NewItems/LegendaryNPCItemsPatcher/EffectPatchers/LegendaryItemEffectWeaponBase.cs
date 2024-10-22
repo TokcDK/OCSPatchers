@@ -11,7 +11,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers
 
         const string KEY_NAME = "defence mod";
 
-        public bool TryApplyEffect(ModItem modItem)
+        public bool TryApplyEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context)
         {
             return modItem.Type == ItemType.Weapon && TryApplyWeaponEffect(modItem);
         }

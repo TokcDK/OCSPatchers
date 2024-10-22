@@ -9,10 +9,10 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers
 
         public abstract string Description { get; }
 
-        public bool TryApplyEffect(ModItem modItem)
+        public bool TryApplyEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context)
         {
-            return modItem.Type == ItemType.Armour && TryApplyClothingEffect(modItem);
+            return modItem.Type == ItemType.Armour && TryApplyClothingEffect(modItem, context);
         }
-        public abstract bool TryApplyClothingEffect(ModItem modItem);
+        public abstract bool TryApplyClothingEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context);
     }
 }

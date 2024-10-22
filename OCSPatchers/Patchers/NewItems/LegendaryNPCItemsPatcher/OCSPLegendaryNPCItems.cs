@@ -344,13 +344,13 @@ namespace OCSPatchers.Patchers
         }
 
         ModItem? _meitoWeaponModels;
-        bool _IsSetMeitoWeaponModels = false;
+        bool _isSetMeitoWeaponModels = false;
         private ModReference GetLegendaryWeaponModelReference(IModContext context)
         {
-            if (!_IsSetMeitoWeaponModels)
+            if (!_isSetMeitoWeaponModels)
             {
                 // set once
-                _IsSetMeitoWeaponModels = true;
+                _isSetMeitoWeaponModels = true;
                 _meitoWeaponModels = context.Items.OfType(ItemType.MaterialSpecsWeapon).First(i => i.StringId == "52293-rebirth.mod");
             }
             var legendaryModel = _meitoWeaponModels!.DeepClone();

@@ -7,6 +7,6 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers
         public string Name { get; }
         public string Description { get; }
 
-        bool TryApplyEffect(ModItem modItem);
+        bool TryApplyEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context);
     }
 }

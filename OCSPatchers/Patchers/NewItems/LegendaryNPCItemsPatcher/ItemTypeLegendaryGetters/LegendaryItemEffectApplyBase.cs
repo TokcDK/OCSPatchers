@@ -89,7 +89,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             {
                 var legendaryItemCandidate = sourceModItem.DeepClone(); // create temp copy for mod
 
-                if (!effectPatcher.TryApplyEffect(legendaryItemCandidate)) continue;
+                if (!effectPatcher.TryApplyEffect(legendaryItemCandidate, context)) continue;
 
                 legendaryItemCandidate.Values["description"] = GetPatchedItemDescription(effectPatcher);
                 legendaryItemCandidate.Name = $"#ff0000{legendaryItemCandidate.Name} \"{effectPatcher.Name}\"";

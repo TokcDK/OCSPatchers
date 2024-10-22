@@ -11,9 +11,9 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
         readonly ILegendaryItemEffect _humanKiller = new HumanKillerLegendaryItemEffect();
         readonly ILegendaryItemEffect _animalKiller = new AnimalKillerLegendaryItemEffect();
-        public bool TryApplyEffect(ModItem modItem)
+        public bool TryApplyEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context)
         {
-            return _humanKiller.TryApplyEffect(modItem) && _animalKiller.TryApplyEffect(modItem);
+            return _humanKiller.TryApplyEffect(modItem, context) && _animalKiller.TryApplyEffect(modItem, context);
         }
     }
 }

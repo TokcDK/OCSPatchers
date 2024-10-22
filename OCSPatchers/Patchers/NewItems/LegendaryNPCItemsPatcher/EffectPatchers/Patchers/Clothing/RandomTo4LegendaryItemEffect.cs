@@ -15,7 +15,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
         ILegendaryItemEffect[]? _effects;
         readonly List<ILegendaryItemEffect> _selectedEffects = new();
         readonly Random rnd = new();
-        public override bool TryApplyClothingEffect(ModItem modItem)
+        public override bool TryApplyClothingEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context)
         {
             if (!_gotEffects) 
             {
