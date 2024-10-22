@@ -13,7 +13,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
         public override string Description => $"#afa68b Покрывает больше частей тела #a8b774";
 
         bool _isSetExtraPartCoverageItems = false;
-        readonly List<ModItem?> _parts = new();
+        //readonly List<ModItem?> _parts = new();
         readonly List<string> _coveragePartsStringIds = new()
         {
                     "28-gamedata.quack", // left arm
@@ -42,7 +42,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
         private void SetExtraPartsCoverage(OpenConstructionSet.Mods.Context.ModReferenceCollection partCoverageRefs, OpenConstructionSet.Mods.Context.IModContext context)
         {
-            GetAllCoveragePartIds(context);
+            //GetAllCoveragePartIds(context);
 
             // setup extra coverage for extra parts which is not presented in list
             int chance = 400;
@@ -65,17 +65,17 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             }
         }
 
-        private void GetAllCoveragePartIds(OpenConstructionSet.Mods.Context.IModContext context)
-        {
-            if (!_isSetExtraPartCoverageItems)
-            {
-                _isSetExtraPartCoverageItems = true;
+        //private void GetAllCoveragePartIds(OpenConstructionSet.Mods.Context.IModContext context)
+        //{
+        //    if (!_isSetExtraPartCoverageItems)
+        //    {
+        //        _isSetExtraPartCoverageItems = true;
 
-                foreach (var coveragePartStringId in _coveragePartsStringIds)
-                {
-                    _parts.Add(context.Items.OfType(ItemType.LocationalDamage).First(i => i.StringId == coveragePartStringId));
-                }
-            }
-        }
+        //        foreach (var coveragePartStringId in _coveragePartsStringIds)
+        //        {
+        //            _parts.Add(context.Items.OfType(ItemType.LocationalDamage).First(i => i.StringId == coveragePartStringId));
+        //        }
+        //    }
+        //}
     }
 }
