@@ -40,6 +40,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 new DexterityLegendaryItemEffect(),
                 new CombatSpeedLegendaryItemEffect(),
                 new ExtraCoverageLegendaryItemEffect(),
+                new ExtraPartCoverageLegendaryItemEffect(),
                 new UltraComfortabilityLegendaryItemEffect(),
             };
         }
