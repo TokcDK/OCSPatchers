@@ -222,7 +222,7 @@ namespace OCSPatchers.Patchers
         {
             if (TrySetStatsByReferencedStats(legendaryChara, context)) return;
 
-            EnforceStatsByValues(legendaryChara);
+            EnforceCharacterStatsByValues(legendaryChara);
         }
 
         private bool TrySetStatsByReferencedStats(ModItem legendaryChara, IModContext context)
@@ -256,7 +256,7 @@ namespace OCSPatchers.Patchers
             return true;
         }
 
-        private void EnforceStatsByValues(ModItem legendaryChara)
+        private void EnforceCharacterStatsByValues(ModItem legendaryChara)
         {
             var values = legendaryChara.Values;
             foreach (var keyName in new string[]
@@ -269,19 +269,19 @@ namespace OCSPatchers.Patchers
             })
             {
                 int value = Convert.ToInt32(values[keyName]);
-                values[keyName] = (int)Math.Ceiling(GetNewStatValue(value));
+                values[keyName] = (int)Math.Ceiling(GetNewCharacterStatValue(value));
             }
 
         }
 
-        private float GetNewStatValue(float i)
+        private static float GetNewCharacterStatValue(float baseStatValue)
         {
-            float v1 = (float)(i * 1.5);
+            float v1 = (float)(baseStatValue * 1.5);
             float newValue = v1 > 100 ? 100 : v1 < 30 ? 30 : v1;
             return newValue;
         }
 
-        private void EnforceByReferencedStats(ModItem stats)
+        private static void EnforceByReferencedStats(ModItem stats)
         {
             var keys = stats.Values.Keys.Select(v => v).ToArray();
             foreach (var key in keys)
@@ -291,7 +291,7 @@ namespace OCSPatchers.Patchers
 
                 float value = Convert.ToSingle(o);
 
-                stats.Values[key] = GetNewStatValue(value);
+                stats.Values[key] = GetNewCharacterStatValue(value);
             }
         }
 
