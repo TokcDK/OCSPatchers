@@ -45,12 +45,12 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             //GetAllCoveragePartIds(context);
 
             // setup extra coverage for extra parts which is not presented in list
-            int chance = 400;
+            int chance = 80;
             int cnt = _coveragePartsStringIds.Count;
             int initCoverage = 5;
             for (int i = 0; i < cnt; i++)
             {
-                if (_rnd.Next(0, 200) <= (chance /= 2)) break;
+                if (_rnd.Next(0, 70) <= (chance -= 10)) break; // first will be 100% added and then other will reduce chance for each step
 
                 var partIndex = _rnd.Next(0, cnt);
 
@@ -62,6 +62,12 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
                 }
 
                 partCoverageRefs.Add(new ModReference(stringId, _rnd.Next((initCoverage--) > 0 ? initCoverage : 1, 10) * 10)); // 10%-100% coverage, init 50%
+            
+                if(partCoverageRefs.Count == 7)
+                {
+                    // all parts added
+                    break;
+                }
             }
         }
 
