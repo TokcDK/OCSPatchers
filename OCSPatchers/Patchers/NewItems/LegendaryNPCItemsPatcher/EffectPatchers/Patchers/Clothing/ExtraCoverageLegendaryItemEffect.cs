@@ -83,17 +83,8 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
                 if (existCoveragePartIds.Contains(stringId))
                 {
-                    if (_isIncreasedAnyExistPartCoverage)
-                    {
-                        while (true)
-                        {
-                            partIndex = _rnd.Next(0, cnt);
-                            stringId = _coveragePartsStringIds[partIndex];
-                        };
-                    }
-                    else continue;
+                    continue;
                 }
-                _isIncreasedAnyExistPartCoverage = false;
 
                 partCoverageRefs.Add(new ModReference(stringId, _rnd.Next(1, 10) * 10));
             }
