@@ -22,16 +22,15 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
             foreach (var partCoverageRef in partCoverageRefs)
             {
-                TryIncreaseCoverageOfThePart(partCoverageRef, 0.5);
+                TryIncreaseCoverageOfThePart(partCoverageRef);
             }
 
             return _isIncreasedAnyExistPartCoverage;
         }
 
-        private void TryIncreaseCoverageOfThePart(ModReference partCoverageRef, double extraMultCoverage = 0)
+        private void TryIncreaseCoverageOfThePart(ModReference partCoverageRef)
         {
-            double multiplier = _rnd.NextDouble() + (1 + extraMultCoverage); // random between no extra coverage to double coverage
-            int newValue = (int)(partCoverageRef.Value0 * multiplier);
+            int newValue = (int)(partCoverageRef.Value0 * 1.5);
             if (!_isIncreasedAnyExistPartCoverage && newValue > partCoverageRef.Value0)
             {
                 _isIncreasedAnyExistPartCoverage = true;

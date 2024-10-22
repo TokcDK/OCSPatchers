@@ -50,7 +50,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             int initCoverage = 5;
             for (int i = 0; i < cnt; i++)
             {
-                if (_rnd.Next(0, 70) <= (chance -= 10)) break; // first will be 100% added and then other will reduce chance for each step
+                if (_rnd.Next(0, 70) > (chance -= 10)) break; // first will be 100% added and then other will reduce chance for each step
 
                 var partIndex = _rnd.Next(0, cnt);
 
