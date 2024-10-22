@@ -201,10 +201,8 @@ namespace OCSPatchers.Patchers
             var legendaryChara = context.NewItem(legendaryCharaCandidate); // add only when legendary weapons was added
             legendaryChara.Values["armour upgrade chance"] = 80;
 
-            if (legendaryChara.Values.TryGetValue("named", out var v) && v is bool isNamed && isNamed)
-            {
-            }
-            else legendaryChara.Name = "#ff0002\"Легендарн/аяый1/\" " + legendaryChara.Name;
+            if (!IsNamedCharacter(legendaryChara))
+                legendaryChara.Name = "#ff0002\"Легендарн/аяый1/\" " + legendaryChara.Name;
 
             // reset weapon manufacturer for the character here, maybe apply here mods for weapons manufacturer, maybe add different manufacturers
             ReSetWeaponManufacturer(legendaryChara, context);
@@ -214,6 +212,11 @@ namespace OCSPatchers.Patchers
             _cacheOfAddedLegendaryCharasByOrigin.Add(charaModItem.StringId, legendaryChara);
 
             return legendaryChara;
+        }
+
+        private bool IsNamedCharacter(ModItem characterItem)
+        {
+            return characterItem.Values.TryGetValue("named", out var v) && v is bool isNamed && isNamed;
         }
 
         private void EnforceStats(ModItem legendaryChara, IModContext context)
