@@ -32,7 +32,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             {
                 var effect = _effects![rnd.Next(0, 3)];
 
-                if (!effect.TryApplyEffect(modItem)) continue;
+                if (!effect.TryApplyEffect(modItem, context)) continue;
 
                 _selectedEffects.Add(effect);
             }

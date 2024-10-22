@@ -14,7 +14,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
         ILegendaryItemEffect[]? _effects;
         readonly List<ILegendaryItemEffect> _selectedEffects = new();
         readonly Random rnd = new();
-        public override bool TryApplyWeaponEffect(ModItem modItem)
+        public override bool TryApplyWeaponEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context)
         {
             if (!_gotEffects)
             {
@@ -31,7 +31,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             {
                 var effect = _effects![rnd.Next(0, 3)];
 
-                if (!effect.TryApplyEffect(modItem)) continue;
+                if (!effect.TryApplyEffect(modItem, context)) continue;
 
                 _selectedEffects.Add(effect);
             }

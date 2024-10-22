@@ -13,8 +13,8 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers
 
         public bool TryApplyEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context)
         {
-            return modItem.Type == ItemType.Weapon && TryApplyWeaponEffect(modItem);
+            return modItem.Type == ItemType.Weapon && TryApplyWeaponEffect(modItem, context);
         }
-        public abstract bool TryApplyWeaponEffect(ModItem modItem);
+        public abstract bool TryApplyWeaponEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context);
     }
 }
