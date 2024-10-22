@@ -1,6 +1,7 @@
 ﻿using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Mods;
+using OpenConstructionSet.Mods.Context;
 using System.Linq;
 
 namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.Patchers
@@ -34,9 +35,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             var existCoveragePartIds = new HashSet<string>();
             foreach (var partCoverageRef in partCoverageRefs)
             {
-                double multiplier = _rnd.NextDouble() + 1.1; // random between no extra coverage to double coverage
-                int newValue = (int)(partCoverageRef.Value0 * multiplier); 
-                partCoverageRef.Value0 = newValue > 100 ? 100 : newValue;
+                TryIncreaseCoverageOfThePart(partCoverageRef);
 
                 existCoveragePartIds.Add(partCoverageRef.TargetId);
             }
@@ -46,20 +45,33 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             return true;
         }
 
+        private void TryIncreaseCoverageOfThePart(ModReference partCoverageRef, double extraMultCoverage = 0)
+        {
+            double multiplier = _rnd.NextDouble() + (1 + extraMultCoverage); // random between no extra coverage to double coverage
+            int newValue = (int)(partCoverageRef.Value0 * multiplier);
+            if (!_isIncreasedAnyExistPartCoverage && newValue > partCoverageRef.Value0)
+            {
+                _isIncreasedAnyExistPartCoverage = true;
+            }
+
+            partCoverageRef.Value0 = newValue > 100 ? 100 : newValue;
+        }
+
+        bool _isIncreasedAnyExistPartCoverage = false;
         private void SetExtraPartsCoverage(OpenConstructionSet.Mods.Context.ModReferenceCollection partCoverageRefs, OpenConstructionSet.Mods.Context.IModContext context, HashSet<string> existCoveragePartIds)
         {
-            if (!_isSetExtraPartCoverageItems)
-            {
-                _isSetExtraPartCoverageItems = true;
+            GetAllCoveragePartIds(context);
 
-                foreach (var coveragePartStringId in _coveragePartsStringIds)
-                {
-                    _parts.Add(context.Items.OfType(ItemType.LocationalDamage).First(i => i.StringId == coveragePartStringId));
-                }
+            // vaiant when item have all parts coverage and no parts was covered
+            if (existCoveragePartIds.Count == 7)
+            {
+                TryAddAtleastOnePartExtraCoverage(partCoverageRefs);
+
+                return;
             }
 
             // setup extra coverage for extra parts which is not presented in list
-            int chance = 100;
+            int chance = 100 + (_isIncreasedAnyExistPartCoverage ? 0 : 100); // chance for first extra part will be 100% if no coverage was increased for exist coverage parts
             int cnt = _coveragePartsStringIds.Count;
             for (int i = 0; i < cnt; i++)
             {
@@ -69,9 +81,51 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
                 string stringId = _coveragePartsStringIds[partIndex];
 
-                if (existCoveragePartIds.Contains(stringId)) continue;
+                if (existCoveragePartIds.Contains(stringId))
+                {
+                    if (_isIncreasedAnyExistPartCoverage)
+                    {
+                        while (true)
+                        {
+                            partIndex = _rnd.Next(0, cnt);
+                            stringId = _coveragePartsStringIds[partIndex];
+                        };
+                    }
+                    else continue;
+                }
+                _isIncreasedAnyExistPartCoverage = false;
 
-                partCoverageRefs.Add(new ModReference(stringId, _rnd.Next(10, 100)));
+                partCoverageRefs.Add(new ModReference(stringId, _rnd.Next(1, 10) * 10));
+            }
+        }
+
+        private void TryAddAtleastOnePartExtraCoverage(ModReferenceCollection partCoverageRefs)
+        {
+            // add extra coverage to atleast one part of 7 if not 100% all
+            if (_isIncreasedAnyExistPartCoverage)
+            {
+                return;
+            }
+
+            var firstWhereNotAllCovered = partCoverageRefs.FirstOrDefault(r => r.Value0 < 100);
+            if (firstWhereNotAllCovered == default)
+            {
+                return;
+            }
+
+            TryIncreaseCoverageOfThePart(firstWhereNotAllCovered, 0.1);
+        }
+
+        private void GetAllCoveragePartIds(OpenConstructionSet.Mods.Context.IModContext context)
+        {
+            if (!_isSetExtraPartCoverageItems)
+            {
+                _isSetExtraPartCoverageItems = true;
+
+                foreach (var coveragePartStringId in _coveragePartsStringIds)
+                {
+                    _parts.Add(context.Items.OfType(ItemType.LocationalDamage).First(i => i.StringId == coveragePartStringId));
+                }
             }
         }
     }
