@@ -34,19 +34,19 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             var existCoveragePartIds = new HashSet<string>();
             foreach (var partCoverageRef in partCoverageRefs)
             {
-                float multiplier = _rnd.Next(110, 200) / 100; // random between no extra coverage to double coverage
+                double multiplier = _rnd.NextDouble() + 1.1; // random between no extra coverage to double coverage
                 int newValue = (int)(partCoverageRef.Value0 * multiplier); 
                 partCoverageRef.Value0 = newValue > 100 ? 100 : newValue;
 
                 existCoveragePartIds.Add(partCoverageRef.TargetId);
             }
 
-            SetExtraPartsCoverage(context, existCoveragePartIds);
+            SetExtraPartsCoverage(partCoverageRefs, context, existCoveragePartIds);
 
             return true;
         }
 
-        private void SetExtraPartsCoverage(OpenConstructionSet.Mods.Context.IModContext context, HashSet<string> existCoveragePartIds)
+        private void SetExtraPartsCoverage(OpenConstructionSet.Mods.Context.ModReferenceCollection partCoverageRefs, OpenConstructionSet.Mods.Context.IModContext context, HashSet<string> existCoveragePartIds)
         {
             if (!_isSetExtraPartCoverageItems)
             {
@@ -71,7 +71,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
                 if (existCoveragePartIds.Contains(stringId)) continue;
 
-                var partCoverageReference = new ModReference(stringId, _rnd.Next(10, 100));
+                partCoverageRefs.Add(new ModReference(stringId, _rnd.Next(10, 100)));
             }
         }
     }
