@@ -335,17 +335,31 @@ namespace OCSPatchers.Patchers
             weaponModels.References.Clear();
 
             // set legendary model
-            var meitouWeaponModels = context.Items.OfType(ItemType.MaterialSpecsWeapon).First(i => i.StringId == "52293-rebirth.mod");
-            var legendaryModel = meitouWeaponModels.DeepClone();
+            ModReference legendaryWeaponModelReference = GetLegendaryWeaponModelReference(context);
+
+            weaponModels.References.Add(legendaryWeaponModelReference);
+            _legendaryWeaponManufacturer = context.NewItem(_legendaryWeaponManufacturer);
+
+            isLegendaryManufacturerSet = true;
+        }
+
+        ModItem? _meitoWeaponModels;
+        bool _IsSetMeitoWeaponModels = false;
+        private ModReference GetLegendaryWeaponModelReference(IModContext context)
+        {
+            if (!_IsSetMeitoWeaponModels)
+            {
+                // set once
+                _IsSetMeitoWeaponModels = true;
+                _meitoWeaponModels = context.Items.OfType(ItemType.MaterialSpecsWeapon).First(i => i.StringId == "52293-rebirth.mod");
+            }
+            var legendaryModel = _meitoWeaponModels!.DeepClone();
             legendaryModel.Values["description"] = "Легендарное снаряжение обладает особыми эффектами.";
             legendaryModel.Name = "Легендарное оружие";
             legendaryModel = context.NewItem(legendaryModel);
 
 
-            weaponModels.References.Add(new ModReference(legendaryModel.StringId, 80, 100));
-            _legendaryWeaponManufacturer = context.NewItem(_legendaryWeaponManufacturer);
-
-            isLegendaryManufacturerSet = true;
+            return new ModReference(legendaryModel.StringId, 80, 100);
         }
         #endregion
 
