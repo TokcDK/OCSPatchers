@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,39 @@ namespace OCSPatchers.Data
             GREAT_QUALITY,
             GEAR_MASTER,
         }
+
+        public enum WeatherAffecting
+        {
+            WA_NONE,
+            WA_DUSTSTORM,
+            WA_ACID,
+            WA_BURNING,
+            WA_GAS,
+            WA_RAIN
+        };
+
+        public enum AttachSlot
+        {
+            ATTACH_WEAPON,
+            ATTACH_BACK,
+            ATTACH_HAIR,
+            ATTACH_HAT,
+            ATTACH_EYES,
+            ATTACH_BODY,
+            ATTACH_LEGS,
+            ATTACH_NONE,
+            ATTACH_SHIRT,
+            ATTACH_BOOTS,
+            ATTACH_GLOVES,
+            ATTACH_NECK,
+            ATTACH_BACKPACK,
+            ATTACH_BEARD,
+            ATTACH_BELT,
+            ATTACH_LEFT_ARM = 0x32,
+            ATTACH_RIGHT_ARM = 0x33,
+            ATTACH_LEFT_LEG = 0x34,
+            ATTACH_RIGHT_LEG = 0x35
+        };
 
         public enum CharacterStats
         {

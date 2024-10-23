@@ -42,6 +42,11 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 new ExtraCoverageLegendaryItemEffect(),
                 new ExtraPartCoverageLegendaryItemEffect(),
                 new UltraComfortabilityLegendaryItemEffect(),
+                new MartiartistLegendaryItemEffect(),
+                new NinjaLegendaryItemEffect(),
+                new WeatherProtectionLegendaryItemEffect(),
+                new WeatherFullProtectionLegendaryItemEffect(),
+                new DurableNanofiberLegendaryItemEffect(),
             };
         }
     }

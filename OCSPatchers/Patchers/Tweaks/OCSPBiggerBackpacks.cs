@@ -49,13 +49,13 @@ namespace OCSPatchers.Patchers.Tweaks
         {
             return size < 30 ? 30 : size;
 
-            if (size >= MAX_SIZE) return size;
+            //if (size >= MAX_SIZE) return size;
 
-            int extraSize = (int)Math.Round(size * 0.5);
-            int resultSize = size + extraSize;
-            if (resultSize <= MAX_SIZE) return resultSize;
+            //int extraSize = (int)Math.Round(size * 0.5);
+            //int resultSize = size + extraSize;
+            //if (resultSize <= MAX_SIZE) return resultSize;
 
-            return size;
+            //return size;
         }
     }
 }
