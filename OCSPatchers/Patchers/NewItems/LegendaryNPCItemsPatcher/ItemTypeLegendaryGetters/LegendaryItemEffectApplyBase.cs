@@ -84,7 +84,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 return AddedItemsCache[sourceModItem.StringId]; // already made legendaries
             }
 
-            var legendaryItems = new List<ModItem>();
+            var addedLegendaryItems = new List<ModItem>();
             foreach (var effectPatcher in EffectPatchers)
             {
                 var legendaryItemCandidate = sourceModItem.DeepClone(); // create temp copy for mod
@@ -95,14 +95,14 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
                 var legendaryItem = context.NewItem(legendaryItemCandidate); // add as new only when the mod was applied
 
-                legendaryItems.Add(legendaryItem);
+                addedLegendaryItems.Add(legendaryItem);
             }
-            if (legendaryItems.Count > 0)
+            if (addedLegendaryItems.Count > 0)
             {
-                AddedItemsCache.Add(sourceModItem!.StringId, legendaryItems);
+                AddedItemsCache.Add(sourceModItem!.StringId, addedLegendaryItems);
             }
 
-            return legendaryItems;
+            return addedLegendaryItems;
         }
 
         private void SetExtraForTheLegendaryItem(ModItem legendaryItemCandidate, ILegendaryItemEffect effectPatcher)
