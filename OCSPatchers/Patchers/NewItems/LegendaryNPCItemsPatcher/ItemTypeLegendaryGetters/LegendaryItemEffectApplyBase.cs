@@ -107,7 +107,8 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
         private void SetExtraForTheLegendaryItem(ModItem legendaryItemCandidate, ILegendaryItemEffect effectPatcher)
         {
-            legendaryItemCandidate.Values["description"] = GetPatchedItemDescription(effectPatcher);
+            string baseDescription = legendaryItemCandidate.Values["description"] + "";
+            legendaryItemCandidate.Values["description"] = $"{baseDescription}{(!string.IsNullOrWhiteSpace(baseDescription) ? "\n\n" : "")}{GetPatchedItemDescription(effectPatcher)}".Trim();
             legendaryItemCandidate.Name = $"#ff0000{legendaryItemCandidate.Name} \"{effectPatcher.Name}\"";
 
             if (legendaryItemCandidate.Values.TryGetValue("can block", out var v) && v is bool b && !b)
