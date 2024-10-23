@@ -7,10 +7,10 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
     {
         public override string Name => "Зазубрины";
 
-        public override string Description => "#afa68bУрон от кровотечения #a8b774+50%";
+        public override string Description => "#afa68bУрон от кровотечения #a8b774+100%";
 
         protected override string KEY_NAME => "bleed mult";
 
-        protected override float VALUE => (float)0.5;
+        protected override float VALUE => (float)1.0;
     }
 }

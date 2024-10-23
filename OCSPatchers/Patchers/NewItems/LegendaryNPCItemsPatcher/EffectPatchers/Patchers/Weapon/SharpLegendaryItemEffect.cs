@@ -7,10 +7,10 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
     {
         public override string Name => "Острота";
 
-        public override string Description => "#afa68bРежущий урон #a8b774+20%";
+        public override string Description => $"#afa68bРежущий урон #a8b774+{VALUE*100}%";
 
         protected override string KEY_NAME => "cut damage multiplier";
 
-        protected override float VALUE => (float)0.2;
+        protected override float VALUE => (float)0.3;
     }
 }

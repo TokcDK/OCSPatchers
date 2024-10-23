@@ -11,6 +11,6 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
         protected override string KEY_NAME => "pierce damage multiplier";
 
-        protected override float VALUE => (float)0.1;
+        protected override float VALUE => (float)0.2;
     }
 }

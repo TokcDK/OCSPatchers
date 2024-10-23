@@ -11,6 +11,6 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
         protected override string KEY_NAME => "min cut damage mult";
 
-        protected override float VALUE => (float)0.2;
+        protected override float VALUE => (float)0.3;
     }
 }

@@ -7,7 +7,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
     {
         public override string Name => "Щит";
 
-        public override string Description => "#afa68bЗащита #a8b774+20";
+        public override string Description => $"#afa68bЗащита #a8b774+{VALUE}";
 
         protected override int VALUE => 20;
 

@@ -7,7 +7,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
     {
         public override string Name => "Оглушение";
 
-        public override string Description => "#afa68bОглушающий урон #a8b774+30%";
+        public override string Description => $"#afa68bОглушающий урон #a8b774+{VALUE*100}%";
 
         protected override string KEY_NAME => "blunt damage multiplier";
 

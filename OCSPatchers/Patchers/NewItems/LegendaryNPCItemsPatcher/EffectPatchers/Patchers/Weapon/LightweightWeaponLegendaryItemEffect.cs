@@ -8,14 +8,14 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
     {
         public override string Name => "Облегченное";
 
-        public override string Description => "Вес легче вдвое.";
+        public override string Description => "Вес легче втрое.";
 
         public override bool TryApplyWeaponEffect(ModItem modItem, OpenConstructionSet.Mods.Context.IModContext context)
         {
             if (!modItem.Values.TryGetValue("weight mult", out var v1)
                 || v1 is not float weightMult) return false;
 
-            modItem.Values["weight mult"] = (float)Math.Round(weightMult / 2, 1); // 
+            modItem.Values["weight mult"] = (float)Math.Round(weightMult / 3, 1); // 
 
             return true;
         }
