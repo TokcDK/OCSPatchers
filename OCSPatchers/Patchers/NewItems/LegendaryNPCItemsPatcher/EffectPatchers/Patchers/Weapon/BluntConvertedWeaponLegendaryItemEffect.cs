@@ -21,8 +21,8 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
             if (!modItem.Values.TryGetValue("bleed mult", out var v4)
                 || v4 is not float bleedMult) return false;
 
-            modItem.Values["blunt damage multiplier"] = 0; // reset damage
-            modItem.Values["pierce damage multiplier"] = 0; // reset damage
+            modItem.Values["blunt damage multiplier"] = (float)0; // reset damage
+            modItem.Values["pierce damage multiplier"] = (float)0; // reset damage
             modItem.Values["cut damage multiplier"] = (float)Math.Round(cutDamageMult + bluntDamageMult + pierceDamageMult, 2); // set other types of damage to blunt
             modItem.Values["bleed mult"] = (float)Math.Round(bleedMult + (float)((bluntDamageMult + pierceDamageMult) / 4), 2);
 
