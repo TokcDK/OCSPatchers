@@ -6,15 +6,14 @@ using System.Linq;
 
 namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.Patchers
 {
-    internal class ExtraPartCoverageLegendaryItemEffect : ExtraCoverageLegendaryItemEffect
+    internal class ExtraPartCoverageRandomLegendaryItemEffect : ExtraCoverageLegendaryItemEffect
     {
         public override string Name => "Экстра покрытие";
 
         public override string Description => $"#afa68b Покрывает больше частей тела #a8b774";
 
-        bool _isSetExtraPartCoverageItems = false;
         //readonly List<ModItem?> _parts = new();
-        readonly List<string> _coveragePartsStringIds = new()
+        protected readonly List<string> CoveragePartsStringIds = new()
         {
                     "28-gamedata.quack", // left arm
                     "29-gamedata.quack", //right arm
@@ -53,7 +52,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
             // setup extra coverage for extra parts which is not presented in list
             int chance = 80;
-            int cnt = _coveragePartsStringIds.Count;
+            int cnt = CoveragePartsStringIds.Count;
             int initCoverage = 5;
             for (int i = 0; i < cnt; i++)
             {
@@ -61,7 +60,7 @@ namespace OCSPatchers.Patchers.NewItems.LegendaryNPCItemsPatcher.EffectPatchers.
 
                 var partIndex = _rnd.Next(0, cnt);
 
-                string stringId = _coveragePartsStringIds[partIndex];
+                string stringId = CoveragePartsStringIds[partIndex];
 
                 if (partCoverageRefs.ContainsKey(stringId))
                 {
