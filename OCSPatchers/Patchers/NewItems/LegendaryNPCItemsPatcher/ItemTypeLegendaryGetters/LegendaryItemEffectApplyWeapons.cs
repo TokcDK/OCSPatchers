@@ -30,6 +30,8 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 new LivingKillerLegendaryItemEffect(),
                 new HarpoonLegendaryItemEffect(),
                 new MinSharpLegendaryItemEffect(),
+                new BluntConvertedWeaponLegendaryItemEffect(),
+                new CutConvertedWeaponLegendaryItemEffect(),
             };
         }
     }
