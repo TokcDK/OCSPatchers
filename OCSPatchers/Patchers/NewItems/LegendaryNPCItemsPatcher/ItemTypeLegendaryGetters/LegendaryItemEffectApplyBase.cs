@@ -94,6 +94,12 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 legendaryItemCandidate.Values["description"] = GetPatchedItemDescription(effectPatcher);
                 legendaryItemCandidate.Name = $"#ff0000{legendaryItemCandidate.Name} \"{effectPatcher.Name}\"";
 
+                if(legendaryItemCandidate.Values.TryGetValue("can block", out var v) && v is bool b && !b)
+                {
+                    // legendary weapon always can block
+                    legendaryItemCandidate.Values["can block"] = true;
+                }
+
                 var legendaryItem = context.NewItem(legendaryItemCandidate); // add as new only when the mod was applied
 
                 legendaryItems.Add(legendaryItem);
