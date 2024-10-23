@@ -32,6 +32,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
                 new MinSharpLegendaryItemEffect(),
                 new BluntConvertedWeaponLegendaryItemEffect(),
                 new CutConvertedWeaponLegendaryItemEffect(),
+                new LightweightWeaponLegendaryItemEffect(),
             };
         }
     }
