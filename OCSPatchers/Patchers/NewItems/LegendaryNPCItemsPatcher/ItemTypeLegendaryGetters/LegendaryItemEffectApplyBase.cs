@@ -91,14 +91,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
 
                 if (!effectPatcher.TryApplyEffect(legendaryItemCandidate, context)) continue;
 
-                legendaryItemCandidate.Values["description"] = GetPatchedItemDescription(effectPatcher);
-                legendaryItemCandidate.Name = $"#ff0000{legendaryItemCandidate.Name} \"{effectPatcher.Name}\"";
-
-                if(legendaryItemCandidate.Values.TryGetValue("can block", out var v) && v is bool b && !b)
-                {
-                    // legendary weapon always can block
-                    legendaryItemCandidate.Values["can block"] = true;
-                }
+                SetExtraForTheLegendaryItem(legendaryItemCandidate, effectPatcher);
 
                 var legendaryItem = context.NewItem(legendaryItemCandidate); // add as new only when the mod was applied
 
@@ -110,6 +103,18 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             }
 
             return legendaryItems;
+        }
+
+        private void SetExtraForTheLegendaryItem(ModItem legendaryItemCandidate, ILegendaryItemEffect effectPatcher)
+        {
+            legendaryItemCandidate.Values["description"] = GetPatchedItemDescription(effectPatcher);
+            legendaryItemCandidate.Name = $"#ff0000{legendaryItemCandidate.Name} \"{effectPatcher.Name}\"";
+
+            if (legendaryItemCandidate.Values.TryGetValue("can block", out var v) && v is bool b && !b)
+            {
+                // legendary weapon always can block
+                legendaryItemCandidate.Values["can block"] = true;
+            }
         }
 
         protected abstract string CategoryName { get; }
