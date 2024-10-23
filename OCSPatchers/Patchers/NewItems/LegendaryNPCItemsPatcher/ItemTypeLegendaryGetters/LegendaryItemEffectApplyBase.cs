@@ -30,7 +30,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             var newItemsList = new List<(string, int, int, int)>();
             foreach (var itemRef in validItems.Values)
             {
-                var legendaryItemsList = GetLegendaryItems(itemRef.Target, context);
+                var legendaryItemsList = GetLegendaryItemVariants(itemRef.Target, context);
                 if (legendaryItemsList == null || legendaryItemsList.Count == 0)
                 {
                     continue;
@@ -75,7 +75,7 @@ namespace OCSPatchers.Patchers.LegendaryNPCItemsPatcher.ItemTypeLegendaryGetters
             itemRefs.Clear();
         }
 
-        private List<ModItem> GetLegendaryItems(ModItem? sourceModItem, IModContext context)
+        private List<ModItem> GetLegendaryItemVariants(ModItem? sourceModItem, IModContext context)
         {
             if (sourceModItem!.StringId.Contains("CL Legendary")) return new List<ModItem>();
 
