@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OCSPatchers", "OCSPatchers\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConstructionSet", "..\OpenConstructionSet\OpenConstructionSet\OpenConstructionSet.csproj", "{A600448D-B88B-4032-B471-F7BD663F7716}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net6", "net6", "{16F80640-1C8F-4C04-BCF1-6312F99AAEFB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net", "net", "{16F80640-1C8F-4C04-BCF1-6312F99AAEFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
