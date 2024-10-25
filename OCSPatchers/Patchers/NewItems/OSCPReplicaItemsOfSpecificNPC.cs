@@ -83,6 +83,8 @@ namespace OCSPatchers.Patchers.NewItems
 
                 if(!_replicatedItems.Contains(uniqueItem.StringId))
                     _replicatedItems.Add(uniqueItem.StringId); // for case if one items using by many characters
+                if(!_replicatedItems.Contains(reference.TargetId))
+                    _replicatedItems.Add(reference.TargetId); // for case if one items using by many characters
 
                 isChangedAny = true;
             }
