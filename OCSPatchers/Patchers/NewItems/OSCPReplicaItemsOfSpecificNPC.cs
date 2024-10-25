@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace OCSPatchers.Patchers.NewItems
 {
-    internal class OSCPReplicaItemsOfSpecificNPC : OCSPatcherBase
+    internal abstract class OSCPReplicaItemsOfSpecificNPC : OCSPatcherBase
     {
         public override string PatchFileNameWithoutExtension => "OCSreplicaSelectedNPCItems";
-        public override string PatcherName => "Make replica of all armors and weapons of the characters";
+        public override string PatcherName { get; } = "Make replica of all armors and weapons of the characters";
 
         protected virtual string[] NpcStringIDsToCheck { get; } = Array.Empty<string>();
 
@@ -73,13 +73,17 @@ namespace OCSPatchers.Patchers.NewItems
                 var racesCategory = uniqueItem.ReferenceCategories["races"].References;
                 foreach (var raceId in npcRaceIds)
                 {
+                    if(racesCategory.ContainsKey(raceId)) continue;
+
                     racesCategory.Add(new ModReference(raceId)); // specify the unique race for the item
                 }
 
                 categoryReferences.Remove(reference); // remove original item from the npc
                 categoryReferences.Add(new ModReference(uniqueItem.StringId));
 
-                _replicatedItems.Add(uniqueItem.StringId); // for case if one items using by many characters
+                if(!_replicatedItems.Contains(uniqueItem.StringId))
+                    _replicatedItems.Add(uniqueItem.StringId); // for case if one items using by many characters
+
                 isChangedAny = true;
             }
 
