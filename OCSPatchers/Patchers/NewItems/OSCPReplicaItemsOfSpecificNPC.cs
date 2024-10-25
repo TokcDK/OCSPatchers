@@ -59,24 +59,25 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
 
                 if (_replicatedItems.Contains(itemToReplicate.StringId)) continue;
 
-                var replicaItem = itemToReplicate.DeepClone(); // replica item will be uniwue item for the npc
+                var uniqueItem = itemToReplicate.DeepClone(); // the item will be unique item for the npc
 
                 itemToReplicate.Name = $"{itemToReplicate.Name} (Реплика)"; // we make replica from original item because many of references to this item from craft facilities and researching
 
-                context.NewItem(replicaItem);
+                context.NewItem(uniqueItem);
 
-                if (!replicaItem.ReferenceCategories.ContainsKey("races"))
-                    replicaItem.ReferenceCategories.Add("races");
+                if (!uniqueItem.ReferenceCategories.ContainsKey("races"))
+                    uniqueItem.ReferenceCategories.Add("races");
 
-                var racesCategory = replicaItem.ReferenceCategories["races"].References;
+                var racesCategory = uniqueItem.ReferenceCategories["races"].References;
                 foreach (var raceId in npcRaceIds)
                 {
                     racesCategory.Add(new ModReference(raceId)); // specify the unique race for the item
                 }
 
                 categoryReferences.Remove(reference); // remove original item from the npc
+                categoryReferences.Add(new ModReference(uniqueItem.StringId));
 
-                _replicatedItems.Add(replicaItem.StringId); // for case if one items using by many characters
+                _replicatedItems.Add(uniqueItem.StringId); // for case if one items using by many characters
             }
         }
     }
