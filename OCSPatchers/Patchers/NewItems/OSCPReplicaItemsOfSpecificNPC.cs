@@ -57,7 +57,7 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
 
                 clothingItem.Name = $"{clothingItem.Name} (Реплика)";
 
-                context.Items.Add(replicaItem);
+                context.NewItem(replicaItem);
 
                 if (!replicaItem.ReferenceCategories.ContainsKey("races"))
                     replicaItem.ReferenceCategories.Add("races");
