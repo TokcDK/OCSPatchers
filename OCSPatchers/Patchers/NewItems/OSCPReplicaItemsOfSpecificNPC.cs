@@ -3,6 +3,7 @@ using OpenConstructionSet.Data;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
+using System.Linq;
 
 namespace OCSPatchers.Patchers.ModAssistingPatchers
 {
@@ -32,7 +33,7 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
         {
             if (!npc.ReferenceCategories.ContainsKey("race")) return; // not need to parse if no races for some reason
 
-            var npcRaces = npc.ReferenceCategories["race"].References.Where(r => r != null).Select(r => r.TargetId).ToArray(); ;
+            var npcRaces = npc.ReferenceCategories["race"].References.Where(r => r != null).Select(r => r.TargetId).ToArray();
             if (npcRaces.Length == 0) return; // not need to parse if no races for some reason
 
             foreach (var categoryName in _categoryNames)
@@ -45,17 +46,22 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
             }
         }
 
-        private void ReplicaItemsWithName(ModReferenceCollection categoryReferences, string[] npcRaces, IModContext context)
+        HashSet<string> _replicatedItems = new HashSet<string>();
+        private void ReplicaItemsWithName(ModReferenceCollection categoryReferences, string[] npcRaceIds, IModContext context)
         {
-            foreach (var reference in categoryReferences)
+            var itemsToReplicateReferencesList = categoryReferences.Select(i => i).ToArray();
+
+            foreach (var reference in itemsToReplicateReferencesList)
             {
-                var clothingItem = reference.Target;
+                var itemToReplicate = reference.Target;
 
-                if (clothingItem == null) continue;
+                if (itemToReplicate == null) continue;
 
-                var replicaItem = clothingItem.DeepClone();
+                if (_replicatedItems.Contains(itemToReplicate.StringId)) continue;
 
-                clothingItem.Name = $"{clothingItem.Name} (Реплика)";
+                var replicaItem = itemToReplicate.DeepClone(); // replica item will be uniwue item for the npc
+
+                itemToReplicate.Name = $"{itemToReplicate.Name} (Реплика)"; // we make replica from original item because many of references to this item from craft facilities and researching
 
                 context.NewItem(replicaItem);
 
@@ -63,10 +69,14 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
                     replicaItem.ReferenceCategories.Add("races");
 
                 var racesCategory = replicaItem.ReferenceCategories["races"].References;
-                foreach (var raceId in npcRaces)
+                foreach (var raceId in npcRaceIds)
                 {
                     racesCategory.Add(new ModReference(raceId)); // specify the unique race for the item
                 }
+
+                categoryReferences.Remove(reference); // remove original item from the npc
+
+                _replicatedItems.Add(replicaItem.StringId); // for case if one items using by many characters
             }
         }
     }
