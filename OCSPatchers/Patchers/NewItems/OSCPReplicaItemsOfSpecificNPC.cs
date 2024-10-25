@@ -19,7 +19,7 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
 
             foreach (var npcStringID in NpcStringIDsToCheck)
             {
-                var npc = context.Items.OfType(ItemType.Character).FirstOrDefault(i => i.Name == npcStringID);
+                var npc = context.Items.OfType(ItemType.Character).FirstOrDefault(i => i.StringId == npcStringID);
 
                 if (npc == null) continue;
 
