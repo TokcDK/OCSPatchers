@@ -5,14 +5,14 @@ using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 using System.Linq;
 
-namespace OCSPatchers.Patchers.ModAssistingPatchers
+namespace OCSPatchers.Patchers.NewItems
 {
     internal class OSCPReplicaItemsOfSpecificNPC : OCSPatcherBase
     {
-        public override string PatchFileNameWithoutExtension => "2B_tweaks_replica";
+        public override string PatchFileNameWithoutExtension => "OCSreplicaSelectedNPCItems";
         public override string PatcherName => "Make replica of all armors and weapons of the characters";
 
-        readonly string[] NpcStringIDsToCheck = new string[2] { "14-2B.mod", "75-2B.mod" };
+        protected virtual string[] NpcStringIDsToCheck { get; } = Array.Empty<string>();
 
         public override async Task ApplyPatch(IModContext context, IInstallation installation)
         {
@@ -47,8 +47,10 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
         }
 
         HashSet<string> _replicatedItems = new HashSet<string>();
-        private void ReplicaItemsWithName(ModReferenceCollection categoryReferences, string[] npcRaceIds, IModContext context)
+        private bool ReplicaItemsWithName(ModReferenceCollection categoryReferences, string[] npcRaceIds, IModContext context)
         {
+            bool isChangedAny = false;
+
             var itemsToReplicateReferencesList = categoryReferences.Select(i => i).ToArray();
 
             foreach (var reference in itemsToReplicateReferencesList)
@@ -59,11 +61,9 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
 
                 if (_replicatedItems.Contains(itemToReplicate.StringId)) continue;
 
-                var uniqueItem = itemToReplicate.DeepClone(); // the item will be unique item for the npc
+                var uniqueItem = context.NewItem(itemToReplicate);// the item will be unique item for the npc
 
                 itemToReplicate.Name = $"{itemToReplicate.Name} (Реплика)"; // we make replica from original item because many of references to this item from craft facilities and researching
-
-                context.NewItem(uniqueItem);
 
                 if (!uniqueItem.ReferenceCategories.ContainsKey("races"))
                     uniqueItem.ReferenceCategories.Add("races");
@@ -78,7 +78,10 @@ namespace OCSPatchers.Patchers.ModAssistingPatchers
                 categoryReferences.Add(new ModReference(uniqueItem.StringId));
 
                 _replicatedItems.Add(uniqueItem.StringId); // for case if one items using by many characters
+                isChangedAny = true;
             }
+
+            return isChangedAny;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using OCSPatchers.Patchers;
 using OCSPatchers.Patchers.ModAssistingPatchers;
 using OCSPatchers.Patchers.MoreItemsToSpecificStorage;
+using OCSPatchers.Patchers.NewItems;
 using OCSPatchers.Patchers.ReferencesShare;
 using OCSPatchers.Patchers.Tweaks;
 using OCSPatchers.Patchers.WIP;
@@ -47,7 +48,7 @@ namespace OCSPatchers
 
                 ////// new items, recommended to create only one for one playthrough or create with new name new each time
                 // new OCSPLegendaryNPCItems(), // new items here
-                new OSCPReplicaItemsOfSpecificNPC(), // for specific purposes only! new items!
+                new OSCPReplicaItemsOfSpecificNPC2B(), // for specific purposes only! new items!
             };
 
             var patchersByPatchFileName = SortByPatchFileName(patchers);
