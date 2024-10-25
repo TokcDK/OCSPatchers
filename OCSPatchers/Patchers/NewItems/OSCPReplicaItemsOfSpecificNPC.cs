@@ -44,7 +44,7 @@ namespace OCSPatchers.Patchers.NewItems
 
                 if (!ReplicaItemsWithName(categoryReferences, npcRaces, context)) continue;
 
-                npc.Values["armour grade"] = Data.Enums.ArmorGrades.GEAR_MASTER; // set the grade for the npc to be for uniques
+                npc.Values["armour grade"] = (int)Data.Enums.ArmorGrades.GEAR_MASTER; // set the grade for the npc to be for uniques
             }
         }
 
