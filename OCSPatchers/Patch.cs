@@ -47,9 +47,9 @@ namespace OCSPatchers
                 //new OCSPRemoveNpcOverpoweredStats(),
 
                 ////// new items, recommended to create only one for one playthrough or create with new name new each time
-                // new OCSPLegendaryNPCItems(), // new items here
-                new OSCPReplicaItemsOfSpecific2B(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCBrokeback(), // for specific purposes only! new items!
+                new OCSPLegendaryNPCItems(), // new items here
+                //new OSCPReplicaItemsOfSpecific2B(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCBrokeback(), // for specific purposes only! new items!
                 //new OSCPReplicaItemsOfSpecificNPCTrinity(), // for specific purposes only! new items!
                 //new OSCPReplicaItemsOfSpecificNPCXenoblade2Pyra(), // for specific purposes only! new items!
                 //new OSCPReplicaItemsOfSpecificNPCXenoblade2Mythra(), // for specific purposes only! new items!
