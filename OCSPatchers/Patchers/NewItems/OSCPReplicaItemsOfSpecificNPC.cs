@@ -61,6 +61,7 @@ namespace OCSPatchers.Patchers.NewItems
 
                 if (itemToReplicate == null) continue;
 
+                // добавить также!  если уже была пропарсена, то проверяем только расы для добавления
                 if (_replicatedItems.Contains(itemToReplicate.StringId)) continue;
 
                 var uniqueItem = context.NewItem(itemToReplicate);// the item will be unique item for the npc
@@ -79,7 +80,7 @@ namespace OCSPatchers.Patchers.NewItems
                 }
 
                 categoryReferences.Remove(reference); // remove original item from the npc
-                categoryReferences.Add(new ModReference(uniqueItem.StringId));
+                categoryReferences.Add(new ModReference(uniqueItem.StringId, reference.Value0, reference.Value1));
 
                 if(!_replicatedItems.Contains(uniqueItem.StringId))
                     _replicatedItems.Add(uniqueItem.StringId); // for case if one items using by many characters
