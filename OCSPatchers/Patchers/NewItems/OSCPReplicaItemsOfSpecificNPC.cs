@@ -57,35 +57,23 @@ namespace OCSPatchers.Patchers.NewItems
 
             foreach (var itemReference in itemsToReplicateReferencesList)
             {
-                var itemToReplicate = itemReference.Target;
-
-                if (itemToReplicate == null) continue;
+                if (itemReference.Target == null) continue;
 
                 // добавить также!  если уже была пропарсена, то проверяем только расы для добавления
-                if (_replicatedItems.Contains(itemToReplicate.StringId)) continue;
-
-                var uniqueItem = context.NewItem(itemToReplicate);// the item will be unique item for the npc
-
-                if(!itemToReplicate.Name.EndsWith(" (Реплика)"))
+                if (_replicatedItems.Contains(itemReference.Target.StringId))
                 {
-                    itemToReplicate.Name = $"{itemToReplicate.Name} (Реплика)"; // we make replica from original item because many of references to this item from craft facilities and researching
+                    // need only check for missing races
+
+                    AddRacesToItem(itemReference.Target, npcRaceIds); // add missing races
+
+                    continue;
                 }
 
-                if (!uniqueItem.ReferenceCategories.ContainsKey("races"))
-                    uniqueItem.ReferenceCategories.Add("races");
+                var uniqueItem = ReplicateItem(itemReference, categoryReferences, context);
 
-                var racesCategory = uniqueItem.ReferenceCategories["races"].References;
-                foreach (var raceId in npcRaceIds)
-                {
-                    if(racesCategory.ContainsKey(raceId)) continue;
+                AddRacesToItem(uniqueItem, npcRaceIds);
 
-                    racesCategory.Add(new ModReference(raceId)); // specify the unique race for the item
-                }
-
-                categoryReferences.Remove(itemReference); // remove original item from the npc
-                categoryReferences.Add(new ModReference(uniqueItem.StringId, itemReference.Value0, itemReference.Value1));
-
-                if(!_replicatedItems.Contains(uniqueItem.StringId))
+                if (!_replicatedItems.Contains(uniqueItem.StringId))
                     _replicatedItems.Add(uniqueItem.StringId); // for case if one items using by many characters
                 if(!_replicatedItems.Contains(itemReference.TargetId))
                     _replicatedItems.Add(itemReference.TargetId); // for case if one items using by many characters
@@ -94,6 +82,35 @@ namespace OCSPatchers.Patchers.NewItems
             }
 
             return isChangedAny;
+        }
+
+        private ModItem ReplicateItem(ModReference itemReference, ModReferenceCollection categoryReferences, IModContext context)
+        {
+            var uniqueItem = context.NewItem(itemReference.Target!);// the item will be unique item for the npc
+
+            if (!itemReference.Target!.Name.EndsWith(" (Реплика)"))
+            {
+                itemReference.Target.Name = $"{itemReference.Target.Name} (Реплика)"; // we make replica from original item because many of references to this item from craft facilities and researching
+            }
+
+            categoryReferences.Remove(itemReference); // remove original item from the npc
+            categoryReferences.Add(new ModReference(uniqueItem.StringId, itemReference.Value0, itemReference.Value1));
+
+            return uniqueItem;
+        }
+
+        private void AddRacesToItem(ModItem uniqueItem, string[] npcRaceIds)
+        {
+            if (!uniqueItem.ReferenceCategories.ContainsKey("races"))
+                uniqueItem.ReferenceCategories.Add("races");
+
+            var racesCategory = uniqueItem.ReferenceCategories["races"].References;
+            foreach (var raceId in npcRaceIds)
+            {
+                if (racesCategory.ContainsKey(raceId)) continue;
+
+                racesCategory.Add(new ModReference(raceId)); // specify the unique race for the item
+            }
         }
     }
 }

@@ -50,24 +50,24 @@ namespace OCSPatchers
                 // new OCSPLegendaryNPCItems(), // new items here
                 new OSCPReplicaItemsOfSpecific2B(), // for specific purposes only! new items!
                 new OSCPReplicaItemsOfSpecificNPCBrokeback(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCTrinity(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCXenoblade2Pyra(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCXenoblade2Mythra(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCSonyaBlade(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCFFVIICloudStrife(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCFF7Yuffie(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCFFVIIYuffieKisaragi(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCFFVIITIFA(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCFFVIIAerith(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCFFLightning(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCWitcher3VES(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCTheWitcher(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCTheWitchertweaks(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCSekirotweaks(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCMAI(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCUnderworld(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCCyberpunk2077V(), // for specific purposes only! new items!
-                new OSCPReplicaItemsOfSpecificNPCAshleyGraham(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCTrinity(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCXenoblade2Pyra(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCXenoblade2Mythra(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCSonyaBlade(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCFFVIICloudStrife(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCFF7Yuffie(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCFFVIIYuffieKisaragi(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCFFVIITIFA(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCFFVIIAerith(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCFFLightning(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCWitcher3VES(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCTheWitcher(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCTheWitchertweaks(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCSekirotweaks(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCMAI(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCUnderworld(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCCyberpunk2077V(), // for specific purposes only! new items!
+                //new OSCPReplicaItemsOfSpecificNPCAshleyGraham(), // for specific purposes only! new items!
             };
 
             var patchersByPatchFileName = SortByPatchFileName(patchers);
