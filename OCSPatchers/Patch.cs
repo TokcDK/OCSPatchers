@@ -25,26 +25,26 @@ namespace OCSPatchers
         {
             var patchers = new List<IOCSPatcher>
             {
-                ////patchers, parameters change, can be recreated many times in one playthrough but maybe will need import
-                //new OCSPatcherGeneral(),
-                //new OSCPScarsPathfindingFix(),
-                //new OSCPNPCEnjoysMoreShopping(),
-                //new OCSPAnimationsShare(),
-                //new OCSPHairsShare(),
-                //new OCSPStackableItems1000(),
-                ////////////new OCSPBiggerBackpacks(),
-                ////////////new OCSPEveryoneHasName(),
-                //new OCSPResetToAOMAnims(),
-                //new OCSPHubGenesisOwnTheHubCopySquads(),
-                //new OCSMoreItemsToSpecificStorageFood(),
-                //new OCSMoreItemsToSpecificStorageBolts(),
-                //new OCSMoreItemsToSpecificStorageRobotParts(),
-                //new OCSMoreItemsToSpecificStorageResearch(),
-                //new OCSMoreItemsToSpecificStorageFish(),
-                //new OCSMoreItemsToSpecificStorageFish1(),
+                //patchers, parameters change, can be recreated many times in one playthrough but maybe will need import
+                new OCSPatcherGeneral(),
+                new OSCPScarsPathfindingFix(),
+                new OSCPNPCEnjoysMoreShopping(),
+                new OCSPAnimationsShare(),
+                new OCSPHairsShare(),
+                new OCSPStackableItems1000(),
+                //////////new OCSPBiggerBackpacks(),
+                //////////new OCSPEveryoneHasName(),
+                new OCSPResetToAOMAnims(),
+                new OCSPHubGenesisOwnTheHubCopySquads(),
+                new OCSMoreItemsToSpecificStorageFood(),
+                new OCSMoreItemsToSpecificStorageBolts(),
+                new OCSMoreItemsToSpecificStorageRobotParts(),
+                new OCSMoreItemsToSpecificStorageResearch(),
+                new OCSMoreItemsToSpecificStorageFish(),
+                new OCSMoreItemsToSpecificStorageFish1(),
 
-                //new OCSPRecrutablePrisonersDialogsAdd(),
-                //new OCSPRemoveNpcOverpoweredStats(),
+                new OCSPRecrutablePrisonersDialogsAdd(),
+                new OCSPRemoveNpcOverpoweredStats(),
 
                 ////// new items, recommended to create only one for one playthrough or create with new name new each time
                 new OCSPLegendaryNPCItems(), // new items here
