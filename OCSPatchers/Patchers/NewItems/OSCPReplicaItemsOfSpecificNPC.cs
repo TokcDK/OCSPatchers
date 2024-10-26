@@ -55,9 +55,9 @@ namespace OCSPatchers.Patchers.NewItems
 
             var itemsToReplicateReferencesList = categoryReferences.Select(i => i).ToArray();
 
-            foreach (var reference in itemsToReplicateReferencesList)
+            foreach (var itemReference in itemsToReplicateReferencesList)
             {
-                var itemToReplicate = reference.Target;
+                var itemToReplicate = itemReference.Target;
 
                 if (itemToReplicate == null) continue;
 
@@ -66,7 +66,10 @@ namespace OCSPatchers.Patchers.NewItems
 
                 var uniqueItem = context.NewItem(itemToReplicate);// the item will be unique item for the npc
 
-                itemToReplicate.Name = $"{itemToReplicate.Name} (Реплика)"; // we make replica from original item because many of references to this item from craft facilities and researching
+                if(!itemToReplicate.Name.EndsWith(" (Реплика)"))
+                {
+                    itemToReplicate.Name = $"{itemToReplicate.Name} (Реплика)"; // we make replica from original item because many of references to this item from craft facilities and researching
+                }
 
                 if (!uniqueItem.ReferenceCategories.ContainsKey("races"))
                     uniqueItem.ReferenceCategories.Add("races");
@@ -79,13 +82,13 @@ namespace OCSPatchers.Patchers.NewItems
                     racesCategory.Add(new ModReference(raceId)); // specify the unique race for the item
                 }
 
-                categoryReferences.Remove(reference); // remove original item from the npc
-                categoryReferences.Add(new ModReference(uniqueItem.StringId, reference.Value0, reference.Value1));
+                categoryReferences.Remove(itemReference); // remove original item from the npc
+                categoryReferences.Add(new ModReference(uniqueItem.StringId, itemReference.Value0, itemReference.Value1));
 
                 if(!_replicatedItems.Contains(uniqueItem.StringId))
                     _replicatedItems.Add(uniqueItem.StringId); // for case if one items using by many characters
-                if(!_replicatedItems.Contains(reference.TargetId))
-                    _replicatedItems.Add(reference.TargetId); // for case if one items using by many characters
+                if(!_replicatedItems.Contains(itemReference.TargetId))
+                    _replicatedItems.Add(itemReference.TargetId); // for case if one items using by many characters
 
                 isChangedAny = true;
             }
